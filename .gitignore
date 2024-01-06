@@ -1,5 +1,6 @@
 apex_dma/.cache
 apex_dma/build
+apex_dma/out
 .vs/
 x64/
 *.o
