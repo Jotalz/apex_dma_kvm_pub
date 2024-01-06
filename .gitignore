@@ -1,0 +1,14 @@
+apex_dma/.cache
+apex_dma/build
+.vs/
+x64/
+*.o
+target/
+*.rs.bk
+*.swp
+*.dylib
+.vscode
+Cargo.lock
+.vscode/
+build/
+.cache
