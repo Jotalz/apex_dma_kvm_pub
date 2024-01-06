@@ -16,9 +16,9 @@
     <br />
     <a href="https://www.unknowncheats.me/forum/apex-legends/406426-kvm-vmread-apex-esp-aimbot.html">UnknownCheats thread</a>
     ·
-    <a href="https://github.com/chettoy/apex_dma_kvm_pub/issues">Report Bug</a>
+    <a href="https://github.com/FORDLESS/apex_dma_kvm_pub/issues">Report Bug</a>
     ·
-    <a href="https://github.com/chettoy/apex_dma_kvm_pub/issues">Request Feature</a>
+    <a href="https://github.com/FORDLESS/apex_dma_kvm_pub/issues">Request Feature</a>
   </p>
 </div>
 
@@ -200,6 +200,7 @@ cd apex_dma_kvm_pub/apex_dma
 * [KrackerCo/apex_dma_kvm_pub](https://github.com/KrackerCo/apex_dma_kvm_pub)
 * [CasualX/apexdream](https://github.com/CasualX/apexdream)
 * [Nexilist/xap-client](https://github.com/Nexilist/xap-client)
+* [chettoy/apex_dma_kvm_pub](https://github.com/chettoy/apex_dma_kvm_pub)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
