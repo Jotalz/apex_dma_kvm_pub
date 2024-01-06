@@ -200,6 +200,7 @@ cd apex_dma_kvm_pub/apex_dma
 * [KrackerCo/apex_dma_kvm_pub](https://github.com/KrackerCo/apex_dma_kvm_pub)
 * [CasualX/apexdream](https://github.com/CasualX/apexdream)
 * [Nexilist/xap-client](https://github.com/Nexilist/xap-client)
+* [chettoy/apex_dma_kvm_pub](https://github.com/chettoy/apex_dma_kvm_pub)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
