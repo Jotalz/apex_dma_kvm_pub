@@ -202,8 +202,8 @@ void ClientActions() {
       int attack_state = 0, zoom_state = 0, tduck_state = 0, jump_state = 0,
           force_jump = 0, force_toggle_duck = 0, force_duck = 0,
           curFrameNumber = 0;
-      apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108
-      apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109
+      apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108开火
+      apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109瞄准
       apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 61
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
@@ -216,7 +216,7 @@ void ClientActions() {
       float world_time, traversal_start_time, traversal_progress;
       if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE,
                                 world_time)) {
-        // memory_io_panic("read time_base");
+        //memory_io_panic("read time_base");
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         break;
       }
@@ -462,8 +462,8 @@ void ClientActions() {
       } */
 
       if (local_held_id == -251) {
-        if ((g_settings.no_nade_aim && zoom_state == 0) ||
-            (!g_settings.no_nade_aim && zoom_state > 0)) {
+        if ((g_settings.no_nade_aim && zoom_state == 0) ||  //手雷右键瞄准
+            (!g_settings.no_nade_aim && zoom_state > 0)) {  //右键取消手雷自瞄
           aimbot.gun_safety = true;
         } else {
           aimbot.gun_safety = false;
@@ -472,7 +472,7 @@ void ClientActions() {
 
       if (g_settings.keyboard) {
         if (isPressed(g_settings.aimbot_hot_key_1) ||
-            isPressed(g_settings.aimbot_hot_key_2)) // Left and Right click
+            isPressed(g_settings.aimbot_hot_key_2)) // Left and Right click(add smooth later)
         {
           aimbot.aiming = true;
         } else {
@@ -492,7 +492,7 @@ void ClientActions() {
       } else {
         trigger_ready = false;
       }
-      if (zoom_state > 0) {
+      if (zoom_state > 0) { //根据是否开镜选择不同的自瞄范围
         aimbot.max_fov = g_settings.ads_fov;
       } else {
         aimbot.max_fov = g_settings.non_ads_fov;
@@ -1113,11 +1113,11 @@ static void EspLoop() {
 }
 
 // Aimbot Loop stuff
-inline static void lock_target(uintptr_t target_ptr) {
+inline static void lock_target(uintptr_t target_ptr) {  //锁定目标函数，aimbot是包含自瞄信息的结构体
   aimbot.lock = true;
   aimbot.locked_aimentity = target_ptr;
 }
-inline static void cancel_targeting() {
+inline static void cancel_targeting() { //取消锁定
   aimbot.lock = false;
   aimbot.locked_aimentity = 0;
 }
@@ -1135,7 +1135,7 @@ static void AimbotLoop() {
       // Read HeldID
       int HeldID;
       apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID); // 0x1a1c
-      local_held_id = HeldID;
+      local_held_id = HeldID;   //读取本地玩家手持武器id赋值给local_held_id
       // Read WeaponID
       ulong ehWeaponHandle;
       apex_mem.Read<uint64_t>(LocalPlayer + OFFSET_ACTIVE_WEAPON,
@@ -1148,25 +1148,25 @@ static void AimbotLoop() {
       apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_NAME,
                               weaponID); // 0x1844
       local_weapon_id = weaponID;
-      // printf("%d\n", weaponID);
+      // printf("%d\n", weaponID);上面这段不太懂local_weapon_id和local_held_id的区别
 
-      if (g_settings.aim > 0) {
-        if (aimbot.aimentity == 0) {
+      if (g_settings.aim > 0) {     //0为不自喵，1为不检查可见性，2为检查目标可见性
+        if (aimbot.aimentity == 0) {    //如果无目标取消锁定
           cancel_targeting();
           continue;
         }
 
         Entity target = getEntity(aimbot.aimentity);
         // show target indicator before aiming
-        aim_target = target.getPosition();
+        aim_target = target.getPosition();  //获取目标的位置
 
-        if (!aimbot.aiming) {
+        if (!aimbot.aiming) {   //aimbot的元素值由DoAction和ClientAction函数修改
           cancel_targeting();
           continue;
         }
 
         lock_target(aimbot.aimentity);
-        if (aimbot.gun_safety) {
+        if (aimbot.gun_safety) {    //gun_safety用于可见性检查
           continue;
         }
 
@@ -1181,7 +1181,7 @@ static void AimbotLoop() {
 
         /* Fine-tuning for each weapon */
         // bow
-        if (weaponID == 2) {
+        if (weaponID == 2) {    //2是什么武器？单独给了子弹参数，应该比较特殊？
           // Ctx.BulletSpeed = BulletSpeed - (BulletSpeed*0.08);
           // Ctx.BulletGravity = BulletGrav + (BulletGrav*0.05);
           bulletspeed = 10.08;
@@ -1274,7 +1274,7 @@ static void item_glow_t() {
         /*暂时注释掉
         for (size_t i = 0; i < new_treasure_clues.size(); i++) {
           TreasureClue &clue = new_treasure_clues[i];   //将new_treasure_clues[i]赋值给clue，后续可以使用clue指代new_treasure_clues[i]（或许是这样）
-          if (ItemID == new_treasure_clues[i].item_id) {    //如果循环到的实体的ItemID在10个之中（那么这前面的10个数字可能表示子弹类，枪械类，配件类，药品类，护甲类等）
+          if (ItemID == new_treasure_clues[i].item_id) {    //如果循环到的实体的ItemID在10个之中（wish为自定义的愿望清单，用于esp显示）
             Vector position = item.getPosition();    //获取这个实体的坐标
             float distance = esp_local_pos.DistTo(position);
             if (distance < clue.distance) { //如果实体距离小于自瞄距离的2倍，将坐标和距离更新到clue中
@@ -1283,9 +1283,9 @@ static void item_glow_t() {
             }
             break;
           }
-        }   //回头看这段代码，感觉是调试时候用的，new_treasure_clues选了十类的物品id各一个，用来测试数据可行性
+        }   
         */
-        if (g_settings.loot.lightbackpack && ItemID == 207) {       //猜测基本正确，207应该是背包类的id，这里是背包的高亮）
+        if (g_settings.loot.lightbackpack && ItemID == 207) {       //白包
           std::array<unsigned char, 4> highlightFunctionBits = {
               g_settings.loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
               125,              // OutlineFunction OutlineFunction

@@ -380,12 +380,12 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov) {
   const auto g_settings = global_settings();
-  if (g_settings.firing_range) {
+  if (g_settings.firing_range) {    //如果是射击场并且not alive返回0
     if (!target.isAlive()) {
       return QAngle(0, 0, 0);
     }
   } else {
-    if (!target.isAlive() || target.isKnocked()) {
+    if (!target.isAlive() || target.isKnocked()) {  //不在射击场但不是alive或者已经倒地返回0
       return QAngle(0, 0, 0);
     }
   }
@@ -431,16 +431,16 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov) {
   float deltaTime = 1.0 / g_settings.game_fps;
 
   if (weap_headshot) {
-    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) {
+    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //是列表中的武器并且小于设置的爆头距离就锁头
       TargetBonePositionMax = TargetBonePositionMin =
           target.getBonePositionByHitbox(0);
     } else {
       TargetBonePositionMax = TargetBonePositionMin =
-          target.getBonePositionByHitbox(g_settings.bone);
+          target.getBonePositionByHitbox(g_settings.bone);  //否则根据设置的自瞄位置瞄准
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone
-    float NearestBoneDistance = g_settings.max_dist;
+    float NearestBoneDistance = g_settings.max_dist;//max_dist是3800m,或许应该是aim_dist?没读懂
     for (int i = 0; i < 4; i++) {
       Vector currentBonePosition = target.getBonePositionByHitbox(i);
       float DistanceFromCrosshair =

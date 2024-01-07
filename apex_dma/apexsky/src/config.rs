@@ -424,13 +424,13 @@ impl Default for Settings {
             game_fps: 143.0,       // Game FPS for aim prediction
             calc_game_fps: false, // Automatic calculation of game fps
             // aimbot for nades on or off
-            no_nade_aim: false,
+            no_nade_aim: true,  //Right click to nade-aim to true
             firing_range: false,
             bone: 2, // bone 0 head, 1 neck, 2 chest, 3 dick shot
             bone_nearest: false,
             bone_auto: true,
             headshot_dist: 250.0 * 40.0,
-            skynade_dist: 50.0 * 40.0,
+            skynade_dist: 120.0 * 40.0,
             smooth: 120.0, // min 85 no beaming, 100 somewhat beam people, 125 should be safe
             skynade_smooth: 120.0 * 0.6667,
             // Player Glow Color and Brightness.
