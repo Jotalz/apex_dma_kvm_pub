@@ -478,6 +478,12 @@ void ClientActions() {
         } else {
           aimbot.aiming = false;
         }
+        if (isPressed(g_settings.aimbot_hot_key_2) {
+            aimbot.smooth = g_settings.smooth - 30;
+        }
+        else {
+            aimbot.smooth = g_settings.smooth;
+        }
       }
       if (g_settings.gamepad) {
         // attackState == 120 || zoomState == 119
@@ -1181,7 +1187,7 @@ static void AimbotLoop() {
 
         /* Fine-tuning for each weapon */
         // bow
-        if (weaponID == 2) {    //2是什么武器？单独给了子弹参数，应该比较特殊？
+        if (weaponID == 2) {
           // Ctx.BulletSpeed = BulletSpeed - (BulletSpeed*0.08);
           // Ctx.BulletGravity = BulletGrav + (BulletGrav*0.05);
           bulletspeed = 10.08;
@@ -1189,7 +1195,7 @@ static void AimbotLoop() {
         }
 
         if (HeldID == -251) { // auto throw
-          QAngle Angles_g = CalculateBestBoneAim(LPlayer, target, 999.9f);
+          QAngle Angles_g = CalculateBestBoneAim(LPlayer, target, 999.9f, aimbot.smooth);
           if (Angles_g.x == 0 && Angles_g.y == 0) {
             cancel_targeting();
             continue;
@@ -1197,7 +1203,7 @@ static void AimbotLoop() {
           LPlayer.SetViewAngles(Angles_g);
 
         } else {
-          QAngle Angles = CalculateBestBoneAim(LPlayer, target, aimbot.max_fov);
+          QAngle Angles = CalculateBestBoneAim(LPlayer, target, aimbot.max_fov, aimbot.smooth);
           if (Angles.x == 0 && Angles.y == 0) {
             cancel_targeting();
             continue;

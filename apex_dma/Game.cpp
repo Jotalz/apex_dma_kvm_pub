@@ -378,7 +378,7 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
   return CalculatedAngles;
 };
 
-QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov) {
+QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth) {
   const auto g_settings = global_settings();
   if (g_settings.firing_range) {    //如果是射击场并且not alive返回0
     if (!target.isAlive()) {
@@ -492,7 +492,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov) {
     if (DeltaMin.y * DeltaMax.y > 0)
       Delta.y = (DeltaMin.y + DeltaMax.y) * 0.5f;
 
-    QAngle SmoothedAngles = ViewAngles + Delta / g_settings.smooth;
+    QAngle SmoothedAngles = ViewAngles + Delta / smooth;
     return SmoothedAngles;
   } else {
     int weapon_mod_bitfield = curweap.get_mod_bitfield();
