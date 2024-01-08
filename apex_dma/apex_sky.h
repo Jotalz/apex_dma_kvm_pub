@@ -197,6 +197,7 @@ typedef struct {
   bool calc_game_fps;
   bool no_nade_aim;
   bool firing_range;
+  bool bow_charge_rifle_aim;
   int32_t bone;
   bool bone_nearest;
   bool bone_auto;

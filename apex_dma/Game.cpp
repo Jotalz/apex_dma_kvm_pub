@@ -393,6 +393,10 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov) {
   WeaponXEntity curweap = WeaponXEntity();
   curweap.update(from.ptr);
   uint32_t weap_id = curweap.get_weap_id();
+  if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow
+      || weap_id == weapon_id::idweapon_charge_rifle)) {
+      return QAngle(0, 0, 0);
+  }     //弓和充能自瞄开关
   float BulletSpeed = curweap.get_projectile_speed();
   float BulletGrav = curweap.get_projectile_gravity();
 

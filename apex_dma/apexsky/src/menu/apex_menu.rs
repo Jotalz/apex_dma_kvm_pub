@@ -870,11 +870,21 @@ fn build_main_menu(
             None
         },
     );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(
+            "32 - {}",
+            i18n_msg!(i18n_bundle, BowChargeRifleAim)
+        ),
+        settings.bow_charge_rifle_aim,
+        bow_charge_rifle_aim
+    );
     menu.add_dummy_item()
         .add_item(
             format_item(
                 &i18n_bundle,
-                format!("32 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
+                format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
                 if settings.no_overlay {
                     Span::from(i18n_msg!(i18n_bundle, MenuValueNoOverlay).to_string())
                 } else {
