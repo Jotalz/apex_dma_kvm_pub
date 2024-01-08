@@ -215,7 +215,7 @@ pub enum MessageId {
     LootLevel5Name,
     MenuItemFavoritePlayerGlow,
     MenuItemKbdBacklightCtrl,
-    BowChargeRifleAim,
+    MenuItemBowChargeRifleAim,
 }
 
 pub fn get_fluent_bundle() -> FluentBundle<FluentResource> {

@@ -131,7 +131,7 @@ Additional information:
 
 
 
-Click on *[Actions](https://github.com/chettoy/apex_dma_kvm_pub/actions)* to download the auto-built artifacts.
+Click on *[Actions](https://github.com/FORDLESS/apex_dma_kvm_pub/actions)* to download the auto-built artifacts.
 
 Or compile it yourself.
 
@@ -161,7 +161,7 @@ sudo apt install cmake clang libzstd-dev libglfw3-dev libfreetype6-dev libvulkan
 **Build:**
 
 ```shell
-git clone --recurse https://github.com/chettoy/apex_dma_kvm_pub
+git clone --recurse https://github.com/FORDLESS/apex_dma_kvm_pub
 cd apex_dma_kvm_pub/apex_dma
 ./build.sh
 ```

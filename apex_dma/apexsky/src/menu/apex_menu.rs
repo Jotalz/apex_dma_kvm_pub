@@ -873,10 +873,7 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(
-            "32 - {}",
-            i18n_msg!(i18n_bundle, BowChargeRifleAim)
-        ),
+        format!( "32 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
         settings.bow_charge_rifle_aim,
         bow_charge_rifle_aim
     );

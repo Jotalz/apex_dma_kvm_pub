@@ -478,7 +478,7 @@ void ClientActions() {
         } else {
           aimbot.aiming = false;
         }
-        if (isPressed(g_settings.aimbot_hot_key_2) {
+        if (isPressed(g_settings.aimbot_hot_key_2)) {
             aimbot.smooth = g_settings.smooth - 30;
         }
         else {
