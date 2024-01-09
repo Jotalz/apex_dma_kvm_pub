@@ -164,7 +164,6 @@ typedef struct {
   int aimbot_hot_key_1;
   int aimbot_hot_key_2;
   int trigger_bot_hot_key;
-  bool auto_shoot;
   bool loot_filled_toggle;
   bool player_filled_toggle;
   bool super_key_toggle;
@@ -177,6 +176,7 @@ typedef struct {
   bool weapon_model_glow;
   bool kbd_backlight_control;
   bool bow_charge_rifle_aim;
+  bool shotgun_auto_shot;
   bool deathbox;
   bool aim_no_recoil;
   float ads_fov;

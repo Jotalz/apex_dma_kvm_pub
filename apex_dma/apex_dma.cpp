@@ -498,17 +498,22 @@ void ClientActions() {
           aimbot.aiming = false;
         }
       }
-      uint64_t wephandle = 0;
-      apex_mem.Read<uint64_t>(local_player_ptr + OFFSET_ACTIVE_WEAPON, wephandle);
-      wephandle &= 0xffff;
-      uint64_t wep_entity = 0;
-      apex_mem.Read<uint64_t>(entitylist + (wephandle << 5), wep_entity);
-      uint32_t weap_id = 0;
-      apex_mem.Read<uint32_t>(wep_entity + OFFSET_WEAPON_NAME, weap_id);
-      if (g_settings.auto_shoot && isPressed(g_settings.trigger_bot_hot_key)) {
-        trigger_ready = true;
-      } else {
-        trigger_ready = false;
+      bool triggerbot_shotgun;
+      switch (local_weapon_id) {
+      case idweapon_eva8:
+      case idweapon_mastiff:
+      case idweapon_mozambique:
+      case idweapon_peacekeeper:
+          triggerbot_shotgun = true;
+          break;
+      default:
+          triggerbot_shotgun = false;
+      }
+      if (g_settings.shotgun_auto_shot && triggerbot_shotgun && isPressed(109)) {
+          trigger_ready = true;
+      }
+      else {
+          trigger_ready = false;
       }
       if (zoom_state > 0) { //根据是否开镜选择不同的自瞄范围
         aimbot.max_fov = g_settings.ads_fov;
@@ -744,7 +749,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
 
-      if (trigger_ready && IsInCrossHair(Target)) {
+      if (trigger_ready && IsInCrossHair(Target) && (dist < 40.f)) {
         TriggerBotRun();
       }
     }

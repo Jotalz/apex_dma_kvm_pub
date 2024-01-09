@@ -229,3 +229,4 @@ loot-level5-name = 五級
 menu-item-favorite-player-glow = 突顯喜愛玩家
 menu-item-kbd-backlight-ctrl = 鍵盤背光控制
 menu-item-bow-charge-rifle-aim = 博切克自瞄
+menu-item-shotgun-auto-shot = 霰彈槍扳機

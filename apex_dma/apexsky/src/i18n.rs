@@ -216,6 +216,7 @@ pub enum MessageId {
     MenuItemFavoritePlayerGlow,
     MenuItemKbdBacklightCtrl,
     MenuItemBowChargeRifleAim,
+    MenuItemShotgunAutoShot,
 }
 
 pub fn get_fluent_bundle() -> FluentBundle<FluentResource> {

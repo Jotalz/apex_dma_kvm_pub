@@ -167,7 +167,6 @@ pub struct Settings {
     pub aimbot_hot_key_1: i32,
     pub aimbot_hot_key_2: i32,
     pub trigger_bot_hot_key: i32,
-    pub auto_shoot: bool,
     pub loot_filled_toggle: bool,
     pub player_filled_toggle: bool,
     pub super_key_toggle: bool,
@@ -180,6 +179,7 @@ pub struct Settings {
     pub weapon_model_glow: bool,
     pub kbd_backlight_control: bool,
     pub bow_charge_rifle_aim: bool,
+    pub shotgun_auto_shot: bool,
     pub deathbox: bool,
     pub aim_no_recoil: bool,
     pub ads_fov: f32,
@@ -390,7 +390,7 @@ impl Default for Settings {
             // Done with Gamepad or Keyboard config
             // triggerbot?
             trigger_bot_hot_key: 81,
-            auto_shoot: true,
+            shotgun_auto_shot: true,
             // Terminal Stuff
             loot_filled_toggle: false,
             player_filled_toggle: false,
