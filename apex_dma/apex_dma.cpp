@@ -100,11 +100,16 @@ void rainbowColor(int frame_number, std::array<float, 3> &colors) {
 }
 
 void TriggerBotRun() {
-  // testing
+  // 设置随机数生成器
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(150, 300);  // 生成范围在100到300之间的随机数
+  // 生成随机时间间隔
+  int randomInterval = dis(gen);
   // apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
-  // std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
-  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
   // printf("TriggerBotRun\n");
 }
@@ -493,6 +498,13 @@ void ClientActions() {
           aimbot.aiming = false;
         }
       }
+      uint64_t wephandle = 0;
+      apex_mem.Read<uint64_t>(local_player_ptr + OFFSET_ACTIVE_WEAPON, wephandle);
+      wephandle &= 0xffff;
+      uint64_t wep_entity = 0;
+      apex_mem.Read<uint64_t>(entitylist + (wephandle << 5), wep_entity);
+      uint32_t weap_id = 0;
+      apex_mem.Read<uint32_t>(wep_entity + OFFSET_WEAPON_NAME, weap_id);
       if (g_settings.auto_shoot && isPressed(g_settings.trigger_bot_hot_key)) {
         trigger_ready = true;
       } else {
