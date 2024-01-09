@@ -229,4 +229,4 @@ loot-level4-name = 等级4
 loot-level5-name = 等级5
 menu-item-favorite-player-glow = 突出显示最爱的玩家
 menu-item-kbd-backlight-ctrl = 键盘背光控制
-menu-item-bow-charge_rifle-aim = 波赛克自瞄
+menu-item-bow-charge-rifle-aim = 波赛克自瞄

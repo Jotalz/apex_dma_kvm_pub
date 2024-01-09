@@ -176,6 +176,7 @@ typedef struct {
   bool player_glow_love_user;
   bool weapon_model_glow;
   bool kbd_backlight_control;
+  bool bow_charge_rifle_aim;
   bool deathbox;
   bool aim_no_recoil;
   float ads_fov;
@@ -198,7 +199,6 @@ typedef struct {
   bool calc_game_fps;
   bool no_nade_aim;
   bool firing_range;
-  bool bow_charge_rifle_aim;
   int32_t bone;
   bool bone_nearest;
   bool bone_auto;
