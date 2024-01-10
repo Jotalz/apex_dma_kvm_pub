@@ -1309,26 +1309,9 @@ static void item_glow_t() {
         }   
         */
         if (g_settings.loot.lightbackpack && ItemID == 207) {       //白包
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings.loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED  第三个值是外轮廓粗细
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};  //高亮颜色，111是白色，因为lightbackpack是白包
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);     //2应该表示隔着墙能发光
-          static const int contextId = 0;//暂时不理解这个是什么
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);                                //这个实体数组的0x298位置再加contextId写入72
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);        //把HIGHLIGHT_SETTINGS偏移处的地址值读出来
-          apex_mem.Write<typeof(highlightFunctionBits)>(    //这个值加上这些的位置，写入highlightFunctionBits这个数组
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(       //这个位置写入颜色，改完这4个，然后就发光了
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };  //高亮颜色，111是白色，因为lightbackpack是白包
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         /* else
         {
@@ -1350,1056 +1333,249 @@ static void item_glow_t() {
                 apex_mem.Write<typeof(highlightParameter)>(highlightSettingsPtr
         + 40 * settingIndex + 8, highlightParameter);
         } */
-        if (g_settings.loot.medbackpack && ItemID == 208) {     //208y也是背包，那看来一个id对应的是一个物品而不是一类
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+        if (g_settings.loot.medbackpack && ItemID == 208) {     //蓝包
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.heavybackpack && ItemID == 209) {   //紫包
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};  //#4B0082
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };  //#4B0082
+            static const int contextId = 0;
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.goldbackpack && ItemID == 210) {     //金包
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         // item id would help so much here, cant make them all the same color
         // so went with loba glow for body shield and helmet
         if (g_settings.loot.shieldupgrade1 &&
             (ItemID == 214748364993 || ItemID == 14073963583897798)) {  //白甲
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
-
-          uint64_t ItemID;
-          apex_mem.Read<uint64_t>(centity + OFFSET_ITEM_ID, ItemID);
-          // uint64_t ItemID2;
-          // ItemID2 = ItemID % 301;
-          // printf("%ld\n", ItemID);
-          // apex_mem.Write<typeof(highlightParameter)>(highlightSettingsPtr +
-          // 40 * settingIndex + 8, highlightParameter);;
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgrade2 &&
             (ItemID == 322122547394 || ItemID == 21110945375846599)) {  //蓝甲
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgrade3 &&
             (ItemID == 429496729795 || ItemID == 52776987629977800)) {      //紫甲
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.shieldupgrade4 && (ItemID == 429496729796)) {   //金甲
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgrade5 && ItemID == 536870912201) { //红甲
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgradehead1 && ItemID == 188) {  //白头
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgradehead2 && ItemID == 189) {  //蓝头
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgradehead3 && ItemID == 190) {  //紫头
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldupgradehead4 && ItemID == 191) {      //金头
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.accelerant && ItemID == 182) {      //绝招加速剂
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.phoenix && ItemID == 183) {     //凤凰
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.skull &&
             strstr(glowName,
-                   "mdl/Weapons/skull_grenade/skull_grenade_base_v.rmdl")) {    //可能没逆向出头骨id，直接对比物品名称
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+                "mdl/Weapons/skull_grenade/skull_grenade_base_v.rmdl")) {    //可能没逆向出头骨id，直接对比物品名称
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        if (g_settings.deathbox && item.isBox()) {      //这里没做死亡之箱的开关判断？
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              0,   // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125, // OutlineFunction OutlineFunction
-                   // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 88;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+        if (g_settings.deathbox && item.isBox()) {      //添加死亡之箱的开关判断
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            int settingIndex = 88;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
         if (item.isTrap()) {        //判断名称是否是侵蚀陷阱？毒气罐？好像无效
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              0,   // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125, // OutlineFunction OutlineFunction
-                   // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
         // Gas Trap
         if (strstr(glowName,
-                   "mdl/props/caustic_gas_tank/caustic_gas_tank.rmdl")) {   //这里也无效
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              0,   // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125, // OutlineFunction OutlineFunction
-                   // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            "mdl/props/caustic_gas_tank/caustic_gas_tank.rmdl")) {   //这里也无效
+            std::array<float, 3> highlightParameter = { 0, 1, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.healthlarge && ItemID == 184) {     //大药包
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.healthsmall && ItemID == 185) {     //小药
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldbattsmall && ItemID == 187) {     //小电
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shieldbattlarge && ItemID == 186) {     //大电
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.sniperammo && ItemID == 144) {      //狙击弹药
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2431, 0.2078, 0.6741};   //紫色
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2431, 0.2078, 0.6741 };   //紫色
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.heavyammo && ItemID == 143) {       //重型弹药
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2667, 0.5333, 0.4353};   //改成墨绿色
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2667, 0.5333, 0.4353 };   //改成墨绿色
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.optic1xhcog && ItemID == 215) {     //1倍镜
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lightammo && ItemID == 140) {       //轻型子弹
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.6902, 0.60, 0.3098}; //土黄
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.6902, 0.60, 0.3098 }; //土黄
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.energyammo && ItemID == 141) {      //能量子弹
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};        //翠绿
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };        //翠绿
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shotgunammo && ItemID == 142) { //霰弹子弹
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.5, 0.0862, 0};   //暗红
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };   //暗红
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lasersight1 && ItemID == 229) { //激光瞄准器，以下3个等级
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lasersight2 && ItemID == 230) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lasersight3 && ItemID == 231) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.sniperammomag1 && ItemID == 244) {  //狙击弹匣，以下四个等级
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.sniperammomag2 && ItemID == 245) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.sniperammomag3 && ItemID == 246) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.sniperammomag4 && ItemID == 247) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.energyammomag1 && ItemID == 240) {  //能量弹匣，四个等级
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.energyammomag2 && ItemID == 241) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.energyammomag3 && ItemID == 242) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.energyammomag4 && ItemID == 243) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.stocksniper1 && ItemID == 255) {    //狙击枪托
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.stocksniper2 && ItemID == 256) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 }
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.stocksniper3 && ItemID == 257) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.stockregular1 && ItemID == 252) {   //标准枪托
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.stockregular2 && ItemID == 253) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.stockregular3 && ItemID == 254) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         /*取消对白击倒护盾的判断
         if (g_settings.loot.shielddown1 && ItemID == 203) {     //击倒护盾
@@ -2427,1491 +1603,350 @@ static void item_glow_t() {
         }
         */
         if (g_settings.loot.shielddown2 && ItemID == 204) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shielddown3 && ItemID == 205) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shielddown4 && ItemID == 206) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.lightammomag1 && ItemID == 232) {   //轻型弹匣
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lightammomag2 && ItemID == 233) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lightammomag3 && ItemID == 234) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.lightammomag4 && ItemID == 235) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.heavyammomag1 && ItemID == 236) {   //重型弹匣
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.heavyammomag2 && ItemID == 237) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.heavyammomag3 && ItemID == 238) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.heavyammomag4 && ItemID == 239) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.optic2xhcog && ItemID == 216) {     //2倍镜
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.opticholo1x && ItemID == 217) { //圆形1倍镜
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.opticholo1x2x && ItemID == 218) {       //1x2x切换
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.opticthreat && ItemID == 219) {     //金1倍
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.optic3xhcog && ItemID == 220) {     //3倍镜
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.optic2x4x && ItemID == 221) {       //2x4x
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.opticsniper6x && ItemID == 222) {       //6倍镜
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.opticsniper4x8x && ItemID == 223) {     //4x8x
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.opticsniperthreat && ItemID == 224) {       //金狙击镜
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 64, highlightParameter);
         }
         if (g_settings.loot.suppressor1 && ItemID == 225) {     //枪管？
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.suppressor2 && ItemID == 226) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.suppressor3 && ItemID == 227) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.turbo_charger && ItemID == 258) {       //涡轮增压器
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.skull_piecer && ItemID == 260) {        //穿颅器
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.hammer_point && ItemID == 263) {        //锤击点
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.disruptor_rounds && ItemID == 262) {    //干扰器
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.boosted_loader && ItemID == 272) {      //加速装填器
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         if (g_settings.loot.shotgunbolt1 && ItemID == 248) {        //霰弹枪栓
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 72;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };
+            int settingIndex = 72;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shotgunbolt2 && ItemID == 249) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shotgunbolt3 && ItemID == 250) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 74;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 74;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.shotgunbolt4 && ItemID == 251) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0.8431, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 75;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
+            int settingIndex = 75;
+            item.enableGlow(settingIndex, 48, highlightParameter);
         }
         // Nades
         if (g_settings.loot.grenade_frag && ItemID == 213) {    //破片手雷
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
         if (g_settings.loot.grenade_thermite && ItemID == 212) {    //铝热剂
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.grenade_arc_star && ItemID == 214) {        //电弧星
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              64, 64};
-          std::array<float, 3> highlightParameter = {0, 0, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 70;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+            int settingIndex = 70;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         // Weapons
         if (g_settings.loot.weapon_kraber && ItemID == 1) {     //克莱伯
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_mastiff && ItemID == 3) {        //敖犬
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings.loot_filled, // InsideFunction
-              125, // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
-              32,  // OutlineRadius: size * 255 / 8
-              64   // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess <<
-                   // 7)
-          };
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<int>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 2;
-          int settingIndex = 67;
-          apex_mem.Write<int>(centity + OFFSET_GLOW_ENABLE, contextId);
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          // apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES +
-          // contextId, settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 0x28 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 0x28 * settingIndex + 8,
-              highlightParameter);
+            std::array<unsigned char, 4> highlightFunctionBits = {
+                g_settings.loot_filled, // InsideFunction
+                125, // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
+                32,  // OutlineRadius: size * 255 / 8
+                64   // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess <<
+                     // 7)
+            };
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            apex_mem.Write<int>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
+            static const int contextId = 2;
+            int settingIndex = 67;
+            apex_mem.Write<int>(centity + OFFSET_GLOW_ENABLE, contextId);
+            apex_mem.Write<unsigned char>(
+                centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId, settingIndex);
+            // apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES +
+            // contextId, settingIndex);
+            long highlightSettingsPtr;
+            apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+            apex_mem.Write<typeof(highlightFunctionBits)>(
+                highlightSettingsPtr + 0x28 * settingIndex + 4, highlightFunctionBits);
+            apex_mem.Write<typeof(highlightParameter)>(
+                highlightSettingsPtr + 0x28 * settingIndex + 8, highlightParameter);
         }
         if (g_settings.loot.weapon_lstar && ItemID == 7) {      //lstar
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         // new gun, nemesis
         if (g_settings.loot.weapon_nemesis && ItemID == 135) {      //复仇女神
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
         if (g_settings.loot.weapon_havoc && ItemID == 13) {     //哈沃克
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_devotion && ItemID == 18) {  //专注轻机枪
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_triple_take && ItemID == 23) {   //三重狙击枪
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_flatline && ItemID == 28) {      //平行
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 1 };
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_hemlock && ItemID == 33) {       //汉姆洛克
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 1 };
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_g7_scout && ItemID == 39) {      //g7
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_alternator && ItemID == 44) {        //转换者
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_r99 && ItemID == 49) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_prowler && ItemID == 56) {   //猎兽
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 1 };
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_volt && ItemID == 60) {  //电能冲锋枪
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0.2, 1, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 73;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
+            int settingIndex = 73;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_longbow && ItemID == 65) {       //长弓
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_charge_rifle && ItemID == 70) {  //充能步枪
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
-          uint64_t ItemID;
-          apex_mem.Read<uint64_t>(centity + OFFSET_ITEM_ID, ItemID);
-          // printf("%ld\n", ItemID);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_spitfire && ItemID == 75) {  //喷火
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_r301 && ItemID == 80) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_eva8 && ItemID == 85) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_peacekeeper && ItemID == 90) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_mozambique && ItemID == 95) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_wingman && ItemID == 106) {      //小帮手
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_p2020 && ItemID == 111) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_re45 && ItemID == 116) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0.5490, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 66;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
+            int settingIndex = 66;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_sentinel && ItemID == 122) { //哨兵
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 69;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
+            int settingIndex = 69;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_bow && ItemID == 127) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {1, 0, 0};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 67;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 1, 0, 0 };
+            int settingIndex = 67;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_3030_repeater && ItemID == 129) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 1 };
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_rampage && ItemID == 146) {      //暴走
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 1 };
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.weapon_car_smg && ItemID == 151) {
-          std::array<unsigned char, 4> highlightFunctionBits = {
-              g_settings
-                  .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-              125,              // OutlineFunction OutlineFunction
-                                // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-              32, 64};
-          std::array<float, 3> highlightParameter = {0, 1, 1};
-          apex_mem.Write<uint32_t>(centity + OFFSET_GLOW_THROUGH_WALLS, 2);
-          static const int contextId = 0;
-          int settingIndex = 65;
-          apex_mem.Write<unsigned char>(
-              centity + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId,
-              settingIndex);
-          long highlightSettingsPtr;
-          apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS,
-                              highlightSettingsPtr);
-          apex_mem.Write<typeof(highlightFunctionBits)>(
-              highlightSettingsPtr + 40 * settingIndex + 4,
-              highlightFunctionBits);
-          apex_mem.Write<typeof(highlightParameter)>(
-              highlightSettingsPtr + 40 * settingIndex + 8, highlightParameter);
+            std::array<float, 3> highlightParameter = { 0, 1, 1 };
+            int settingIndex = 65;
+            item.enableGlow(settingIndex, 32, highlightParameter);
         }
-
         // CREDITS to Rikkie
         // https://www.unknowncheats.me/forum/members/169606.html for all the
         // weapon ids and item ids code, you are a life saver!

@@ -75,7 +75,7 @@ public:
   bool isBox();
   bool isTrap();
   bool isGlowing();
-  void enableGlow();
+  void enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter);
   void disableGlow();
   void BlueGlow();
 };

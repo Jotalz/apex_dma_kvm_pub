@@ -306,24 +306,21 @@ bool Item::isGlowing() {
   return *(int *)(buffer + OFFSET_ITEM_GLOW) == 1363184265;
 }
 
-void Item::enableGlow() {
-  /* for (int i = 1; i <= 70; i++) {
-  // Write the current value to the memory locations
-  apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 6);
-  apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 2, 6);
-
-  // Print the current value
-  std::cout << "Value: " << i << std::endl;
-
-  // Sleep for 2 seconds
-  std::this_thread::sleep_for(std::chrono::seconds(5));
-} */
-  /* //apex_mem.Write<GlowMode>(ptr + GLOW_TYPE, { 101,102,96,90 });
-      apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 6);
-      apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 6, 6);
-  apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE , 2); */
-
-  // apex_memRead<uint32_t>(entity + OFFSET_HIGHLIGHTCURRENTCONTEXTID);
+void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
+    std::array<unsigned char, 4> highlightFunctionBits = {
+        g_settings.loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
+        125,              // OutlineFunction OutlineFunction
+        outline_size,                  // HIGHLIGHT_OUTLINE_LOOT_SCANNED
+        64 };
+    apex_mem.Write<uint32_t>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
+    static const int contextId = 0;
+    apex_mem.Write<unsigned char>(
+        ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + contextId, setting_index);
+    long highlightSettingsPtr;
+    apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+    apex_mem.Write<typeof(highlightFunctionBits)>(
+        highlightSettingsPtr + 40 * setting_index + 4, highlightFunctionBits);
+    apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + 40 * setting_index + 8, highlight_parameter);
 }
 
 void Item::disableGlow() {
