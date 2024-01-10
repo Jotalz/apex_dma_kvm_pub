@@ -87,7 +87,7 @@
 //#define GLOW_COLOR 0x1D0+ 0x30 // Script_CopyHighlightState 15th mov
 //#define GLOW_FADE 0x388+ 0x30 // Script_Highlight_GetCurrentInsideOpacity 3rd result of 3 offsets consecutive or first + 8
 #define HIGHLIGHT_SETTINGS 0xB7A4E90 //HighlightSettings  // updated 1/10/2024
-#define HIGHLIGHT_TYPE_SIZE 0x28 //?
+#define HIGHLIGHT_TYPE_SIZE 0x34 // updated 1/10/2024
 #define OFFSET_CROSSHAIR_LAST 0x1958 //CWeaponX!lastCrosshairTargetTime // CPlayer!lastVisibleTime + 0x8 // updated 1/10/2024
 //#define OFFSET_CROSSHAIR_START 0x1A84 //CPlayer!crosshairTargetStartTime
 #define OFFSET_INPUT_SYSTEM 0x1754a80 //InputSystem // updated 1/10/2024 
