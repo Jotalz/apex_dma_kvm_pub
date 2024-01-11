@@ -179,7 +179,7 @@ void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_
       highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x0,highlightFunctionBits);
   apex_mem.Write<typeof(highlight_parameter)>(
       highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x4, highlight_parameter);
-  apex_mem.Write(ptr + OFFSET_GLOW_FIX, 1);
+  apex_mem.Write(g_Base + OFFSET_GLOW_FIX, 1);
 }
 
 void Entity::SetViewAngles(SVector angles) {
@@ -208,32 +208,20 @@ void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
   apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + (view_model_handle << 5),
                           view_model_ptr);
 
-  // printf("view model handle=%lu, ptr=%lu, \n", view_model_handle,
-  // view_model_ptr);
-
-  // uint64_t name_ptr;
-  // char name_str[200];
-  // apex_mem.Read<uint64_t>(view_model_ptr + OFFSET_MODELNAME, name_ptr);
-  // apex_mem.ReadArray<char>(name_ptr, name_str, 200);
-  // printf("name=%s\n", name_str);
-
   std::array<unsigned char, 4> highlightFunctionBits = {0, 125, 64, 64};
-  int setting_index = 99;
   if (!enable_glow) {
-    highlightFunctionBits = {0, 125, 0, 64};
-    setting_index = 0;
-  }
-
-  for (int context_id = 1; context_id < 5; context_id++) {
-    apex_mem.Write<int>(view_model_ptr + OFFSET_GLOW_ENABLE, context_id);
+      apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_ENABLE, 0);
+      return;
   }
 
   long highlightSettingsPtr;
   apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+  uint8_t context_id = 99;
+  apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_ENABLE, context_id);
   apex_mem.Write<typeof(highlightFunctionBits)>(
-      highlightSettingsPtr + 40 * setting_index + 4, highlightFunctionBits);
+      highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x0, highlightFunctionBits);
   apex_mem.Write<typeof(highlight_colors)>(
-      highlightSettingsPtr + 40 * setting_index + 8, highlight_colors);
+      highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x4, highlight_colors);
 
   // Fix highlight Wraith and Ashe's disappear
   // apex_mem.Write(ptr + 0x270, 1);

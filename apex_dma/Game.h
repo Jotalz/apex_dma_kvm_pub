@@ -176,7 +176,7 @@ enum weapon_id : int32_t {
   idweapon_lstar = 93,
   idweapon_mastiff = 95,
   idweapon_mozambique = 96,
-  idweapon_prowler = 102,
+  idweapon_prowler = 101,
   idweapon_peacekeeper = 103,
   idweapon_r99 = 104,
   idweapon_p2020 = 105,
@@ -188,9 +188,9 @@ enum weapon_id : int32_t {
   idweapon_car_smg = 112,
   idweapon_nemesis = 113,
   idthrowing_knife = 158,
-  idgrenade_thermite = 159,
-  idgrenade_frag = 160,
-  idgrenade_arc_star = 161,
+  idgrenade_thermite = 164,
+  idgrenade_frag = 165,
+  idgrenade_arc_star = 166,
   idmax
 };
 
