@@ -182,7 +182,7 @@ enum weapon_id : int32_t {
   idweapon_p2020 = 105,
   idweapon_spitfire = 106,
   idweapon_triple_take = 107,
-  idweapon_wingman = 108,
+  idweapon_wingman = 109,
   idweapon_volt = 110,
   idweapon_3030_repeater = 111,
   idweapon_car_smg = 112,

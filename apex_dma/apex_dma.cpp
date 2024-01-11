@@ -748,7 +748,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
 
-      if (trigger_ready && IsInCrossHair(Target) && (dist < 40.f)) {
+      if (trigger_ready && IsInCrossHair(Target) && (dist < 15.f)) {
         TriggerBotRun();
       }
     }
@@ -1159,24 +1159,24 @@ static void AimbotLoop() {
       // Read LocalPlayer
       uint64_t LocalPlayer = 0;
       apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
+
       // Read HeldID
       int HeldID;
       apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID); // 0x1a1c
-      local_held_id = HeldID;   //读取本地玩家手持武器id赋值给local_held_id
+      local_held_id = HeldID;   //读取本地玩家手持物品id赋值给local_held_id
+
       // Read WeaponID
       ulong ehWeaponHandle;
-      apex_mem.Read<uint64_t>(LocalPlayer + OFFSET_ACTIVE_WEAPON,
-                              ehWeaponHandle); // 0x1a1c
+      apex_mem.Read<uint64_t>(LocalPlayer + OFFSET_ACTIVE_WEAPON,ehWeaponHandle);
       ehWeaponHandle &= 0xFFFF;                // eHandle
       ulong pWeapon;
       uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
       apex_mem.Read<uint64_t>(entitylist + (ehWeaponHandle * 0x20), pWeapon);
       uint32_t weaponID;
-      apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_NAME,
-                              weaponID); // 0x1844
+      apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_NAME,weaponID); // 0x1738
       local_weapon_id = weaponID;
-      // printf("%d\n", weaponID);上面这段不太懂local_weapon_id和local_held_id的区别
-
+      // printf("%d\n", weaponID);
+      
       if (g_settings.aim > 0) {     //0为不自喵，1为不检查可见性，2为检查目标可见性
         if (aimbot.aimentity == 0) {    //如果无目标取消锁定
           cancel_targeting();
