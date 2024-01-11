@@ -1552,7 +1552,7 @@ static void item_glow_t() {
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         if (g_settings.loot.stocksniper2 && ItemID == 256) {
-            std::array<float, 3> highlightParameter = { 0, 0, 1 }
+            std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }

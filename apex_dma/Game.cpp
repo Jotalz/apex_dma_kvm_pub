@@ -290,7 +290,7 @@ bool Item::isGlowing() {
 
 void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
     std::array<unsigned char, 4> highlightFunctionBits = {
-        g_settings.loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
+        global_settings().loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
         125,              // OutlineFunction OutlineFunction
         outline_size,                  // HIGHLIGHT_OUTLINE_LOOT_SCANNED
         64 };
