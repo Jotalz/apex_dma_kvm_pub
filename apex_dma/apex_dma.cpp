@@ -106,7 +106,6 @@ void TriggerBotRun() {
   std::uniform_int_distribution<> dis(150, 300);  // 生成范围在100到300之间的随机数
   // 生成随机时间间隔
   int randomInterval = dis(gen);
-  // apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
   std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
   std::this_thread::sleep_for(std::chrono::milliseconds(50));
@@ -163,6 +162,7 @@ void updateInsideValue()
 // Visual check and aim check.?
 float lastvis_esp[toRead];
 float lastvis_aim[toRead];
+std::set<uintptr_t> tmp_specs;
 std::vector<Entity> spectators, allied_spectators;
 std::mutex spectatorsMtx;
 
@@ -570,7 +570,7 @@ void ControlLoop() {//根据观战人数闪烁键盘背光
 void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
                    int frame_number) {
   const auto g_settings = global_settings();
-  int context_id = 0;
+  //int context_id = 0;
   int setting_index = 0;
   std::array<float, 3> highlight_parameter = {0, 0, 0};
 
@@ -647,7 +647,7 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
 
 //位于DoAction
 void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
-                   int index, int frame_number, std::set<uintptr_t> tmp_specs) {
+                   int index, int frame_number) {
   const auto g_settings = global_settings();
 
   int entity_team = target.getTeamId();
@@ -829,12 +829,11 @@ void DoActions() {
 
       int frame_number = 0;
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number);       //读取游戏的实际帧率
-      std::set<uintptr_t> tmp_specs;
       aimbot.target_score_max =
           (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; //自瞄距离设200*40, 2500+2000?
       aimbot.tmp_aimentity = 0;
       centity_to_index.clear();
-      //tmp_specs.clear();
+      tmp_specs.clear();
       if (g_settings.firing_range) {
         int c = 0;
         for (int i = 0; i < playerentcount; i++) {
@@ -852,7 +851,7 @@ void DoActions() {
             continue;
           }
 
-          ProcessPlayer(LPlayer, Target, entitylist, c, frame_number, tmp_specs);
+          ProcessPlayer(LPlayer, Target, entitylist, c, frame_number);
           c++;
         }
       } else {
@@ -871,7 +870,7 @@ void DoActions() {
             continue;
           }
 
-          ProcessPlayer(LPlayer, Target, entitylist, i, frame_number, tmp_specs);
+          ProcessPlayer(LPlayer, Target, entitylist, i, frame_number);
         }
       }
 
@@ -910,9 +909,7 @@ void DoActions() {
         //  counter = 0;
         // }
         // counter++;
-      if (!tmp_specs.empty()) { // refresh spectators count
         std::vector<Entity> tmp_spec, tmp_all_spec;
-        spectatorsMtx.lock();
         for (auto it = tmp_specs.begin(); it != tmp_specs.end(); it++) {
           Entity target = getEntity(*it);
           if (target.getTeamId() == team_player) {
@@ -925,7 +922,6 @@ void DoActions() {
         allied_spectators.clear();
         spectators = tmp_spec;
         allied_spectators = tmp_all_spec;
-        spectatorsMtx.unlock();
       }
 
       // set current aim entity
@@ -1113,14 +1109,12 @@ static void EspLoop() {
                                  Target.check_love_player(entity_index),
                                  false};
               Target.get_name(g_Base, entity_index, &data_buf.name[0]);
-              spectatorsMtx.lock();
               for (auto &ent : spectators) {
                 if (ent.ptr == centity) {
                   data_buf.is_spectator = true;
                   break;
                 }
               }
-              spectatorsMtx.unlock();
               players.push_back(data_buf);
               lastvis_esp[i] = Target.lastVisTime();
               valid = true;
