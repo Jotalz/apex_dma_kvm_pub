@@ -631,15 +631,12 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
       }
 
       // enable glow
-      static bool player_glowing = false;   //一个标记，用于标记玩家是否正在发光
       if (g_settings.player_glow) {     //如果设置里开了发光，就执行发光
         Target.enableGlow(setting_index, g_settings.player_glow_inside_value,
             g_settings.player_glow_outline_size, highlight_parameter);
-        player_glowing = true;
       }
-      if (!g_settings.player_glow && player_glowing) {      //如果设置里关闭了发光，并且玩家仍在发光，就将发光效果取消掉
+      if (!g_settings.player_glow) {      //如果设置里关闭了发光，并且玩家仍在发光，就将发光效果取消掉
         Target.enableGlow(setting_index, 0, 0, highlight_parameter);
-        player_glowing = false;
       }
     }
   }

@@ -156,7 +156,7 @@ float Entity::GetYaw() {
   return yaw;
 }
 
-bool Entity::isGlowing() { return *(int *)(buffer + OFFSET_GLOW_ENABLE) == 7; }
+bool Entity::isGlowing() { return *(uint8_t*)(buffer + OFFSET_GLOW_ENABLE) == 7; }
 
 bool Entity::isZooming() { return *(int *)(buffer + OFFSET_ZOOMING) == 1; }
 
@@ -170,7 +170,7 @@ void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_
       outline_size, // OutlineRadius: size * 255 / 8
       64 // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess << 7)
   };
-  apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, setting_index);
+  apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, setting_index);
   apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
 
   long highlight_settings_ptr;
@@ -299,7 +299,7 @@ void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float,
     static const int contextId = 1;
     long highlightSettingsPtr;
     apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
-    apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, context_id);
+    apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, contextId);
     apex_mem.Write<typeof(highlightFunctionBits)>(
         highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
     apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
