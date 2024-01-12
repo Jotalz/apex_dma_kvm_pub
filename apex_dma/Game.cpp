@@ -164,13 +164,11 @@ extern uint64_t g_Base;
 
 void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_size,std::array<float, 3> highlight_parameter) {
   const unsigned char outsidevalue = 125;
-  std::array<unsigned char, 6> highlightFunctionBits = {
+  std::array<unsigned char, 4> highlightFunctionBits = {
       inside_value, // InsideFunction
       outsidevalue, // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
       outline_size, // OutlineRadius: size * 255 / 8
-      0, // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess << 7)
-      1,
-      0
+      64 // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess << 7)
   };
   apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, setting_index);
   apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
@@ -180,7 +178,7 @@ void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_
   apex_mem.Write<typeof(highlightFunctionBits)>(
       highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x0,highlightFunctionBits);
   apex_mem.Write<typeof(highlight_parameter)>(
-      highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x6, highlight_parameter);
+      highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x4, highlight_parameter);
   apex_mem.Write(g_Base + OFFSET_GLOW_FIX, 1);
 }
 
@@ -279,11 +277,11 @@ bool Item::isGlowing() {
 }
 
 void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
-    std::array<unsigned char, 6> highlightFunctionBits = {
+    std::array<unsigned char, 4> highlightFunctionBits = {
         global_settings().loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
         125,              // OutlineFunction OutlineFunction
         outline_size,                  // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-        0,1,0};
+        64};
     //apex_mem.Write<uint32_t>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
     //apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 1);
     static const int contextId = 1;
@@ -292,7 +290,7 @@ void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float,
     apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, contextId);
     apex_mem.Write<typeof(highlightFunctionBits)>(
         highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
-    apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x6, highlight_parameter);
+    apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
 }
 
 void Item::disableGlow() {
