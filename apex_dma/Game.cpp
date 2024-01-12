@@ -293,11 +293,11 @@ void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float,
     apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
 }
 
-void Item::disableGlow() {
+/*void Item::disableGlow() {
   apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 0);
   apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 0, 0);
   apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE, 5);
-}
+}*/
 
 Vector Item::getPosition() { return *(Vector *)(buffer + OFFSET_ORIGIN); }
 
