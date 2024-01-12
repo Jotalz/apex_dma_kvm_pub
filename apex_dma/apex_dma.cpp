@@ -647,7 +647,7 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
 
 //Î»ÓÚDoAction
 void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
-                   int index, int frame_number, std::set<uintptr_t> tmp_specs) {
+                   int index, int frame_number, std::set<uintptr_t> &tmp_specs) {
   const auto g_settings = global_settings();
 
   int entity_team = target.getTeamId();
@@ -910,7 +910,7 @@ void DoActions() {
         //  counter = 0;
         // }
         // counter++;
-          if (!tmp_specs.empty()) { // refresh spectators count
+          { // refresh spectators count
               std::vector<Entity> tmp_spec, tmp_all_spec;
               spectatorsMtx.lock();
               for (auto it = tmp_specs.begin(); it != tmp_specs.end(); it++) {
