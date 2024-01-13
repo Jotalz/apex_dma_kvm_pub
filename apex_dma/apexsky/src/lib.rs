@@ -80,8 +80,8 @@ pub extern "C" fn check_love_player(puid: u64, euid: u64, name: *const i8) -> bo
 
 #[no_mangle]
 pub extern "C" fn init_spec_checker(local_player_ptr: u64) {
-    use skyapex::spectators::SpecCheck;
-    lock_mod!().init_spec_checker(local_player_ptr);
+    use skyapex::spectators::SpecCheck;  
+    lock_mod!().init_spec_checker(local_player_ptr);    
 }
 
 #[no_mangle]

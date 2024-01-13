@@ -100,11 +100,11 @@ void rainbowColor(int frame_number, std::array<float, 3> &colors) {
 }
 
 void TriggerBotRun() {
-  // ÉèÖÃËæ»úÊıÉú³ÉÆ÷
+  // è®¾ç½®éšæœºæ•°ç”Ÿæˆå™¨
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(150, 300);  // Éú³É·¶Î§ÔÚ100µ½300Ö®¼äµÄËæ»úÊı
-  // Éú³ÉËæ»úÊ±¼ä¼ä¸ô
+  std::uniform_int_distribution<> dis(150, 300);  // æ­£å¸¸æˆ–ç¨å¿«çš„ååº”æ—¶é—´
+  // ç”Ÿæˆéšæœºæ—¶é—´é—´éš”ï¼Œé˜²æ­¢è¡Œä¸ºæ£€æµ‹
   int randomInterval = dis(gen);
   std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
@@ -207,8 +207,8 @@ void ClientActions() {
       int attack_state = 0, zoom_state = 0, tduck_state = 0, jump_state = 0,
           force_jump = 0, force_toggle_duck = 0, force_duck = 0,
           curFrameNumber = 0;
-      apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108¿ª»ğ
-      apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109Ãé×¼
+      apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108å¼€ç«
+      apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109ç„å‡†
       apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 61
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
@@ -453,22 +453,9 @@ void ClientActions() {
       103 KEY_F12
       */
 
-      /* if (isPressed(79)) //TESTING KEYS
-      {
-              printf("Shift Pressed\n");
-      }
-      if (isPressed(81)) //TESTING KEYS
-      {
-              printf("ALT Pressed\n");
-      }
-      if (isPressed(83)) //TESTING KEYS
-      {
-              printf("CTRL Pressed0\n");
-      } */
-
       if (local_held_id == -251) {
-        if ((g_settings.no_nade_aim && zoom_state == 0) ||  //ÊÖÀ×ÓÒ¼üÃé×¼
-            (!g_settings.no_nade_aim && zoom_state > 0)) {  //ÓÒ¼üÈ¡ÏûÊÖÀ××ÔÃé
+        if ((g_settings.no_nade_aim && zoom_state == 0) ||  //æ‰‹é›·å³é”®ç„å‡†
+            (!g_settings.no_nade_aim && zoom_state > 0)) {  //å³é”®å–æ¶ˆæ‰‹é›·è‡ªç„
           aimbot.gun_safety = true;
         } else {
           aimbot.gun_safety = false;
@@ -515,7 +502,7 @@ void ClientActions() {
       else {
           trigger_ready = false;
       }
-      if (zoom_state > 0) { //¸ù¾İÊÇ·ñ¿ª¾µÑ¡Ôñ²»Í¬µÄ×ÔÃé·¶Î§
+      if (zoom_state > 0) { //æ ¹æ®æ˜¯å¦å¼€é•œé€‰æ‹©ä¸åŒçš„è‡ªç„èŒƒå›´
         aimbot.max_fov = g_settings.ads_fov;
       } else {
         aimbot.max_fov = g_settings.non_ads_fov;
@@ -551,7 +538,7 @@ void ClientActions() {
   cactions_t = false;
 }
 
-void ControlLoop() {//¸ù¾İ¹ÛÕ½ÈËÊıÉÁË¸¼üÅÌ±³¹â
+void ControlLoop() {//æ ¹æ®è§‚æˆ˜äººæ•°é—ªçƒé”®ç›˜èƒŒå…‰
   control_t = true;
   while (control_t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -566,7 +553,7 @@ void ControlLoop() {//¸ù¾İ¹ÛÕ½ÈËÊıÉÁË¸¼üÅÌ±³¹â
   control_t = false;
 }
 
-//Î»ÓÚProcessPlayer
+//ä½äºProcessPlayer
 void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
                    int frame_number) {
   const auto g_settings = global_settings();
@@ -580,7 +567,7 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
     if (!isnan(currentEntityTime) && currentEntityTime > 0.f) {
       // set glow color
       if (!(g_settings.firing_range) &&
-          (Target.isKnocked() || !Target.isAlive())) {  //²»ÔÚÑµÁ·³¡²¢ÇÒµ¹µØ»òÕßÃ»»î×Å
+          (Target.isKnocked() || !Target.isAlive())) {  //ä¸åœ¨è®­ç»ƒåœºå¹¶ä¸”å€’åœ°æˆ–è€…æ²¡æ´»ç€
         setting_index = 80;
         highlight_parameter = {g_settings.glow_r_knocked,
                                g_settings.glow_g_knocked,
@@ -628,26 +615,27 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
           if (setting_index == 81 ||
               frame_frag % 2 == 0) { // vis: always, else: 1s time slice
             setting_index = 96;
-            rainbowColor(frame_number, highlight_parameter);    //·µ»ØÒ»¸örgbÉ«²Êµ½highlight_parameter
+            rainbowColor(frame_number, highlight_parameter);    //è¿”å›ä¸€ä¸ªrgbè‰²å½©åˆ°highlight_parameter
           }
         }
       }
 
       // enable glow
-      if (g_settings.player_glow) {     //Èç¹ûÉèÖÃÀï¿ªÁË·¢¹â£¬¾ÍÖ´ĞĞ·¢¹â
+      if (g_settings.player_glow) {     //å¦‚æœè®¾ç½®é‡Œå¼€äº†å‘å…‰ï¼Œå°±æ‰§è¡Œå‘å…‰
         Target.enableGlow(setting_index, g_settings.player_glow_inside_value,
             g_settings.player_glow_outline_size, highlight_parameter);
       }
-      if (!g_settings.player_glow) {      //Èç¹ûÉèÖÃÀï¹Ø±ÕÁË·¢¹â£¬²¢ÇÒÍæ¼ÒÈÔÔÚ·¢¹â£¬¾Í½«·¢¹âĞ§¹ûÈ¡Ïûµô
+      if (!g_settings.player_glow) {      //å¦‚æœè®¾ç½®é‡Œå…³é—­äº†å‘å…‰ï¼Œå¹¶ä¸”ç©å®¶ä»åœ¨å‘å…‰ï¼Œå°±å°†å‘å…‰æ•ˆæœå–æ¶ˆæ‰
         Target.enableGlow(setting_index, 0, 0, highlight_parameter);
       }
     }
   }
 }
 
-//Î»ÓÚDoAction
+//ä½äºDoAction
 void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
-                   int index, int frame_number, std::set<uintptr_t> tmp_specs) {
+                   int index, int frame_number, std::set<uintptr_t> &tmp_specs) {
+
   const auto g_settings = global_settings();
 
   int entity_team = target.getTeamId();
@@ -748,7 +736,8 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
 
-      if (trigger_ready && IsInCrossHair(Target) && (dist < 15.f)) {
+
+      if (trigger_ready && IsInCrossHair(Target)) {
         TriggerBotRun();
       }
     }
@@ -763,12 +752,12 @@ void DoActions() {
   while (actions_t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-    while (g_Base != 0) {   //¶Áµ½ÓÎÏ·»ùÖ·ºó¿ªÊ¼Ñ­»·
+    while (g_Base != 0) {   //è¯»åˆ°æ¸¸æˆåŸºå€åå¼€å§‹å¾ªç¯
       const auto g_settings = global_settings();
 
       char MapName[200] = {0};
       uint64_t MapName_ptr;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_HOST_MAP, MapName_ptr);   //¸ù¾İÆ«ÒÆ¶ÁÈ¡µ±Ç°µØÍ¼Ãû
+      apex_mem.Read<uint64_t>(g_Base + OFFSET_HOST_MAP, MapName_ptr);   //æ ¹æ®åç§»è¯»å–å½“å‰åœ°å›¾å
       apex_mem.ReadArray<char>(MapName_ptr, MapName, 200);
 
       // printf("%s\n", MapName);
@@ -786,12 +775,12 @@ void DoActions() {
         map = 0;
       }
 
-      if (g_settings.firing_range) {    //ÅĞ¶ÏÊÇ·ñÔÚÉä»÷³¡,´Ó¶øÇø·ÖÓ¦¸ÃÑ­»·µÄ´ÎÊı
+      if (g_settings.firing_range) {    //åˆ¤æ–­æ˜¯å¦åœ¨å°„å‡»åœº,ä»è€ŒåŒºåˆ†åº”è¯¥å¾ªç¯çš„æ¬¡æ•°
         playerentcount = 16000;
       } else {
         playerentcount = 61;
       }
-      if (g_settings.deathbox) {    //Èç¹û¿ªÁËËÀÍöÖ®Ïä¸ßÁÁÔòĞèÒª¸ü¶àÎïÆ·Ñ­»·
+      if (g_settings.deathbox) {    //å¦‚æœå¼€äº†æ­»äº¡ä¹‹ç®±é«˜äº®åˆ™éœ€è¦æ›´å¤šç‰©å“å¾ªç¯
         itementcount = 15000;
       } else {
         itementcount = 10000;
@@ -800,38 +789,38 @@ void DoActions() {
           std::chrono::milliseconds(30)); // don't change xD
 
       uint64_t LocalPlayer = 0;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);  //¶ÁÈ¡±¾µØÍæ¼ÒµÄËùÔÚµØÖ·,¼´ÊÇµ±Ç°ÊÓ½ÇµÄÍæ¼Ò£¬×Ô¼º»òÕßÄãËÀÍöºó¹ÛÕ½µÄÈË
+      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);  //è¯»å–æœ¬åœ°ç©å®¶çš„æ‰€åœ¨åœ°å€,å³æ˜¯å½“å‰è§†è§’çš„ç©å®¶ï¼Œè‡ªå·±æˆ–è€…ä½ æ­»äº¡åè§‚æˆ˜çš„äºº
       if (LocalPlayer == 0)
         continue;
 
-      Entity LPlayer = getEntity(LocalPlayer);  //¸ù¾İµØÖ·Éú³ÉÍæ¼ÒÊµÌå¶ÔÏóentity
+      Entity LPlayer = getEntity(LocalPlayer);  //æ ¹æ®åœ°å€ç”Ÿæˆç©å®¶å®ä½“å¯¹è±¡entity
 
-      team_player = LPlayer.getTeamId();    //»ñÈ¡×Ô¼ºËùÔÚ¶ÓÎéµÄid
-      if (team_player < 0 || team_player > 50) {
-        continue;
+      team_player = LPlayer.getTeamId();    //è·å–è‡ªå·±æ‰€åœ¨é˜Ÿä¼çš„id
+      if (team_player < 0 || team_player > 50) {    //idä¸å¯¹å¼€å§‹æ–°çš„whileå¾ªç¯ä¸ç»§ç»­æ‰§è¡Œ
+        continue;   
       }
       uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
 
       uint64_t baseent = 0;
-      apex_mem.Read<uint64_t>(entitylist, baseent); //¸ù¾İÊµÌåÁĞ±íµÄµØÖ·¶ÁÈ¡½øÒ»²½µÄÊµÌåÁĞ±íµØÖ··Åµ½baseent£¿
+      apex_mem.Read<uint64_t>(entitylist, baseent); //Check base entity is not Null
       if (baseent == 0) {
         continue;
       }
 
       {
         static uintptr_t lplayer_ptr = 0;
-        if (lplayer_ptr != LPlayer.ptr) {   //Èç¹ûLPlayer.ptr²»Îª0£¬¼´Ç°Ãæ¶ÁÈ¡¶¼ÊÇË³ÀûµÄ£¬Ôò½«±¾µØÍæ¼ÒÖ¸Õë´«¸ølplayer_ptr
+        if (lplayer_ptr != LPlayer.ptr) {   //å¦‚æœLPlayer.pträ¸ä¸º0ï¼Œå³å‰é¢è¯»å–éƒ½æ˜¯é¡ºåˆ©çš„ï¼Œåˆ™å°†æœ¬åœ°ç©å®¶æŒ‡é’ˆä¼ ç»™lplayer_ptr
           lplayer_ptr = LPlayer.ptr;
-          init_spec_checker(lplayer_ptr);   //rustĞ´µÄ¼ì²é¹ÛÕ½µÄº¯Êı£¬Ã»¿´¶®\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
+          init_spec_checker(lplayer_ptr);   //å‡½æ•°å®šä¹‰åœ¨rusté‡Œï¼Œ\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
         }
         tick_yew(lplayer_ptr, LPlayer.GetYaw());
       }
 
       int frame_number = 0;
-      apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number);       //¶ÁÈ¡ÓÎÏ·µÄÊµ¼ÊÖ¡ÂÊ
+      apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number);       //è¯»å–æ¸¸æˆçš„å®é™…å¸§ç‡
       std::set<uintptr_t> tmp_specs;
       aimbot.target_score_max =
-          (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; //×ÔÃé¾àÀëÉè200*40, 2500+2000?
+          (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; //è‡ªç„è·ç¦»è®¾200*40, 2500+2000?
       aimbot.tmp_aimentity = 0;
       centity_to_index.clear();
       //tmp_specs.clear();
@@ -910,7 +899,9 @@ void DoActions() {
         //  counter = 0;
         // }
         // counter++;
-          if (!tmp_specs.empty()) { // refresh spectators count
+
+          { // refresh spectators count
+
               std::vector<Entity> tmp_spec, tmp_all_spec;
               spectatorsMtx.lock();
               for (auto it = tmp_specs.begin(); it != tmp_specs.end(); it++) {
@@ -1140,11 +1131,11 @@ static void EspLoop() {
 }
 
 // Aimbot Loop stuff
-inline static void lock_target(uintptr_t target_ptr) {  //Ëø¶¨Ä¿±êº¯Êı£¬aimbotÊÇ°üº¬×ÔÃéĞÅÏ¢µÄ½á¹¹Ìå
+inline static void lock_target(uintptr_t target_ptr) {  //é”å®šç›®æ ‡å‡½æ•°ï¼Œaimbotæ˜¯åŒ…å«è‡ªç„ä¿¡æ¯çš„ç»“æ„ä½“
   aimbot.lock = true;
   aimbot.locked_aimentity = target_ptr;
 }
-inline static void cancel_targeting() { //È¡ÏûËø¶¨
+inline static void cancel_targeting() { //å–æ¶ˆé”å®š
   aimbot.lock = false;
   aimbot.locked_aimentity = 0;
 }
@@ -1163,7 +1154,7 @@ static void AimbotLoop() {
       // Read HeldID
       int HeldID;
       apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID); // 0x1a1c
-      local_held_id = HeldID;   //¶ÁÈ¡±¾µØÍæ¼ÒÊÖ³ÖÎïÆ·id¸³Öµ¸ølocal_held_id
+      local_held_id = HeldID;   //è¯»å–æœ¬åœ°ç©å®¶æ‰‹æŒç‰©å“idèµ‹å€¼ç»™local_held_id
 
       // Read WeaponID
       ulong ehWeaponHandle;
@@ -1177,23 +1168,23 @@ static void AimbotLoop() {
       local_weapon_id = weaponID;
       // printf("%d\n", weaponID);
       
-      if (g_settings.aim > 0) {     //0Îª²»×Ôß÷£¬1Îª²»¼ì²é¿É¼ûĞÔ£¬2Îª¼ì²éÄ¿±ê¿É¼ûĞÔ
-        if (aimbot.aimentity == 0) {    //Èç¹ûÎŞÄ¿±êÈ¡ÏûËø¶¨
+      if (g_settings.aim > 0) {     //0ä¸ºä¸è‡ªå–µï¼Œ1ä¸ºä¸æ£€æŸ¥å¯è§æ€§ï¼Œ2ä¸ºæ£€æŸ¥ç›®æ ‡å¯è§æ€§
+        if (aimbot.aimentity == 0) {    //å¦‚æœæ— ç›®æ ‡å–æ¶ˆé”å®š
           cancel_targeting();
           continue;
         }
 
         Entity target = getEntity(aimbot.aimentity);
         // show target indicator before aiming
-        aim_target = target.getPosition();  //»ñÈ¡Ä¿±êµÄÎ»ÖÃ
+        aim_target = target.getPosition();  //è·å–ç›®æ ‡çš„ä½ç½®
 
-        if (!aimbot.aiming) {   //aimbotµÄÔªËØÖµÓÉDoActionºÍClientActionº¯ÊıĞŞ¸Ä
+        if (!aimbot.aiming) {   //aimbotçš„å…ƒç´ å€¼ç”±DoActionå’ŒClientActionå‡½æ•°ä¿®æ”¹
           cancel_targeting();
           continue;
         }
 
         lock_target(aimbot.aimentity);
-        if (aimbot.gun_safety) {    //gun_safetyÓÃÓÚ¿É¼ûĞÔ¼ì²é
+        if (aimbot.gun_safety) {    //gun_safetyç”¨äºå¯è§æ€§æ£€æŸ¥
           continue;
         }
 
@@ -1254,27 +1245,27 @@ static void item_glow_t() {
       // not show all the death boxes i think.
 
       // for wish list
-      std::vector<TreasureClue> new_treasure_clues;//¶¨ÒåÁËÒ»¸öÈİÆ÷£¬ÓÃÓÚ´æ´¢ TreasureClue ½á¹¹ÌåµÄÊµÀı£¨¾ÍÊÇ¸÷ÖÖÎïÆ·£©£¬TreasureClue°üº¬itemid\position\distanceÈı¸öÔªËØ£¬
+      std::vector<TreasureClue> new_treasure_clues;//å®šä¹‰äº†ä¸€ä¸ªå®¹å™¨ï¼Œç”¨äºå­˜å‚¨ TreasureClue ç»“æ„ä½“çš„å®ä¾‹ï¼ˆå°±æ˜¯å„ç§ç‰©å“ï¼‰ï¼ŒTreasureClueåŒ…å«itemid\position\distanceä¸‰ä¸ªå…ƒç´ ï¼Œ
       for (size_t i = 0; i < wish_list.size(); i++) {
         TreasureClue clue;
         clue.item_id = wish_list[i];
         clue.position = Vector(0, 0, 0);
         clue.distance = g_settings.aim_dist * 2;
         new_treasure_clues.push_back(clue);
-      }//¿ÉÄÜÊÇ³õÊ¼»¯10¸öÀàĞÍµÄ¶ÔÕÕ×éÎïÆ·£¿²»ÊÇºÜÃ÷°×
+      }//å¯èƒ½æ˜¯åˆå§‹åŒ–10ä¸ªç±»å‹çš„å¯¹ç…§ç»„ç‰©å“ï¼Ÿä¸æ˜¯å¾ˆæ˜ç™½
 
-      for (int i = 0; i < itementcount; i++) {//¿ªÆô10000¸öÎïÆ·Ñ­»·
+      for (int i = 0; i < itementcount; i++) {//å¼€å¯10000ä¸ªç‰©å“å¾ªç¯
         uint64_t centity = 0;
-        apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);//Ã¿¸öÊµÌåÊÇ32Î»Êı¾İ,ËùÒÔÃ¿´Î+32£¬¶ÁÈ¡½á¹û±£´æµ½centity
+        apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);//æ¯ä¸ªå®ä½“æ˜¯32ä½æ•°æ®,æ‰€ä»¥æ¯æ¬¡+32ï¼Œè¯»å–ç»“æœä¿å­˜åˆ°centity
         if (centity == 0)
           continue;
-        Item item = getItem(centity);//¶ÁÈ¡µ½µÄÊÇÕâ¸öÊµÌåµÄÊı×éµØÖ·£¬Ê¹ÓÃgetitem»ñÈ¡µ½Õâ¸öÊı×é£¬´ËÊ±item°üº¬ÁËptr£¨Êı×éÖ¸Õë£©ºÍbuffer£¨°üº¬ÊµÌåËùÓĞÊı¾İ£©Á½¸öÊôĞÔ£¬ÆäËü»¹Î´¶ÁÈ¡
+        Item item = getItem(centity);//è¯»å–åˆ°çš„æ˜¯è¿™ä¸ªå®ä½“çš„æ•°ç»„åœ°å€ï¼Œä½¿ç”¨getitemè·å–åˆ°è¿™ä¸ªæ•°ç»„ï¼Œæ­¤æ—¶itemåŒ…å«äº†ptrï¼ˆæ•°ç»„æŒ‡é’ˆï¼‰å’Œbufferï¼ˆåŒ…å«å®ä½“æ‰€æœ‰æ•°æ®ï¼‰ä¸¤ä¸ªå±æ€§ï¼Œå…¶å®ƒè¿˜æœªè¯»å–
 
         // Item filter glow name setup and search.
         char glowName[200] = {0};
         uint64_t name_ptr;
-        apex_mem.Read<uint64_t>(centity + OFFSET_MODELNAME, name_ptr);//Õâ¸öÊµÌåµÄÊı×éÖ¸ÕëÔÙ¼ÓÉÏÃû³ÆÆ«ÒÆÁ¿£¬µÃµ½ÊµÌåÃû³ÆÊı×éµÄµØÖ·
-        apex_mem.ReadArray<char>(name_ptr, glowName, 200);//½«ÊµÌåÃû³Æ´æµ½glowName
+        apex_mem.Read<uint64_t>(centity + OFFSET_MODELNAME, name_ptr);//è¿™ä¸ªå®ä½“çš„æ•°ç»„æŒ‡é’ˆå†åŠ ä¸Šåç§°åç§»é‡ï¼Œå¾—åˆ°å®ä½“åç§°æ•°ç»„çš„åœ°å€
+        apex_mem.ReadArray<char>(name_ptr, glowName, 200);//å°†å®ä½“åç§°å­˜åˆ°glowName
 
         // item ids?
         uint64_t ItemID;
@@ -1298,37 +1289,37 @@ static void item_glow_t() {
         // }
         // Search model name and if true sets glow, must be a better way to do
         // this.. if only i got the item id to work..
-        /*ÔİÊ±×¢ÊÍµô
+        /*æš‚æ—¶æ³¨é‡Šæ‰
         for (size_t i = 0; i < new_treasure_clues.size(); i++) {
-          TreasureClue &clue = new_treasure_clues[i];   //½«new_treasure_clues[i]¸³Öµ¸øclue£¬ºóĞø¿ÉÒÔÊ¹ÓÃclueÖ¸´únew_treasure_clues[i]£¨»òĞíÊÇÕâÑù£©
-          if (ItemID == new_treasure_clues[i].item_id) {    //Èç¹ûÑ­»·µ½µÄÊµÌåµÄItemIDÔÚ10¸öÖ®ÖĞ£¨wishÎª×Ô¶¨ÒåµÄÔ¸ÍûÇåµ¥£¬ÓÃÓÚespÏÔÊ¾£©
-            Vector position = item.getPosition();    //»ñÈ¡Õâ¸öÊµÌåµÄ×ø±ê
+          TreasureClue &clue = new_treasure_clues[i];   //å°†new_treasure_clues[i]èµ‹å€¼ç»™clueï¼Œåç»­å¯ä»¥ä½¿ç”¨clueæŒ‡ä»£new_treasure_clues[i]ï¼ˆæˆ–è®¸æ˜¯è¿™æ ·ï¼‰
+          if (ItemID == new_treasure_clues[i].item_id) {    //å¦‚æœå¾ªç¯åˆ°çš„å®ä½“çš„ItemIDåœ¨10ä¸ªä¹‹ä¸­ï¼ˆwishä¸ºè‡ªå®šä¹‰çš„æ„¿æœ›æ¸…å•ï¼Œç”¨äºespæ˜¾ç¤ºï¼‰
+            Vector position = item.getPosition();    //è·å–è¿™ä¸ªå®ä½“çš„åæ ‡
             float distance = esp_local_pos.DistTo(position);
-            if (distance < clue.distance) { //Èç¹ûÊµÌå¾àÀëĞ¡ÓÚ×ÔÃé¾àÀëµÄ2±¶£¬½«×ø±êºÍ¾àÀë¸üĞÂµ½clueÖĞ
+            if (distance < clue.distance) { //å¦‚æœå®ä½“è·ç¦»å°äºè‡ªç„è·ç¦»çš„2å€ï¼Œå°†åæ ‡å’Œè·ç¦»æ›´æ–°åˆ°clueä¸­
               clue.position = position;
-              clue.distance = distance;//clueÃ²ËÆÃ»ÓĞ±»Ê¹ÓÃ£¿
+              clue.distance = distance;//clueè²Œä¼¼æ²¡æœ‰è¢«ä½¿ç”¨ï¼Ÿ
             }
             break;
           }
         }   
         */
-        if (g_settings.loot.lightbackpack && ItemID == 207) {       //°×°ü
-            std::array<float, 3> highlightParameter = { 1, 1, 1 };  //¸ßÁÁÑÕÉ«£¬111ÊÇ°×É«£¬ÒòÎªlightbackpackÊÇ°×°ü
+        if (g_settings.loot.lightbackpack && ItemID == 207) {       //ç™½åŒ…
+            std::array<float, 3> highlightParameter = { 1, 1, 1 };  //é«˜äº®é¢œè‰²ï¼Œ111æ˜¯ç™½è‰²ï¼Œå› ä¸ºlightbackpackæ˜¯ç™½åŒ…
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.medbackpack && ItemID == 208) {     //À¶°ü
+        else if (g_settings.loot.medbackpack && ItemID == 208) {     //è“åŒ…
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.heavybackpack && ItemID == 209) {   //×Ï°ü
+        else if (g_settings.loot.heavybackpack && ItemID == 209) {   //ç´«åŒ…
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };  //#4B0082
             static const int contextId = 0;
             int settingIndex = 74;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.goldbackpack && ItemID == 210) {     //½ğ°ü
+        else if (g_settings.loot.goldbackpack && ItemID == 210) {     //é‡‘åŒ…
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
@@ -1336,84 +1327,84 @@ static void item_glow_t() {
         // item id would help so much here, cant make them all the same color
         // so went with loba glow for body shield and helmet
         else if (g_settings.loot.shieldupgrade1 &&
-            (ItemID == 214748364993 || ItemID == 14073963583897798)) {  //°×¼×
+            (ItemID == 214748364993 || ItemID == 14073963583897798)) {  //ç™½ç”²
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         else if (g_settings.loot.shieldupgrade2 &&
-            (ItemID == 322122547394 || ItemID == 21110945375846599)) {  //À¶¼×
+            (ItemID == 322122547394 || ItemID == 21110945375846599)) {  //è“ç”²
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
 
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         else if (g_settings.loot.shieldupgrade3 &&
-            (ItemID == 429496729795 || ItemID == 52776987629977800)) {      //×Ï¼×
+            (ItemID == 429496729795 || ItemID == 52776987629977800)) {      //ç´«ç”²
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
 
             int settingIndex = 74;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.shieldupgrade4 && (ItemID == 429496729796)) {   //½ğ¼×
+        else if (g_settings.loot.shieldupgrade4 && (ItemID == 429496729796)) {   //é‡‘ç”²
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldupgrade5 && ItemID == 536870912201) { //ºì¼×
+        else if (g_settings.loot.shieldupgrade5 && ItemID == 536870912201) { //çº¢ç”²
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
 
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldupgradehead1 && ItemID == 188) {  //°×Í·
+        else if (g_settings.loot.shieldupgradehead1 && ItemID == 188) {  //ç™½å¤´
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
 
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldupgradehead2 && ItemID == 189) {  //À¶Í·
+        else if (g_settings.loot.shieldupgradehead2 && ItemID == 189) {  //è“å¤´
 
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldupgradehead3 && ItemID == 190) {  //×ÏÍ·
+        else if (g_settings.loot.shieldupgradehead3 && ItemID == 190) {  //ç´«å¤´
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
 
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldupgradehead4 && ItemID == 191) {      //½ğÍ·
+        else if (g_settings.loot.shieldupgradehead4 && ItemID == 191) {      //é‡‘å¤´
 
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.accelerant && ItemID == 182) {      //¾øÕĞ¼ÓËÙ¼Á
+        else if (g_settings.loot.accelerant && ItemID == 182) {      //ç»æ‹›åŠ é€Ÿå‰‚
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.phoenix && ItemID == 183) {     //·ï»Ë
+        else if (g_settings.loot.phoenix && ItemID == 183) {     //å‡¤å‡°
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         else if (g_settings.loot.skull &&
             strstr(glowName,
-                "mdl/Weapons/skull_grenade/skull_grenade_base_v.rmdl")) {    //¿ÉÄÜÃ»ÄæÏò³öÍ·¹Çid£¬Ö±½Ó¶Ô±ÈÎïÆ·Ãû³Æ
+                "mdl/Weapons/skull_grenade/skull_grenade_base_v.rmdl")) {    //å¯èƒ½æ²¡é€†å‘å‡ºå¤´éª¨idï¼Œç›´æ¥å¯¹æ¯”ç‰©å“åç§°
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.deathbox && item.isBox()) {      //Ìí¼ÓËÀÍöÖ®ÏäµÄ¿ª¹ØÅĞ¶Ï
+        else if (g_settings.deathbox && item.isBox()) {      //æ·»åŠ æ­»äº¡ä¹‹ç®±çš„å¼€å…³åˆ¤æ–­
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
             int settingIndex = 88;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
-        else if (item.isTrap()) {        //ÅĞ¶ÏÃû³ÆÊÇ·ñÊÇÇÖÊ´ÏİÚå£¿¶¾Æø¹Ş£¿ºÃÏñÎŞĞ§
+        else if (item.isTrap()) {        //åˆ¤æ–­åç§°æ˜¯å¦æ˜¯ä¾µèš€é™·é˜±ï¼Ÿæ¯’æ°”ç½ï¼Ÿå¥½åƒæ— æ•ˆ
             std::array<float, 3> highlightParameter = { 0, 1, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1421,62 +1412,62 @@ static void item_glow_t() {
 
         // Gas Trap
         else if (strstr(glowName,
-            "mdl/props/caustic_gas_tank/caustic_gas_tank.rmdl")) {   //ÕâÀïÒ²ÎŞĞ§
+            "mdl/props/caustic_gas_tank/caustic_gas_tank.rmdl")) {   //è¿™é‡Œä¹Ÿæ— æ•ˆ
             std::array<float, 3> highlightParameter = { 0, 1, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.healthlarge && ItemID == 184) {     //´óÒ©°ü
+        else if (g_settings.loot.healthlarge && ItemID == 184) {     //å¤§è¯åŒ…
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.healthsmall && ItemID == 185) {     //Ğ¡Ò©
+        else if (g_settings.loot.healthsmall && ItemID == 185) {     //å°è¯
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldbattsmall && ItemID == 187) {     //Ğ¡µç
+        else if (g_settings.loot.shieldbattsmall && ItemID == 187) {     //å°ç”µ
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shieldbattlarge && ItemID == 186) {     //´óµç
+        else if (g_settings.loot.shieldbattlarge && ItemID == 186) {     //å¤§ç”µ
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.sniperammo && ItemID == 144) {      //¾Ñ»÷µ¯Ò©
-            std::array<float, 3> highlightParameter = { 0.2431, 0.2078, 0.6741 };   //×ÏÉ«
+        else if (g_settings.loot.sniperammo && ItemID == 144) {      //ç‹™å‡»å¼¹è¯
+            std::array<float, 3> highlightParameter = { 0.2431, 0.2078, 0.6741 };   //ç´«è‰²
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.heavyammo && ItemID == 143) {       //ÖØĞÍµ¯Ò©
-            std::array<float, 3> highlightParameter = { 0.2667, 0.5333, 0.4353 };   //¸Ä³ÉÄ«ÂÌÉ«
+        else if (g_settings.loot.heavyammo && ItemID == 143) {       //é‡å‹å¼¹è¯
+            std::array<float, 3> highlightParameter = { 0.2667, 0.5333, 0.4353 };   //æ”¹æˆå¢¨ç»¿è‰²
             int settingIndex = 65;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.optic1xhcog && ItemID == 215) {     //1±¶¾µ
+        else if (g_settings.loot.optic1xhcog && ItemID == 215) {     //1å€é•œ
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.lightammo && ItemID == 140) {       //ÇáĞÍ×Óµ¯
-            std::array<float, 3> highlightParameter = { 0.6902, 0.60, 0.3098 }; //ÍÁ»Æ
+        else if (g_settings.loot.lightammo && ItemID == 140) {       //è½»å‹å­å¼¹
+            std::array<float, 3> highlightParameter = { 0.6902, 0.60, 0.3098 }; //åœŸé»„
             int settingIndex = 66;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.energyammo && ItemID == 141) {      //ÄÜÁ¿×Óµ¯
-            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };        //´äÂÌ
+        else if (g_settings.loot.energyammo && ItemID == 141) {      //èƒ½é‡å­å¼¹
+            std::array<float, 3> highlightParameter = { 0.2, 1, 0 };        //ç¿ ç»¿
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.shotgunammo && ItemID == 142) { //ö±µ¯×Óµ¯
-            std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };   //°µºì
+        else if (g_settings.loot.shotgunammo && ItemID == 142) { //éœ°å¼¹å­å¼¹
+            std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };   //æš—çº¢
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.lasersight1 && ItemID == 229) { //¼¤¹âÃé×¼Æ÷£¬ÒÔÏÂ3¸öµÈ¼¶
+        else if (g_settings.loot.lasersight1 && ItemID == 229) { //æ¿€å…‰ç„å‡†å™¨ï¼Œä»¥ä¸‹3ä¸ªç­‰çº§
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1491,7 +1482,7 @@ static void item_glow_t() {
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.sniperammomag1 && ItemID == 244) {  //¾Ñ»÷µ¯Ï»£¬ÒÔÏÂËÄ¸öµÈ¼¶
+        else if (g_settings.loot.sniperammomag1 && ItemID == 244) {  //ç‹™å‡»å¼¹åŒ£ï¼Œä»¥ä¸‹å››ä¸ªç­‰çº§
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1511,7 +1502,7 @@ static void item_glow_t() {
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.energyammomag1 && ItemID == 240) {  //ÄÜÁ¿µ¯Ï»£¬ËÄ¸öµÈ¼¶
+        else if (g_settings.loot.energyammomag1 && ItemID == 240) {  //èƒ½é‡å¼¹åŒ£ï¼Œå››ä¸ªç­‰çº§
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1531,7 +1522,7 @@ static void item_glow_t() {
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.stocksniper1 && ItemID == 255) {    //¾Ñ»÷Ç¹ÍĞ
+        else if (g_settings.loot.stocksniper1 && ItemID == 255) {    //ç‹™å‡»æªæ‰˜
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1546,7 +1537,7 @@ static void item_glow_t() {
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.stockregular1 && ItemID == 252) {   //±ê×¼Ç¹ÍĞ
+        else if (g_settings.loot.stockregular1 && ItemID == 252) {   //æ ‡å‡†æªæ‰˜
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1561,8 +1552,8 @@ static void item_glow_t() {
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        /*È¡Ïû¶Ô°×»÷µ¹»¤¶ÜµÄÅĞ¶Ï
-        if (g_settings.loot.shielddown1 && ItemID == 203) {     //»÷µ¹»¤¶Ü
+        /*å–æ¶ˆå¯¹ç™½å‡»å€’æŠ¤ç›¾çš„åˆ¤æ–­
+        if (g_settings.loot.shielddown1 && ItemID == 203) {     //å‡»å€’æŠ¤ç›¾
           std::array<unsigned char, 4> highlightFunctionBits = {
               g_settings
                   .loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
@@ -1601,7 +1592,7 @@ static void item_glow_t() {
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.lightammomag1 && ItemID == 232) {   //ÇáĞÍµ¯Ï»
+        else if (g_settings.loot.lightammomag1 && ItemID == 232) {   //è½»å‹å¼¹åŒ£
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1621,7 +1612,7 @@ static void item_glow_t() {
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.heavyammomag1 && ItemID == 236) {   //ÖØĞÍµ¯Ï»
+        else if (g_settings.loot.heavyammomag1 && ItemID == 236) {   //é‡å‹å¼¹åŒ£
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1641,27 +1632,27 @@ static void item_glow_t() {
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.optic2xhcog && ItemID == 216) {     //2±¶¾µ
+        else if (g_settings.loot.optic2xhcog && ItemID == 216) {     //2å€é•œ
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.opticholo1x && ItemID == 217) { //Ô²ĞÎ1±¶¾µ
+        else if (g_settings.loot.opticholo1x && ItemID == 217) { //åœ†å½¢1å€é•œ
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.opticholo1x2x && ItemID == 218) {       //1x2xÇĞ»»
+        else if (g_settings.loot.opticholo1x2x && ItemID == 218) {       //1x2xåˆ‡æ¢
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.opticthreat && ItemID == 219) {     //½ğ1±¶
+        else if (g_settings.loot.opticthreat && ItemID == 219) {     //é‡‘1å€
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.optic3xhcog && ItemID == 220) {     //3±¶¾µ
+        else if (g_settings.loot.optic3xhcog && ItemID == 220) {     //3å€é•œ
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1671,7 +1662,7 @@ static void item_glow_t() {
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.opticsniper6x && ItemID == 222) {       //6±¶¾µ
+        else if (g_settings.loot.opticsniper6x && ItemID == 222) {       //6å€é•œ
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1681,12 +1672,12 @@ static void item_glow_t() {
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.opticsniperthreat && ItemID == 224) {       //½ğ¾Ñ»÷¾µ
+        else if (g_settings.loot.opticsniperthreat && ItemID == 224) {       //é‡‘ç‹™å‡»é•œ
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (g_settings.loot.suppressor1 && ItemID == 225) {     //Ç¹¹Ü£¿
+        else if (g_settings.loot.suppressor1 && ItemID == 225) {     //æªç®¡ï¼Ÿ
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1701,32 +1692,32 @@ static void item_glow_t() {
             int settingIndex = 74;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.turbo_charger && ItemID == 258) {       //ÎĞÂÖÔöÑ¹Æ÷
+        else if (g_settings.loot.turbo_charger && ItemID == 258) {       //æ¶¡è½®å¢å‹å™¨
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.skull_piecer && ItemID == 260) {        //´©Â­Æ÷
+        else if (g_settings.loot.skull_piecer && ItemID == 260) {        //ç©¿é¢…å™¨
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.hammer_point && ItemID == 263) {        //´¸»÷µã
+        else if (g_settings.loot.hammer_point && ItemID == 263) {        //é”¤å‡»ç‚¹
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.disruptor_rounds && ItemID == 262) {    //¸ÉÈÅÆ÷
+        else if (g_settings.loot.disruptor_rounds && ItemID == 262) {    //å¹²æ‰°å™¨
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.boosted_loader && ItemID == 272) {      //¼ÓËÙ×°ÌîÆ÷
+        else if (g_settings.loot.boosted_loader && ItemID == 272) {      //åŠ é€Ÿè£…å¡«å™¨
             std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
             int settingIndex = 75;
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.shotgunbolt1 && ItemID == 248) {        //ö±µ¯Ç¹Ë¨
+        else if (g_settings.loot.shotgunbolt1 && ItemID == 248) {        //éœ°å¼¹æªæ “
             std::array<float, 3> highlightParameter = { 1, 1, 1 };
             int settingIndex = 72;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1747,29 +1738,29 @@ static void item_glow_t() {
             item.enableGlow(settingIndex, 48, highlightParameter);
         }
         // Nades
-        else if (g_settings.loot.grenade_frag && ItemID == 213) {    //ÆÆÆ¬ÊÖÀ×
+        else if (g_settings.loot.grenade_frag && ItemID == 213) {    //ç ´ç‰‡æ‰‹é›·
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
-        else if (g_settings.loot.grenade_thermite && ItemID == 212) {    //ÂÁÈÈ¼Á
+        else if (g_settings.loot.grenade_thermite && ItemID == 212) {    //é“çƒ­å‰‚
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.grenade_arc_star && ItemID == 214) {        //µç»¡ĞÇ
+        else if (g_settings.loot.grenade_arc_star && ItemID == 214) {        //ç”µå¼§æ˜Ÿ
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
             int settingIndex = 70;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         // Weapons
-        else if (g_settings.loot.weapon_kraber && ItemID == 1) {     //¿ËÀ³²®
+        else if (g_settings.loot.weapon_kraber && ItemID == 1) {     //å…‹è±ä¼¯
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_mastiff && ItemID == 3) {        //°½È®
+        else if (g_settings.loot.weapon_mastiff && ItemID == 3) {        //æ•–çŠ¬
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1781,33 +1772,33 @@ static void item_glow_t() {
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         // new gun, nemesis
-        else if (g_settings.loot.weapon_nemesis && ItemID == 135) {      //¸´³ğÅ®Éñ
+        else if (g_settings.loot.weapon_nemesis && ItemID == 135) {      //å¤ä»‡å¥³ç¥
             std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
-        else if (g_settings.loot.weapon_havoc && ItemID == 13) {     //¹şÎÖ¿Ë
+        else if (g_settings.loot.weapon_havoc && ItemID == 13) {     //å“ˆæ²ƒå…‹
             std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_devotion && ItemID == 18) {  //×¨×¢Çá»úÇ¹
+        else if (g_settings.loot.weapon_devotion && ItemID == 18) {  //ä¸“æ³¨è½»æœºæª
             std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_triple_take && ItemID == 23) {   //ÈıÖØ¾Ñ»÷Ç¹
+        else if (g_settings.loot.weapon_triple_take && ItemID == 23) {   //ä¸‰é‡ç‹™å‡»æª
             std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_flatline && ItemID == 28) {      //Æ½ĞĞ
+        else if (g_settings.loot.weapon_flatline && ItemID == 28) {      //å¹³è¡Œ
             std::array<float, 3> highlightParameter = { 0, 1, 1 };
             int settingIndex = 65;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_hemlock && ItemID == 33) {       //ººÄ·Âå¿Ë
+        else if (g_settings.loot.weapon_hemlock && ItemID == 33) {       //æ±‰å§†æ´›å…‹
             std::array<float, 3> highlightParameter = { 0, 1, 1 };
             int settingIndex = 65;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1817,7 +1808,7 @@ static void item_glow_t() {
             int settingIndex = 66;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_alternator && ItemID == 44) {        //×ª»»Õß
+        else if (g_settings.loot.weapon_alternator && ItemID == 44) {        //è½¬æ¢è€…
             std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
             int settingIndex = 66;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1827,27 +1818,27 @@ static void item_glow_t() {
             int settingIndex = 66;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_prowler && ItemID == 56) {   //ÁÔÊŞ
+        else if (g_settings.loot.weapon_prowler && ItemID == 56) {   //çŒå…½
             std::array<float, 3> highlightParameter = { 0, 1, 1 };
             int settingIndex = 65;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_volt && ItemID == 60) {  //µçÄÜ³å·æÇ¹
+        else if (g_settings.loot.weapon_volt && ItemID == 60) {  //ç”µèƒ½å†²é”‹æª
             std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_longbow && ItemID == 65) {       //³¤¹­
+        else if (g_settings.loot.weapon_longbow && ItemID == 65) {       //é•¿å¼“
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_charge_rifle && ItemID == 70) {  //³äÄÜ²½Ç¹
+        else if (g_settings.loot.weapon_charge_rifle && ItemID == 70) {  //å……èƒ½æ­¥æª
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_spitfire && ItemID == 75) {  //Åç»ğ
+        else if (g_settings.loot.weapon_spitfire && ItemID == 75) {  //å–·ç«
             std::array<float, 3> highlightParameter = { 1, 0.5490, 0 };
             int settingIndex = 66;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1872,7 +1863,7 @@ static void item_glow_t() {
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_wingman && ItemID == 106) {      //Ğ¡°ïÊÖ
+        else if (g_settings.loot.weapon_wingman && ItemID == 106) {      //å°å¸®æ‰‹
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1887,7 +1878,7 @@ static void item_glow_t() {
             int settingIndex = 66;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_sentinel && ItemID == 122) { //ÉÚ±ø
+        else if (g_settings.loot.weapon_sentinel && ItemID == 122) { //å“¨å…µ
             std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
             int settingIndex = 69;
             item.enableGlow(settingIndex, 32, highlightParameter);
@@ -1902,7 +1893,7 @@ static void item_glow_t() {
             int settingIndex = 65;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_rampage && ItemID == 146) {      //±©×ß
+        else if (g_settings.loot.weapon_rampage && ItemID == 146) {      //æš´èµ°
             std::array<float, 3> highlightParameter = { 0, 1, 1 };
             int settingIndex = 65;
             item.enableGlow(settingIndex, 32, highlightParameter);

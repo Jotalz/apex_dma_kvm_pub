@@ -279,25 +279,38 @@ bool Item::isGlowing() {
 void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
     std::array<unsigned char, 4> highlightFunctionBits = {
         global_settings().loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-        125,              // OutlineFunction OutlineFunction
+
+        125,                           // OutlineFunction OutlineFunction
         outline_size,                  // HIGHLIGHT_OUTLINE_LOOT_SCANNED
-        64 };
-    apex_mem.Write<uint32_t>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
-    apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 1);
-    static const int contextId = 1;
+        64};
+    /*HighlightSetting_t highlight_settings;
+    highlight_settings.inner_function = highlightFunctionBits[0]; // InsideFunction
+    highlight_settings.outside_function = highlightFunctionBits[1]; // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
+    highlight_settings.outside_radius = highlightFunctionBits[2]; // OutlineRadius: size * 255 / 8
+    highlight_settings.state = 0;
+    highlight_settings.shouldDraw = 1;
+    highlight_settings.postProcess = 0;
+    highlight_settings.color1[0] = highlight_parameter[0];
+    highlight_settings.color1[1] = highlight_parameter[1];
+    highlight_settings.color1[2] = highlight_parameter[2];
     long highlightSettingsPtr;
     apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
-    apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, contextId);
-    apex_mem.Write<typeof(highlightFunctionBits)>(
-        highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
+    uint8_t contextId = setting_index;
+    apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, contextId);
+    apex_mem.Write<HighlightSetting_t>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId,highlight_settings);*/
+    uint8_t contextId = setting_index;
+    apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, contextId);
+    long highlightSettingsPtr;
+    apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+    apex_mem.Write<typeof(highlightFunctionBits)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
     apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
 }
 
-void Item::disableGlow() {
+/*void Item::disableGlow() {
   apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 0);
   apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 0, 0);
   apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE, 5);
-}
+}*/
 
 Vector Item::getPosition() { return *(Vector *)(buffer + OFFSET_ORIGIN); }
 
@@ -347,12 +360,12 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth) {
   const auto g_settings = global_settings();
-  if (g_settings.firing_range) {    //»Áπ˚ «…‰ª˜≥°≤¢«“not alive∑µªÿ0
+  if (g_settings.firing_range) {    //Â¶ÇÊûúÊòØÂ∞ÑÂáªÂú∫Âπ∂‰∏înot aliveËøîÂõû0
     if (!target.isAlive()) {
       return QAngle(0, 0, 0);
     }
   } else {
-    if (!target.isAlive() || target.isKnocked()) {  //≤ª‘⁄…‰ª˜≥°µ´≤ª «aliveªÚ’ﬂ“—æ≠µπµÿ∑µªÿ0
+    if (!target.isAlive() || target.isKnocked()) {  //‰∏çÂú®Â∞ÑÂáªÂú∫‰ΩÜ‰∏çÊòØaliveÊàñËÄÖÂ∑≤ÁªèÂÄíÂú∞ËøîÂõû0
       return QAngle(0, 0, 0);
     }
   }
@@ -363,7 +376,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow
       || weap_id == weapon_id::idweapon_charge_rifle)) {
       return QAngle(0, 0, 0);
-  }     //π≠∫Õ≥‰ƒ‹◊‘√Èø™πÿ
+  }     //ÂºìÂíåÂÖÖËÉΩËá™ÁûÑÂºÄÂÖ≥
   float BulletSpeed = curweap.get_projectile_speed();
   float BulletGrav = curweap.get_projectile_gravity();
 
@@ -402,16 +415,16 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   float deltaTime = 1.0 / g_settings.game_fps;
 
   if (weap_headshot) {
-    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { // «¡–±Ì÷–µƒŒ‰∆˜≤¢«“–°”⁄…Ë÷√µƒ±¨Õ∑æ‡¿ÎæÕÀ¯Õ∑
+    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //ÊòØÂàóË°®‰∏≠ÁöÑÊ≠¶Âô®Âπ∂‰∏îÂ∞è‰∫éËÆæÁΩÆÁöÑÁàÜÂ§¥Ë∑ùÁ¶ªÂ∞±ÈîÅÂ§¥
       TargetBonePositionMax = TargetBonePositionMin =
           target.getBonePositionByHitbox(0);
     } else {
       TargetBonePositionMax = TargetBonePositionMin =
-          target.getBonePositionByHitbox(g_settings.bone);  //∑Ò‘Ú∏˘æ›…Ë÷√µƒ◊‘√ÈŒª÷√√È◊º
+          target.getBonePositionByHitbox(g_settings.bone);  //Âê¶ÂàôÊ†πÊçÆËÆæÁΩÆÁöÑËá™ÁûÑ‰ΩçÁΩÆÁûÑÂáÜ
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone
-    float NearestBoneDistance = g_settings.max_dist;//max_dist «3800m,ªÚ–Ì”¶∏√ «aim_dist?√ª∂¡∂Æ
+    float NearestBoneDistance = g_settings.max_dist;//max_distÊòØ3800m,ÊàñËÆ∏Â∫îËØ•ÊòØaim_dist?Ê≤°ËØªÊáÇ
     for (int i = 0; i < 4; i++) {
       Vector currentBonePosition = target.getBonePositionByHitbox(i);
       float DistanceFromCrosshair =

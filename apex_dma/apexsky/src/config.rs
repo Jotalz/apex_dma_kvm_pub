@@ -402,10 +402,10 @@ impl Default for Settings {
             player_glow: true,
             player_glow_armor_color: false,
             player_glow_love_user: true,
-            weapon_model_glow: false,
+            weapon_model_glow: true,
             kbd_backlight_control: false,
             bow_charge_rifle_aim: false,
-            deathbox: false,
+            deathbox: true,
             aim_no_recoil: false,
             ads_fov: 7.0, // Fov you want to use while aiming
             non_ads_fov: 16.0,
