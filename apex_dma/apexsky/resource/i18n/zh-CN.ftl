@@ -72,11 +72,12 @@ input-prompt-fps-predict =
         0 => 自适应FPS
 menu-item-big-map-feat = F8大地图功能
 menu-item-player-armor-glow-color = 护甲热能颜色
-menu-item-weapon-model-glow = 武器模型发光
+menu-item-weapon-model-glow = 被观战武器发光
 info-weapon-model-glow = 
-    通常 => 炫彩
+    通常 => 不发光
     被队友观战时 => 绿色
-    被他人观战时 => 红色
+    被他人观战时 => 蓝色->橙色->红色->彩色
+                     <3    <5    <7    7+
 menu-item-toggle-overlay = 覆盖层绘制
 menu-value-no-overlay = 无覆盖
 menu-value-external-overlay = 外部覆盖

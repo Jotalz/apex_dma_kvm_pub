@@ -931,19 +931,34 @@ void DoActions() {
       // printf("%d\n", LPlayer.getHealth());
       if (g_settings.weapon_model_glow && LPlayer.getHealth() > 0) {
         std::array<float, 3> highlight_color;
-        if (spectators.size() > 0) {
-          highlight_color = {1, 0, 0};
-        } else if (allied_spectators.size() > 0) {
-          highlight_color = {0, 1, 0};
-        } else {
-          rainbowColor(frame_number, highlight_color);
+        bool weapon_glow = false;
+        int spectators_num = spectators.size();
+        if (spectators_num > 6) {
+            rainbowColor(frame_number, highlight_color);    //大于6人观战彩色
+            weapon_glow = true;
         }
-        // printf("R: %f, G: %f, B: %f\n", highlight_color[0],
-        // highlight_color[1], highlight_color[2]);
-        LPlayer.glow_weapon_model(g_Base, true, highlight_color);
-        // LPlayer.enableGlow(5, 199, 14, 32, highlight_color);
+        else if (spectators_num > 4) {
+            highlight_color = { 1, 0, 0 }; //大于4人红色
+            weapon_glow = true;
+        }
+        else if (spectators_num > 2) {
+            highlight_color = { 1, 0.6, 0 };   //3-4人橙色
+            weapon_glow = true;
+        }
+        else if (spectators_num > 0) {
+            highlight_color = { 0, 0.4, 1 };  //1-2人蓝色
+            weapon_glow = true;
+        }
+        else if (allied_spectators.size() > 0) {    //没有敌人但是队友观战绿色
+          highlight_color = {0, 1, 0};
+          weapon_glow = true;
+        } 
+        else {
+            weapon_glow = false;            //没人观战不发光
+        }
+        LPlayer.glow_weapon_model(g_Base, weapon_glow, highlight_color);
       } else {
-        LPlayer.glow_weapon_model(g_Base, false, {0, 0, 0});
+        LPlayer.glow_weapon_model(g_Base, weapon_glow, {0, 0, 0});
       }
     }
   }
@@ -1285,7 +1300,7 @@ static void item_glow_t() {
         // }
         // Search model name and if true sets glow, must be a better way to do
         // this.. if only i got the item id to work..
-        /*暂时注释掉
+        /*单显卡用不到暂时注释掉
         for (size_t i = 0; i < new_treasure_clues.size(); i++) {
           TreasureClue &clue = new_treasure_clues[i];   //将new_treasure_clues[i]赋值给clue，后续可以使用clue指代new_treasure_clues[i]（或许是这样）
           if (ItemID == new_treasure_clues[i].item_id) {    //如果循环到的实体的ItemID在10个之中（wish为自定义的愿望清单，用于esp显示）
@@ -1293,7 +1308,7 @@ static void item_glow_t() {
             float distance = esp_local_pos.DistTo(position);
             if (distance < clue.distance) { //如果实体距离小于自瞄距离的2倍，将坐标和距离更新到clue中
               clue.position = position;
-              clue.distance = distance;//clue貌似没有被使用？
+              clue.distance = distance;//clue貌似只在客户端覆盖中使用
             }
             break;
           }
