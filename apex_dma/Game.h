@@ -199,23 +199,3 @@ typedef struct {
   Vector position;
   float distance;
 } TreasureClue;
-
-#pragma pack(push, 1)
-struct HighlightSetting_t {
-    unsigned char inner_function;   // 0x0
-    unsigned char outside_function; // 0x1
-    unsigned char outside_radius;   // 0x2
-    unsigned char state : 6;        // 0x3
-    unsigned char shouldDraw : 1;   // 0x3
-    unsigned char postProcess : 1;  // 0x3
-    float color1[3];                // 0x4
-    float color2[3];                // 0x10
-private:
-    char pad_1c[0x18];
-
-public:
-}; // Size: 0x34
-/*EntityVisible 控制了结果的第7位。
-  State 的低6位存储在结果的第1到第6位。
-  AfterPostProcess 控制了结果的最高位。*/
-#pragma pack(pop)
