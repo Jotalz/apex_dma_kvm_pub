@@ -446,46 +446,33 @@ fn build_main_menu(
         settings.tdm_toggle,
         tdm_toggle
     );
-    menu = menu
-        .add_item(
-            item_enabled(
-                &i18n_bundle,
-                format!(" 3 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
-                settings.keyboard,
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.keyboard = !settings.keyboard;
-                settings.gamepad = !settings.keyboard;
-                None
-            },
-        )
-        .add_item(
-            item_enabled(
-                &i18n_bundle,
-                format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
-                settings.gamepad,
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.gamepad = !settings.gamepad;
-                settings.keyboard = !settings.gamepad;
-                None
-            },
-        );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 5 - {}", i18n_msg!(i18n_bundle, MenuItemItemGlow)),
+        format!(" 3 - {}", i18n_msg!(i18n_bundle, MenuItemItemGlow)),
         settings.item_glow,
         item_glow
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 6 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlow)),
+        format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlow)),
         settings.player_glow,
         player_glow
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!( "5 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
+        settings.bow_charge_rifle_aim,
+        bow_charge_rifle_aim
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!( "6 - {}", i18n_msg!(i18n_bundle, MenuItemShotgunAutoShot)),
+        settings.shotgun_auto_shot,
+        shotgun_auto_shot
     );
     menu = menu
         .add_input_item(
@@ -716,6 +703,33 @@ fn build_main_menu(
         deathbox
     );
     menu = menu
+        .add_item(
+            item_enabled(
+                &i18n_bundle,
+                format!(" 3 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
+                settings.keyboard,
+            ),
+            |_| {
+                let settings = &mut lock_config!().settings;
+                settings.keyboard = !settings.keyboard;
+                settings.gamepad = !settings.keyboard;
+                None
+            },
+        )
+        .add_item(
+            item_enabled(
+                &i18n_bundle,
+                format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
+                settings.gamepad,
+            ),
+            |_| {
+                let settings = &mut lock_config!().settings;
+                settings.gamepad = !settings.gamepad;
+                settings.keyboard = !settings.gamepad;
+                None
+            },
+        );
+    menu = menu
         .add_dummy_item()
         .add_item(
             item_text(format!(
@@ -869,20 +883,6 @@ fn build_main_menu(
             }
             None
         },
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!( "32 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
-        settings.bow_charge_rifle_aim,
-        bow_charge_rifle_aim
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!( "33 - {}", i18n_msg!(i18n_bundle, MenuItemShotgunAutoShot)),
-        settings.shotgun_auto_shot,
-        shotgun_auto_shot
     );
     menu.add_dummy_item()
         .add_item(
