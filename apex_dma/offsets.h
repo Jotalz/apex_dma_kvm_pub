@@ -57,7 +57,6 @@
 #define OFFSET_RENDER 0x73cc460 //ViewRender displays ESp, heath dist names etc //updated 1/11/2024
  
 #define OFFSET_PRIMARY_WEAPON 0x18f4 //m_latestPrimaryWeapons //updated 1/11/2024
-
 #define OFFSET_ACTIVE_WEAPON 0x1888 + 0x0058 // m_inventory + WeaponInventory_Client>activeWeapons //updated 1/10/2024
 #define OFFSET_BULLET_SPEED 0x1e5c //CWeaponX!m_flProjectileSpeed maybe its WeaponSettings.projectile_launch_speed now //updated 1/10/2024
 #define OFFSET_BULLET_SCALE 0x1e64 //CWeaponX!m_flProjectileScale maybe its WeaponSettings.projectile_gravity_scale now //updated 1/10/2024
@@ -69,10 +68,8 @@
 #define OFFSET_MODELNAME 0x0030 // m_ModelName //updated 1/10/2024
 #define OFFSET_M_CUSTOMSCRIPTINT 0x1518 //m_customScriptInt //updated 1/10/2024
 #define OFFSET_YAW 0x21fc - 0x8 //m_currentFramePlayer.m_ammoPoolCount//updated 1/10/2024 - 0x8 
-
 #define OFFSET_TIME_BASE 0x2048 //m_currentFramePlayer.timeBase //updated 1/11/2024
 #define OFFSET_VIEW_MODELS 0x2ce0 //m_hViewModels //updated 1/11/2024
-
  
 //#define OFFSET_GLOW_T2 0x2dc+ 0x30 //1193322764 = enabled, 0 = disabled
 #define OFFSET_GLOW_ENABLE 0x28C //7 = enabled, 2 = disabled
@@ -80,9 +77,7 @@
 #define OFFSET_GLOW_FIX 0x268 // updated 1/10/2024
 
 //#define GLOW_START_TIME 0x02c8 + 0x30 //m_playerFloatLookStartTime=0x02c8 //updated 11/20/2023
-
 #define OFFSET_HIGHLIGHTGENERICCONTEXT 0x028d //m_highlightServerActiveStates //updated 11/20/2023
-
 #define OFFSET_GLOW_ENABLE_GLOW_CONTEXT OFFSET_GLOW_ENABLE // Script_Highlight_SetCurrentContext
 #define OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE OFFSET_GLOW_THROUGH_WALLS // Script_Highlight_SetVisibilityType 5th mov
 //#define GLOW_LIFE_TIME 0x3A4+ 0x30 // Script_Highlight_SetLifeTime + 4
@@ -90,11 +85,9 @@
 //#define GLOW_TYPE 0x29c // Script_Highlight_GetState + 4
 //#define GLOW_COLOR 0x1D0+ 0x30 // Script_CopyHighlightState 15th mov
 //#define GLOW_FADE 0x388+ 0x30 // Script_Highlight_GetCurrentInsideOpacity 3rd result of 3 offsets consecutive or first + 8
-
 #define HIGHLIGHT_SETTINGS 0xB7A6050 //0xB7A4E90 //HighlightSettings  // updated 1/11/2024
 #define HIGHLIGHT_TYPE_SIZE 0x34 // updated 1/10/2024
 #define OFFSET_CROSSHAIR_LAST 0x1958 //CWeaponX!lastCrosshairTargetTime // CPlayer!lastVisibleTime + 0x8 // updated 1/10/2024
 //#define OFFSET_CROSSHAIR_START 0x1A84 //CPlayer!crosshairTargetStartTime
 #define OFFSET_INPUT_SYSTEM 0x1755c80 //InputSystem // updated 1/11/2024 
 #define OFFSET_WEAPON_BITFIELD 0x16c4 // m_modBitfieldFromPlayer // updated 1/11/2024
-
