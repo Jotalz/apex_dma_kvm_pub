@@ -103,8 +103,8 @@ void TriggerBotRun() {
   // 设置随机数生成器
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(150, 300);  // 生成范围在100到300之间的随机数
-  // 生成随机时间间隔
+  std::uniform_int_distribution<> dis(150, 300);  // 正常或稍快的反应时间
+  // 生成随机时间间隔，防止行为检测
   int randomInterval = dis(gen);
   std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
@@ -453,19 +453,6 @@ void ClientActions() {
       103 KEY_F12
       */
 
-      /* if (isPressed(79)) //TESTING KEYS
-      {
-              printf("Shift Pressed\n");
-      }
-      if (isPressed(81)) //TESTING KEYS
-      {
-              printf("ALT Pressed\n");
-      }
-      if (isPressed(83)) //TESTING KEYS
-      {
-              printf("CTRL Pressed0\n");
-      } */
-
       if (local_held_id == -251) {
         if ((g_settings.no_nade_aim && zoom_state == 0) ||  //手雷右键瞄准
             (!g_settings.no_nade_aim && zoom_state > 0)) {  //右键取消手雷自瞄
@@ -748,7 +735,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
 
-      if (trigger_ready && IsInCrossHair(Target) && (dist < 15.f)) {
+      if (trigger_ready && IsInCrossHair(Target)) {
         TriggerBotRun();
       }
     }
@@ -807,13 +794,13 @@ void DoActions() {
       Entity LPlayer = getEntity(LocalPlayer);  //根据地址生成玩家实体对象entity
 
       team_player = LPlayer.getTeamId();    //获取自己所在队伍的id
-      if (team_player < 0 || team_player > 50) {
-        continue;
+      if (team_player < 0 || team_player > 50) {    //id不对开始新的while循环不继续执行
+        continue;   
       }
       uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
 
       uint64_t baseent = 0;
-      apex_mem.Read<uint64_t>(entitylist, baseent); //根据实体列表的地址读取进一步的实体列表地址放到baseent？
+      apex_mem.Read<uint64_t>(entitylist, baseent); //Check base entity is not Null
       if (baseent == 0) {
         continue;
       }
@@ -822,7 +809,7 @@ void DoActions() {
         static uintptr_t lplayer_ptr = 0;
         if (lplayer_ptr != LPlayer.ptr) {   //如果LPlayer.ptr不为0，即前面读取都是顺利的，则将本地玩家指针传给lplayer_ptr
           lplayer_ptr = LPlayer.ptr;
-          init_spec_checker(lplayer_ptr);   //rust写的检查观战的函数，没看懂\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
+          init_spec_checker(lplayer_ptr);   //函数定义在rust里，\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
         }
         tick_yew(lplayer_ptr, LPlayer.GetYaw());
       }
@@ -834,7 +821,7 @@ void DoActions() {
           (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; //自瞄距离设200*40, 2500+2000?
       aimbot.tmp_aimentity = 0;
       centity_to_index.clear();
-      //tmp_specs.clear();
+      tmp_specs.clear();
       if (g_settings.firing_range) {
         int c = 0;
         for (int i = 0; i < playerentcount; i++) {

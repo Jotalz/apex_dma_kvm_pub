@@ -279,17 +279,29 @@ bool Item::isGlowing() {
 void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
     std::array<unsigned char, 4> highlightFunctionBits = {
         global_settings().loot_filled, // InsideFunction  HIGHLIGHT_FILL_LOOT_SCANNED
-        125,              // OutlineFunction OutlineFunction
+        125,                           // OutlineFunction OutlineFunction
         outline_size,                  // HIGHLIGHT_OUTLINE_LOOT_SCANNED
         64};
-    //apex_mem.Write<uint32_t>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
-    //apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 1);
-    static const int contextId = 1;
+    /*HighlightSetting_t highlight_settings;
+    highlight_settings.inner_function = highlightFunctionBits[0]; // InsideFunction
+    highlight_settings.outside_function = highlightFunctionBits[1]; // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
+    highlight_settings.outside_radius = highlightFunctionBits[2]; // OutlineRadius: size * 255 / 8
+    highlight_settings.state = 0;
+    highlight_settings.shouldDraw = 1;
+    highlight_settings.postProcess = 0;
+    highlight_settings.color1[0] = highlight_parameter[0];
+    highlight_settings.color1[1] = highlight_parameter[1];
+    highlight_settings.color1[2] = highlight_parameter[2];
     long highlightSettingsPtr;
     apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
-    apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, contextId);
-    apex_mem.Write<typeof(highlightFunctionBits)>(
-        highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
+    uint8_t contextId = setting_index;
+    apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, contextId);
+    apex_mem.Write<HighlightSetting_t>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId,highlight_settings);*/
+    uint8_t contextId = setting_index;
+    apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, contextId);
+    long highlightSettingsPtr;
+    apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+    apex_mem.Write<typeof(highlightFunctionBits)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
     apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
 }
 
