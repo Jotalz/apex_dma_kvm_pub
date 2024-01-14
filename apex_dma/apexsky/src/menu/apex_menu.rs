@@ -463,14 +463,14 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "5 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
+        format!( " 5 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
         settings.bow_charge_rifle_aim,
         bow_charge_rifle_aim
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "6 - {}", i18n_msg!(i18n_bundle, MenuItemShotgunAutoShot)),
+        format!( " 6 - {}", i18n_msg!(i18n_bundle, MenuItemShotgunAutoShot)),
         settings.shotgun_auto_shot,
         shotgun_auto_shot
     );
@@ -706,7 +706,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!(" 3 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
+                format!("21 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
                 settings.keyboard,
             ),
             |_| {
@@ -719,7 +719,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
+                format!("22 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
                 settings.gamepad,
             ),
             |_| {
@@ -733,7 +733,7 @@ fn build_main_menu(
         .add_dummy_item()
         .add_item(
             item_text(format!(
-                "21 - {}",
+                "23 - {}",
                 i18n_msg!(i18n_bundle, MenuItemSaveSettings)
             )),
             |_| {
@@ -750,7 +750,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "22 - {}",
+                "24 - {}",
                 i18n_msg!(i18n_bundle, MenuItemLoadSettings)
             )),
             |_| {
@@ -769,7 +769,7 @@ fn build_main_menu(
         .add_item(
             format_item(
                 &i18n_bundle,
-                format!("23 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
+                format!("25 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
                 Span::from(
                     if settings.no_nade_aim {
                         i18n_msg!(i18n_bundle, MenuValueNoNadeAim)
@@ -788,21 +788,21 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("24 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
+        format!("26 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
         settings.onevone,
         onevone
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("25 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
+        format!("27 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
         settings.aim_no_recoil,
         aim_no_recoil
     );
     menu = menu.add_input_item(
         format_item(
             &i18n_bundle,
-            format!("26 - {}", i18n_msg!(i18n_bundle, MenuItemSetFpsPredict)),
+            format!("28 - {}", i18n_msg!(i18n_bundle, MenuItemSetFpsPredict)),
             Span::from(if settings.calc_game_fps {
                 i18n_msg!(i18n_bundle, MenuValueCalcFps).to_string()
             } else {
@@ -826,7 +826,7 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("27 - {}", i18n_msg!(i18n_bundle, MenuItemBigMapFeat)),
+        format!("29 - {}", i18n_msg!(i18n_bundle, MenuItemBigMapFeat)),
         settings.map_radar_testing,
         map_radar_testing
     );
@@ -834,7 +834,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "28 - {}",
+            "30 - {}",
             i18n_msg!(i18n_bundle, MenuItemPlayerArmorGlowColor)
         ),
         settings.player_glow_armor_color,
@@ -844,7 +844,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "29 - {}",
+            "31 - {}",
             i18n_msg!(i18n_bundle, MenuItemFavoritePlayerGlow)
         ),
         settings.player_glow_love_user,
@@ -853,7 +853,7 @@ fn build_main_menu(
     menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
-            format!("30 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
+            format!("32 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
             settings.weapon_model_glow,
         ),
         |_handle: &mut TerminalMenu| {
@@ -870,7 +870,7 @@ fn build_main_menu(
     menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
-            format!("31 - {}", i18n_msg!(i18n_bundle, MenuItemKbdBacklightCtrl)),
+            format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemKbdBacklightCtrl)),
             settings.kbd_backlight_control,
         ),
         |_handle: &mut TerminalMenu| {
