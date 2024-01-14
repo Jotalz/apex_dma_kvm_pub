@@ -344,12 +344,12 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth) {
   const auto g_settings = global_settings();
-  if (g_settings.firing_range) {    //Èç¹ûÊÇÉä»÷³¡²¢ÇÒnot alive·µ»Ø0
+  if (g_settings.firing_range) {    //å¦‚æœæ˜¯å°„å‡»åœºå¹¶ä¸”not aliveè¿”å›0
     if (!target.isAlive()) {
       return QAngle(0, 0, 0);
     }
   } else {
-    if (!target.isAlive() || target.isKnocked()) {  //²»ÔÚÉä»÷³¡µ«²»ÊÇalive»òÕßÒÑ¾­µ¹µØ·µ»Ø0
+    if (!target.isAlive() || target.isKnocked()) {  //ä¸åœ¨å°„å‡»åœºä½†ä¸æ˜¯aliveæˆ–è€…å·²ç»å€’åœ°è¿”å›0
       return QAngle(0, 0, 0);
     }
   }
@@ -360,7 +360,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow
       || weap_id == weapon_id::idweapon_charge_rifle)) {
       return QAngle(0, 0, 0);
-  }     //¹­ºÍ³äÄÜ×ÔÃé¿ª¹Ø
+  }     //å¼“å’Œå……èƒ½è‡ªç„å¼€å…³
   float BulletSpeed = curweap.get_projectile_speed();
   float BulletGrav = curweap.get_projectile_gravity();
 
@@ -399,16 +399,16 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   float deltaTime = 1.0 / g_settings.game_fps;
 
   if (weap_headshot) {
-    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //ÊÇÁĞ±íÖĞµÄÎäÆ÷²¢ÇÒĞ¡ÓÚÉèÖÃµÄ±¬Í·¾àÀë¾ÍËøÍ·
+    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //æ˜¯åˆ—è¡¨ä¸­çš„æ­¦å™¨å¹¶ä¸”å°äºè®¾ç½®çš„çˆ†å¤´è·ç¦»å°±é”å¤´
       TargetBonePositionMax = TargetBonePositionMin =
           target.getBonePositionByHitbox(0);
     } else {
       TargetBonePositionMax = TargetBonePositionMin =
-          target.getBonePositionByHitbox(g_settings.bone);  //·ñÔò¸ù¾İÉèÖÃµÄ×ÔÃéÎ»ÖÃÃé×¼
+          target.getBonePositionByHitbox(g_settings.bone);  //å¦åˆ™æ ¹æ®è®¾ç½®çš„è‡ªç„ä½ç½®ç„å‡†
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone
-    float NearestBoneDistance = g_settings.max_dist;//max_distÊÇ3800m,»òĞíÓ¦¸ÃÊÇaim_dist?Ã»¶Á¶®
+    float NearestBoneDistance = g_settings.max_dist;//max_distæ˜¯3800m,æˆ–è®¸åº”è¯¥æ˜¯aim_dist?æ²¡è¯»æ‡‚
     for (int i = 0; i < 4; i++) {
       Vector currentBonePosition = target.getBonePositionByHitbox(i);
       float DistanceFromCrosshair =
