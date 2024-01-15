@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <unordered_map> // Include the unordered_map header
 #include <vector>
+#include <fstream>
 // this is a test, with seconds
 Memory apex_mem;
 
@@ -112,6 +113,16 @@ void TriggerBotRun() {
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
   // printf("TriggerBotRun\n");
 }
+
+/*inline void AutoGrapple(uintptr_t LocalPlayerEntity)    //自动超级钩
+{
+    apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
+    auto Gn = apex_mem.Read<int>(LocalPlayerEntity + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED);
+    if (Gn == 1) {
+        apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 5);
+    }
+}*/
+
 bool IsInCrossHair(Entity &target) {
   static uintptr_t last_t = 0;
   static float last_crosshair_target_time = -1.f;
@@ -212,9 +223,8 @@ void ClientActions() {
       apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 61
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
-      apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8,
-                         force_toggle_duck);
-      apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck);
+      apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck);
+      apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck); //滑铲？
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008,
                          curFrameNumber); // GlobalVars + 0x0008
 
@@ -461,7 +471,18 @@ void ClientActions() {
           aimbot.gun_safety = false;
         }
       }
-
+      int isGrppleActived, isGrppleAttached;
+      apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
+      if (g_settings.super_grpple) {
+          if (isGrppleActived) {
+              apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
+              if (isGrppleAttached == 1) {
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
+                  std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
+              }
+          }
+      }
       if (g_settings.keyboard) {
         if (isPressed(g_settings.aimbot_hot_key_1) ||
             isPressed(g_settings.aimbot_hot_key_2)) // Left and Right click(add smooth later)
@@ -1267,7 +1288,7 @@ static void item_glow_t() {
         clue.position = Vector(0, 0, 0);
         clue.distance = g_settings.aim_dist * 2;
         new_treasure_clues.push_back(clue);
-      }//可能是初始化10个类型的对照组物品？不是很明白
+      }//初始化wishlist中的物品
 
       for (int i = 0; i < itementcount; i++) {//开启10000个物品循环
         uint64_t centity = 0;
@@ -1304,7 +1325,7 @@ static void item_glow_t() {
         // }
         // Search model name and if true sets glow, must be a better way to do
         // this.. if only i got the item id to work..
-        /*单显卡用不到暂时注释掉
+        /*单显卡用不到暂时注释掉或者可以额外加个判断esp是否为true
         for (size_t i = 0; i < new_treasure_clues.size(); i++) {
           TreasureClue &clue = new_treasure_clues[i];   //将new_treasure_clues[i]赋值给clue，后续可以使用clue指代new_treasure_clues[i]（或许是这样）
           if (ItemID == new_treasure_clues[i].item_id) {    //如果循环到的实体的ItemID在10个之中（wish为自定义的愿望清单，用于esp显示）
@@ -1995,7 +2016,7 @@ int main(int argc, char *argv[]) {
         control_thr.~thread();
       }
 
-      std::this_thread::sleep_for(std::chrono::seconds(1));
+      std::this_thread::sleep_for(std::chrono::seconds(2));
       printf("Searching for apex process...\n");
 
       apex_mem.open_proc(ap_proc);

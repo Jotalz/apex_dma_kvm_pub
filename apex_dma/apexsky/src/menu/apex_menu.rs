@@ -884,11 +884,21 @@ fn build_main_menu(
             None
         },
     );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(
+            "34 - {}",
+            i18n_msg!(i18n_bundle, MenuItemSuperGrpple)
+        ),
+        settings.super_grpple,
+        super_grpple
+    );
     menu.add_dummy_item()
         .add_item(
             format_item(
                 &i18n_bundle,
-                format!("34 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
+                format!("35 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
                 if settings.no_overlay {
                     Span::from(i18n_msg!(i18n_bundle, MenuValueNoOverlay).to_string())
                 } else {
