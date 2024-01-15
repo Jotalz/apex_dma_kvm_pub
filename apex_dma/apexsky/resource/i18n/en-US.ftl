@@ -230,3 +230,4 @@ menu-item-favorite-player-glow = Highlight favorite gamers
 menu-item-kbd-backlight-ctrl = Keyboard backlight control
 menu-item-bow-charge-rifle-aim = bow chargeRifle aim
 menu-item-shotgun-auto-shot = shotgun trigger
+menu-item-super-grpple = super grpple

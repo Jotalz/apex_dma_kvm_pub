@@ -473,15 +473,9 @@ void ClientActions() {
       }
       int isGrppleActived, isGrppleAttached;
       apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
-      if (true) {
-          std::ofstream outputFile("outputA.txt", std::ios::app);
-          outputFile << "是否出钩: " << isGrppleActived << std::endl;
-          outputFile.close();
+      if (g_settings.super_grpple) {
           if (isGrppleActived) {
               apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
-              std::ofstream outputFile("outputB.txt", std::ios::app);
-              outputFile << "是否抓到: " << isGrppleAttached << std::endl;
-              outputFile.close();
               if (isGrppleAttached == 1) {
                   apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
                   std::this_thread::sleep_for(std::chrono::milliseconds(5));
