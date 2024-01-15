@@ -215,18 +215,27 @@ void ClientActions() {
       apex_mem.Read<typeof(button_state)>(g_Base + OFFSET_INPUT_SYSTEM + 0xb0,
                                           button_state);
 
-      int attack_state = 0, zoom_state = 0, tduck_state = 0, jump_state = 0,
-          force_jump = 0, force_toggle_duck = 0, force_duck = 0,
-          curFrameNumber = 0;
+      int attack_state = 0, zoom_state = 0, tduck_state = 0, jump_state = 0,backWardState = 0,
+          force_toggle_duck = 0, force_duck = 0, curFrameNumber = 0,skyDriveState = 0,
+          strafeTick = 0,inDuckState = 0, foreWardState = 0, inForeWard = 0;
+      float wallrunStart = 0, wallrunClear = 0;
+      bool longclimb = false, jumpstart = false;
       apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108开火
       apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109瞄准
       apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 61
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);
-      apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
+      apex_mem.Read<int>(g_Base + OFFSET_IN_BACKWARD, backWardState);
+      //apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
       apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck);
       apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck); //滑铲？
-      apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008,
-                         curFrameNumber); // GlobalVars + 0x0008
+      apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, curFrameNumber); // GlobalVars + 0x0008
+      uint32_t result = apex_mem.Read<int>(local_player_ptr + OFFSET_FLAGS);
+      apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNSTART, wallrunStart);
+      apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNCLEAR, wallrunClear);
+      apex_mem.Read<int>(local_player_ptr + OFFSET_SKYDRIVESTATE, skyDriveState);
+      apex_mem.Read<int>(local_player_ptr + OFFSET_IN_DUCKSTATE, inDuckState);
+      apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD, inForeWard);
+      apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD + 0x8, foreWardState);
 
       float world_time, traversal_start_time, traversal_progress;
       if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE,
@@ -252,7 +261,44 @@ void ClientActions() {
       //   printf("Jump Value: %i\n", force_jump);
       //   printf("ToggleDuck Value: %i\n", force_toggle_duck);
       //   printf("Duck Value: %i\n", force_duck);
+      //autoTapstrafe
 
+      if (wallrunStart > wallrunClear) {
+          float climbTime = world_time - wallrunStart;
+          if (climbTime > 0.8) {
+              longclimb = true;
+          }
+      }
+      if (longclimb) {
+          if (world_time > wallrunClear + 0.1)
+              longclimb = false;
+      }
+      if (((result & 0x1)==0) && !(skyDriveState > 0) && !longclimb && !(backWardState > 0))
+      {
+          if (!jumpstart) {
+              jumpstart = true;
+              strafeTick = 0;
+          }
+          else if (((inDuckState > 0) && (jump_state != 65)) || (strafeTick > 7 && strafeTick < 125 && (inForeWard == 33))) { //previously 33
+              if (foreWardState == 0) {
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 5);
+              }
+              else {
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 4);
+              }
+          }
+          strafeTick++;
+      }
+      else if (jumpstart && ((result & 0x1) != 0)) {
+          jumpstart = false;
+          strafeTick = 0;
+          if (inForeWard == 0) {
+              apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 0);
+          }
+          else if (inForeWard == 33) {
+              apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 1);
+          }
+      }
       if (g_settings.super_key_toggle) {
         /** SuperGlide
          * https://www.unknowncheats.me/forum/apex-legends/578160-external-auto-superglide-3.html
@@ -478,7 +524,7 @@ void ClientActions() {
               apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
               if (isGrppleAttached == 1) {
                   apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
-                  std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                  std::this_thread::sleep_for(std::chrono::milliseconds(20));
                   apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
               }
           }
