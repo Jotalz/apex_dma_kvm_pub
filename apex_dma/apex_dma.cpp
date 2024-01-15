@@ -217,7 +217,7 @@ void ClientActions() {
 
       int attack_state = 0, zoom_state = 0, tduck_state = 0, jump_state = 0,backWardState = 0,
           force_toggle_duck = 0, force_duck = 0, curFrameNumber = 0,skyDriveState = 0,
-          strafeTick = 0,inDuckState = 0, foreWardState = 0, inForeWard = 0;
+          strafeTick = 0,inDuckState = 0, foreWardState = 0, inForeWard = 0, flags = 0;
       float wallrunStart = 0, wallrunClear = 0;
       bool longclimb = false, jumpstart = false;
       apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108开火
@@ -229,7 +229,7 @@ void ClientActions() {
       apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck);
       apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck); //滑铲？
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, curFrameNumber); // GlobalVars + 0x0008
-      uint32_t result = apex_mem.Read<int>(local_player_ptr + OFFSET_FLAGS);
+      apex_mem.Read<int>(local_player_ptr + OFFSET_FLAGS, flags);
       apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNSTART, wallrunStart);
       apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNCLEAR, wallrunClear);
       apex_mem.Read<int>(local_player_ptr + OFFSET_SKYDRIVESTATE, skyDriveState);
@@ -273,7 +273,7 @@ void ClientActions() {
           if (world_time > wallrunClear + 0.1)
               longclimb = false;
       }
-      if (((result & 0x1)==0) && !(skyDriveState > 0) && !longclimb && !(backWardState > 0))
+      if (((flags & 0x1)==0) && !(skyDriveState > 0) && !longclimb && !(backWardState > 0))
       {
           if (!jumpstart) {
               jumpstart = true;
@@ -289,7 +289,7 @@ void ClientActions() {
           }
           strafeTick++;
       }
-      else if (jumpstart && ((result & 0x1) != 0)) {
+      else if (jumpstart && ((flags & 0x1) != 0)) {
           jumpstart = false;
           strafeTick = 0;
           if (inForeWard == 0) {
@@ -299,6 +299,41 @@ void ClientActions() {
               apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 1);
           }
       }
+      /*
+      // when player is in air
+      if (!(flags & 0x1))
+      {
+          // 1. air step
+          if (strafeTick >= 0)
+          {
+              if (!strafeTick)
+              {
+                  // release forward key
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 4);
+              }
+              strafeTick++;
+              if (strafeTick >= 25)
+              {
+                  strafeTick = -1;
+                  // hold forward key
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 5);
+              }
+          }
+      }
+      else
+      {
+          // 2. hit ground step
+          if (strafeTick < 0)
+          {
+              if (strafeTick == -1)
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 5);
+              strafeTick--;
+              if (strafeTick <= -10)
+              {
+                  strafeTick = 0;
+              }
+          }
+      }*/
       if (g_settings.super_key_toggle) {
         /** SuperGlide
          * https://www.unknowncheats.me/forum/apex-legends/578160-external-auto-superglide-3.html
