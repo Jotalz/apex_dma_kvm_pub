@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <unordered_map> // Include the unordered_map header
 #include <vector>
+#include <fstream>
 // this is a test, with seconds
 Memory apex_mem;
 
@@ -112,6 +113,16 @@ void TriggerBotRun() {
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
   // printf("TriggerBotRun\n");
 }
+
+/*inline void AutoGrapple(uintptr_t LocalPlayerEntity)    //自动超级钩
+{
+    apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
+    auto Gn = apex_mem.Read<int>(LocalPlayerEntity + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED);
+    if (Gn == 1) {
+        apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 5);
+    }
+}*/
+
 bool IsInCrossHair(Entity &target) {
   static uintptr_t last_t = 0;
   static float last_crosshair_target_time = -1.f;
@@ -460,7 +471,24 @@ void ClientActions() {
           aimbot.gun_safety = false;
         }
       }
-
+      int isGrppleActived, isGrppleAttached;
+      apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
+      if (true) {
+          std::ofstream outputFile("outputA.txt", std::ios::app);
+          outputFile << "是否出钩: " << isGrppleActived << std::endl;
+          outputFile.close();
+          if (isGrppleActived) {
+              apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
+              std::ofstream outputFile("outputB.txt", std::ios::app);
+              outputFile << "是否抓到: " << isGrppleAttached << std::endl;
+              outputFile.close();
+              if (isGrppleAttached == 1) {
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
+                  std::this_thread::sleep_for(std::chrono::milliseconds(5));
+                  apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
+              }
+          }
+      }
       if (g_settings.keyboard) {
         if (isPressed(g_settings.aimbot_hot_key_1) ||
             isPressed(g_settings.aimbot_hot_key_2)) // Left and Right click(add smooth later)
