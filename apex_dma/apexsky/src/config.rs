@@ -381,7 +381,7 @@ impl Default for Settings {
             screen_width: 1920,
             screen_height: 1080,
             yuan_p: false,
-            debug_mode: false,
+            debug_mode: false, //Used to close menu,show debug info
             super_key: true,
             // Gamepad or Keyboard config, Only one true at once or it wont work.
             keyboard: true,
@@ -456,7 +456,7 @@ impl Default for Settings {
 
             // Item Configs
             // loot Fill
-            loot_filled: 14, // 0 no fill, 14 100% fill
+            loot_filled: 0, // 0 no fill, 14 100% fill
             loot_outline: 0,
 
             loot: Loot::default(),
