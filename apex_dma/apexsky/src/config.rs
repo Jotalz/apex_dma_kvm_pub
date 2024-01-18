@@ -100,6 +100,11 @@ pub struct Loot {
     pub hammer_point: bool,
     pub disruptor_rounds: bool,
     pub boosted_loader: bool,
+    pub anvil_receiver: bool,
+    pub doubletap_trigger: bool,
+    pub dual_shell: bool,
+    pub kinetic_feeder:bool,
+    pub quickdraw_holster:bool,
     pub shotgunbolt1: bool,
     pub shotgunbolt2: bool,
     pub shotgunbolt3: bool,
@@ -108,8 +113,10 @@ pub struct Loot {
     pub grenade_frag: bool,
     pub grenade_arc_star: bool,
     pub grenade_thermite: bool,
-    // Kraber
+    // Supply Drop Weapons
     pub weapon_kraber: bool,
+    pub weapon_bow: bool,
+    pub weapon_prowler: bool,
     // Shotguns
     pub weapon_mastiff: bool,
     pub weapon_eva8: bool,
@@ -121,7 +128,6 @@ pub struct Loot {
     pub weapon_havoc: bool,
     pub weapon_devotion: bool,
     pub weapon_triple_take: bool,
-    pub weapon_prowler: bool,
     pub weapon_volt: bool,
     // Heavy Weapons
     pub weapon_flatline: bool,
@@ -142,7 +148,6 @@ pub struct Loot {
     pub weapon_longbow: bool,
     pub weapon_charge_rifle: bool,
     pub weapon_sentinel: bool,
-    pub weapon_bow: bool,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
@@ -321,9 +326,14 @@ impl Default for Loot {
             suppressor3: false,
             turbo_charger: true,
             skull_piecer: true,
-            hammer_point: true,
+            hammer_point: false,
             disruptor_rounds: true,
-            boosted_loader: true,
+            boosted_loader: false,
+            anvil_receiver: false,
+            doubletap_trigger: false,
+            dual_shell: false,
+            kinetic_feeder:false,
+            quickdraw_holster:false,
             shotgunbolt1: false,
             shotgunbolt2: false,
             shotgunbolt3: false,
@@ -332,8 +342,10 @@ impl Default for Loot {
             grenade_frag: false,
             grenade_arc_star: false,
             grenade_thermite: false,
-            // Kraber
+            // Supply Drop Weapons
             weapon_kraber: true,
+            weapon_bow: false,
+            weapon_prowler: false,
             // Shotguns
             weapon_mastiff: false,
             weapon_eva8: false,
@@ -345,7 +357,6 @@ impl Default for Loot {
             weapon_havoc: false,
             weapon_devotion: false,
             weapon_triple_take: false,
-            weapon_prowler: false,
             weapon_volt: false,
             // Heavy Weapons
             weapon_flatline: false,
@@ -366,7 +377,6 @@ impl Default for Loot {
             weapon_longbow: false,
             weapon_charge_rifle: false,
             weapon_sentinel: false,
-            weapon_bow: false,
         }
     }
 }

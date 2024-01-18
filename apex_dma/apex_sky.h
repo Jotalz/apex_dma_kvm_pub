@@ -106,6 +106,11 @@ typedef struct {
   bool hammer_point;
   bool disruptor_rounds;
   bool boosted_loader;
+  bool anvil_receiver;
+  bool doubletap_trigger;
+  bool dual_shell;
+  bool kinetic_feeder;
+  bool quickdraw_holster;
   bool shotgunbolt1;
   bool shotgunbolt2;
   bool shotgunbolt3;
@@ -114,8 +119,10 @@ typedef struct {
   bool grenade_frag;
   bool grenade_arc_star;
   bool grenade_thermite;
-  // Kraber
+  // Supply Drop Weapons
   bool weapon_kraber;
+  bool weapon_bow;
+  bool weapon_prowler;
   // Shotguns
   bool weapon_mastiff;
   bool weapon_eva8;
@@ -127,7 +134,6 @@ typedef struct {
   bool weapon_havoc;
   bool weapon_devotion;
   bool weapon_triple_take;
-  bool weapon_prowler;
   bool weapon_volt;
   // Heavy Weapons
   bool weapon_flatline;
@@ -148,7 +154,6 @@ typedef struct {
   bool weapon_longbow;
   bool weapon_charge_rifle;
   bool weapon_sentinel;
-  bool weapon_bow;
 } loots;
 
 typedef struct {

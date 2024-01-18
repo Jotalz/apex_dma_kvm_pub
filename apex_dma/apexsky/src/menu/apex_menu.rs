@@ -61,6 +61,7 @@ enum MenuLevel {
     HealingMenu,
     NadesMenu,
     BackpacksMenu,
+    HopUpsMenu,
     ScopesMenu,
     KeyCodesMenu,
     HotkeyMenu,
@@ -189,6 +190,7 @@ impl<'a> TerminalMenu<'a> {
             MenuLevel::HealingMenu => build_healing_menu(i18n_bundle, data),
             MenuLevel::NadesMenu => build_nades_menu(i18n_bundle, data),
             MenuLevel::BackpacksMenu => build_backpacks_menu(i18n_bundle, data),
+            MenuLevel::HopUpsMenu => build_hopups_menu(i18n_bundle, data),
             MenuLevel::ScopesMenu => build_scopes_menu(i18n_bundle, data),
             MenuLevel::KeyCodesMenu => build_key_codes_menu(i18n_bundle, data),
             MenuLevel::HotkeyMenu => build_hotkey_menu(i18n_bundle, data),
@@ -1258,7 +1260,14 @@ fn build_item_filter_menu(
             },
         )
         .add_item(
-            item_text(format!("9 - {}", i18n_msg!(i18n_bundle, ItemScopes))),
+            item_text(format!("9 - {}", i18n_msg!(i18n_bundle, ItemHopUps))),
+            |handle: &mut TerminalMenu| {
+                handle.nav_menu(MenuLevel::HopUpsMenu);
+                None
+            },
+        )
+        .add_item(
+            item_text(format!("10 - {}", i18n_msg!(i18n_bundle, ItemScopes))),
             |handle: &mut TerminalMenu| {
                 handle.nav_menu(MenuLevel::ScopesMenu);
                 None
@@ -1266,7 +1275,7 @@ fn build_item_filter_menu(
         )
         .add_item(
             item_text(format!(
-                "10 - {}",
+                "11 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {
@@ -1502,54 +1511,10 @@ fn build_light_weapons_menu(
         settings.loot.lasersight4,
         lasersight4
     );
-    menu = menu
-        .add_dummy_item()
-        .add_text_item(i18n_msg!(i18n_bundle, WeaponHopUpsSection))
-        .add_dummy_item();
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "23 - ",
-        LootTurboCharger,
-        settings.loot.turbo_charger,
-        turbo_charger
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "24 - ",
-        LootSkullPiecer,
-        settings.loot.skull_piecer,
-        skull_piecer
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "25 - ",
-        LootHammerPoints,
-        settings.loot.hammer_point,
-        hammer_point
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "26 - ",
-        LootDisruptorRounds,
-        settings.loot.disruptor_rounds,
-        disruptor_rounds
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "27 - ",
-        LootBoostedLoader,
-        settings.loot.boosted_loader,
-        boosted_loader
-    );
     menu.add_dummy_item()
         .add_item(
             item_text(format!(
-                "28 - {}",
+                "23 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {
@@ -1777,54 +1742,10 @@ fn build_heavy_weapons_menu(
         settings.loot.lasersight4,
         lasersight4
     );
-    menu = menu
-        .add_dummy_item()
-        .add_text_item(i18n_msg!(i18n_bundle, WeaponHopUpsSection))
-        .add_dummy_item();
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "22 - ",
-        LootTurboCharger,
-        settings.loot.turbo_charger,
-        turbo_charger
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "23 - ",
-        LootSkullPiecer,
-        settings.loot.skull_piecer,
-        skull_piecer
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "24 - ",
-        LootHammerPoints,
-        settings.loot.hammer_point,
-        hammer_point
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "25 - ",
-        LootDisruptorRounds,
-        settings.loot.disruptor_rounds,
-        disruptor_rounds
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "26 - ",
-        LootBoostedLoader,
-        settings.loot.boosted_loader,
-        boosted_loader
-    );
     menu.add_dummy_item()
         .add_item(
             item_text(format!(
-                "27 - {}",
+                "22 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {
@@ -2052,54 +1973,10 @@ fn build_energy_weapons_menu(
         settings.loot.lasersight4,
         lasersight4
     );
-    menu = menu
-        .add_dummy_item()
-        .add_text_item(i18n_msg!(i18n_bundle, WeaponHopUpsSection))
-        .add_dummy_item();
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "22 - ",
-        LootTurboCharger,
-        settings.loot.turbo_charger,
-        turbo_charger
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "23 - ",
-        LootSkullPiecer,
-        settings.loot.skull_piecer,
-        skull_piecer
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "24 - ",
-        LootHammerPoints,
-        settings.loot.hammer_point,
-        hammer_point
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "25 - ",
-        LootDisruptorRounds,
-        settings.loot.disruptor_rounds,
-        disruptor_rounds
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "26 - ",
-        LootBoostedLoader,
-        settings.loot.boosted_loader,
-        boosted_loader
-    );
     menu.add_dummy_item()
         .add_item(
             item_text(format!(
-                "27 - {}",
+                "22 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {
@@ -2279,54 +2156,10 @@ fn build_sniper_weapons_menu(
         settings.loot.suppressor3,
         suppressor3
     );
-    menu = menu
-        .add_dummy_item()
-        .add_text_item(i18n_msg!(i18n_bundle, WeaponHopUpsSection))
-        .add_dummy_item();
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "17 - ",
-        LootTurboCharger,
-        settings.loot.turbo_charger,
-        turbo_charger
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "18 - ",
-        LootSkullPiecer,
-        settings.loot.skull_piecer,
-        skull_piecer
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "19 - ",
-        LootHammerPoints,
-        settings.loot.hammer_point,
-        hammer_point
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "20 - ",
-        LootDisruptorRounds,
-        settings.loot.disruptor_rounds,
-        disruptor_rounds
-    );
-    menu = add_pick_item!(
-        menu,
-        i18n_bundle,
-        "21 - ",
-        LootBoostedLoader,
-        settings.loot.boosted_loader,
-        boosted_loader
-    );
     menu.add_dummy_item()
         .add_item(
             item_text(format!(
-                "22 - {}",
+                "17 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {
@@ -2697,6 +2530,118 @@ fn build_backpacks_menu(
         .add_item(
             item_text(format!(
                 "5 - {}",
+                i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
+            )),
+            |handle: &mut TerminalMenu| {
+                handle.nav_menu(MenuLevel::MainMenu);
+                None
+            },
+        )
+        .into()
+}
+
+fn build_hopups_menu(
+    i18n_bundle: FluentBundle<FluentResource>,
+    settings: config::Settings,
+) -> MenuState<'static> {
+    let mut menu = MenuBuilder::new().title(i18n_msg!(i18n_bundle, WeaponHopUpsMenuTitle));
+    menu = menu
+        .add_item(
+            ListItem::new(Line::from(vec![
+                Span::from(i18n_msg!(i18n_bundle, RedIsDisable).to_string()).red(),
+                Span::from(" - ").dark_gray(),
+                Span::from(i18n_msg!(i18n_bundle, GreedIsEnabled).to_string()).green(),
+            ])),
+            |_| None,
+        )
+        .no_id()
+        .add_dummy_item()
+        .add_text_item(i18n_msg!(i18n_bundle, WeaponHopUpsSection))
+        .add_dummy_item();
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "1 - ",
+        LootTurboCharger,
+        settings.loot.turbo_charger,
+        turbo_charger
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "2 - ",
+        LootSkullPiecer,
+        settings.loot.skull_piecer,
+        skull_piecer
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "3 - ",
+        LootHammerPoints,
+        settings.loot.hammer_point,
+        hammer_point
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "4 - ",
+        LootDisruptorRounds,
+        settings.loot.disruptor_rounds,
+        disruptor_rounds
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "5 - ",
+        LootBoostedLoader,
+        settings.loot.boosted_loader,
+        boosted_loader
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "6 - ",
+        LootAnvilReceiver,
+        settings.loot.anvil_receiver,
+        anvil_receiver
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "7 - ",
+        LootDoubletapTrigger,
+        settings.loot.doubletap_trigger,
+        doubletap_trigger
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "8 - ",
+        LootDualShell,
+        settings.loot.dual_shell,
+        dual_shell
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "9 - ",
+        LootKineticFeeder,
+        settings.loot.kinetic_feeder,
+        kinetic_feeder
+    );
+    menu = add_pick_item!(
+        menu,
+        i18n_bundle,
+        "10 - ",
+        LootQuickdrawHolster,
+        settings.loot.quickdraw_holster,
+        quickdraw_holster
+    );
+    menu.add_dummy_item()
+        .add_item(
+            item_text(format!(
+                "11 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {
