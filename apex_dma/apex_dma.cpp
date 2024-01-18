@@ -216,14 +216,14 @@ void ClientActions() {
                                           button_state);
       //int tduck_state, force_jump,force_toggle_duck;
       int attack_state = 0, zoom_state = 0, jump_state = 0,backWardState = 0, force_duck = 0, curFrameNumber = 0,skyDriveState = 0,
-          strafeTick = 0,inDuckState = 0, foreWardState = 0, inForeWard = 0, flags = 0, inJump = 0;
+          strafeTick = 0,duck_state = 0, force_foreward = 0, foreward_state = 0, flags = 0, force_jump = 0;
       float wallrunStart = 0, wallrunClear = 0, bhopTick = 0;
       bool longclimb = false, jumpstart = false, bunnyhop = false;
       apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108开火
       apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109瞄准
       //apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 切换下蹲
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);         //跳跃状态
-      apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, inJump);
+      apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
       apex_mem.Read<int>(g_Base + OFFSET_IN_BACKWARD, backWardState);  //后退状态
       //apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
       //apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck); //切换蹲起按键
@@ -233,9 +233,9 @@ void ClientActions() {
       apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNSTART, wallrunStart);
       apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNCLEAR, wallrunClear);
       apex_mem.Read<int>(local_player_ptr + OFFSET_SKYDRIVESTATE, skyDriveState); //跳伞状态
-      apex_mem.Read<int>(local_player_ptr + OFFSET_IN_DUCKSTATE, inDuckState);  //玩家下蹲状态
-      apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD, inForeWard);  //前进状态
-      apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD + 0x8, foreWardState);  //前进按键
+      apex_mem.Read<int>(local_player_ptr + OFFSET_IN_DUCKSTATE, duck_state);  //玩家下蹲状态
+      apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD, foreward_state);  //前进状态
+      apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD + 0x8, force_foreward);  //前进按键
 
       float world_time, traversal_start_time, traversal_progress;
       if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE, world_time)) {
@@ -268,13 +268,22 @@ void ClientActions() {
               longclimb = true;
               tapStrip = false;
           }
-          tapStrip = true;
+          else
+          {
+              tapStrip = true;
+          }
       }
       if (tapStrip) {
           if (longclimb) {
               if (world_time > wallrunClear + 0.1)
                   longclimb = false;
           }
+          //printf("longclimb:%d\n", longclimb);
+          //printf("duck_state:%d"\n, duck_state);
+          //printf("jump_state:%d"\n, jump_state);
+          //printf("foreward_state:%d"\n, foreward_state);
+          //printf("strafeTick:%d"\n, strafeTick);
+          //printf("flags:%d"\n, flags);
           // when player is in air  and  not skydrive    and  not longclimb and not backward
           if (((flags & 0x1) == 0) && !(skyDriveState > 0) && !longclimb && !(backWardState > 0))
           {
@@ -282,8 +291,8 @@ void ClientActions() {
                   jumpstart = true;
                   strafeTick = 0;
               }
-              else if (((inDuckState > 0) && (jump_state != 65)) || ((strafeTick > 7) && (strafeTick < 125) && (inForeWard == 33))) { //previously 33
-                  if (foreWardState == 0) {
+              else if (((duck_state > 0) && (jump_state != 65)) || ((strafeTick > 7) && (strafeTick < 125) && (foreward_state == 33))) { //previously 33
+                  if (force_foreward == 0) {
                       apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 5);
                   }
                   else {
@@ -295,16 +304,16 @@ void ClientActions() {
           else if (jumpstart && ((flags & 0x1) != 0)) {
               jumpstart = false;
               strafeTick = 0;
-              if (inForeWard == 0) {
+              if (foreward_state == 0) {
                   apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 0);
               }
-              else if (inForeWard == 33) {
+              else if (foreward_state == 33) {
                   apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 1);
               }
           }
           /////////////// bunny hop
           else if (jump_state == 65 && ((flags & 0x1) != 0)) {
-              if (inJump == 5 && !bunnyhop && (world_time > (bhopTick + 0.1))) {
+              if (force_jump == 5 && !bunnyhop && (world_time > (bhopTick + 0.1))) {
                   apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
                   bunnyhop = true;
               }
