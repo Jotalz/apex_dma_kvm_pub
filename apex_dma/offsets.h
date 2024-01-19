@@ -46,6 +46,11 @@
 #define OFFSET_WALLRUNCLEAR 0x3528 //m_wallRunClearTime float updated 1/15/2024
 #define OFFSET_IN_DUCKSTATE 0x29ac //[DataMap.C_Player] m_duckState
 
+#define OFFSET_IS_SKYDIVING 0x462c //m_skydiveState
+#define OFFSET_GRAPPLE 0x2c08 //[RecvTable.DT_Player].m_grapple GrappleData
+#define OFFSET_GRAPPLE_ACTIVE 0x2c98 //m_grappleActive  int
+#define OFFSET_GRAPPLE_ATTACHED 0x0048//m_grappleAttached  int
+
 #define OFFSET_LIFE_STATE 0x0658 //m_lifeState, >0 = dead //updated 1/11/2024
 #define OFFSET_BLEED_OUT_STATE 0x26a0 //m_bleedoutState, >0 = knocked //updated 1/11/2024
 
