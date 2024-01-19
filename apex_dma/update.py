@@ -4,13 +4,6 @@ import configparser
 from datetime import datetime
 import sys
 
-args = sys.argv
-if len(args) > 1:
-    for i, arg in enumerate(args[1:], start=1):
-        print(f"Argument {i}: {arg}")
-else:
-    print("No arguments provided.")
-
 
 class ConsoleColors:
     RESET = '\033[0m'
@@ -31,6 +24,9 @@ date = current_date.strftime("%Y/%m/%d")
 
 
 def update_offsets(offset_h_path, offset_ini_path):
+
+    offset_pattern = re.compile(r'0x[\dA-Fa-f]+')  # 匹配 0x...
+    date_pattern = re.compile(r'updated (\d{1,4}/\d{1,4}/\d{1,4})')  # 匹配日期
     # 读取 offset.ini 中的偏移量
     dumpFile = configparser.ConfigParser(strict=False)
     dumpFile.read(offset_ini_path)
@@ -51,10 +47,15 @@ def update_offsets(offset_h_path, offset_ini_path):
             if section in dumpFile and keyword in dumpFile[section]:
                 value = dumpFile[section][keyword]  # 从dump文件中找出偏移
                 lines[i] = re.sub(offset_pattern, value, lines[i], count=1)
-                lines[i] = re.sub(date_pattern, date, lines[i], count=1)
+                lines[i] = re.sub(date_pattern, "updated "+date, lines[i], count=1)
             else:
                 notFindLines.append(lines[i])
-
+        elif not keywords:
+            pass
+        elif keywords[0] == "Date":
+            lines[i] = f"//Date {date}"
+        elif keywords[0] == "GameVersion":
+            lines[i] = f"//GameVersion = {dumpFile['Miscellaneous']['GameVersion']}"
         else:
             if lines[i]:
                 unrecognizedLines.append(lines[i])
@@ -78,6 +79,11 @@ def update_offsets(offset_h_path, offset_ini_path):
 
 
 if __name__ == '__main__':
-    offset_pattern = re.compile(r'0x[\dA-Fa-f]+')  # 匹配 0x...
-    date_pattern = re.compile(r'updated (\d{1,4}/\d{1,4}/\d{1,4})')  # 匹配日期
-    update_offsets('offsets.h', 'offsets.ini')
+    args = sys.argv
+    if len(sys.argv) >= 3:
+        offset_h_path = sys.argv[1]
+        offset_ini_path = sys.argv[2]
+        update_offsets(offset_h_path, offset_ini_path)
+    else:
+        print("Requires two parameters.\neg.>py update.py offsets.h offsets.ini")
+

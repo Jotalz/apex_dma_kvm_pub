@@ -1,5 +1,5 @@
-//Date 2024/01/19
-//GameVersion=v3.0.54.31
+//Date 2024/01/20
+//GameVersion = v3.0.54.31
 
 #define OFFSET_ENTITYLIST 0x1db2ed8 //[Miscellaneous].cl_entitylist 2024/01/19
 #define OFFSET_LOCAL_ENT 0x21615d8 //[Miscellaneous].LocalPlayer 2024/01/19
