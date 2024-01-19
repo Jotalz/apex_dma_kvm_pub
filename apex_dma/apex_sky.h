@@ -173,6 +173,7 @@ typedef struct {
   bool player_filled_toggle;
   bool super_key_toggle;
   bool super_grpple;
+  bool auto_tapstrafe;
   bool onevone;
   bool tdm_toggle;
   bool item_glow;

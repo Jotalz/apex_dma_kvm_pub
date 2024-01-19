@@ -176,6 +176,7 @@ pub struct Settings {
     pub player_filled_toggle: bool,
     pub super_key_toggle: bool,
     pub super_grpple:bool,
+    pub auto_tapstrafe:bool,
     pub onevone: bool,
     pub tdm_toggle: bool,
     pub item_glow: bool,
@@ -407,6 +408,7 @@ impl Default for Settings {
             player_filled_toggle: false,
             super_key_toggle: true,
             super_grpple: true,
+            auto_tapstrafe: true,
             // end Terminal Stuff
             onevone: false,
             tdm_toggle: false,

@@ -225,6 +225,7 @@ pub enum MessageId {
     MenuItemBowChargeRifleAim,
     MenuItemShotgunAutoShot,
     MenuItemSuperGrpple,
+    MenuItemAutoTapstrafe,
 }
 
 pub fn get_fluent_bundle() -> FluentBundle<FluentResource> {

@@ -240,3 +240,4 @@ menu-item-kbd-backlight-ctrl = 键盘背光控制
 menu-item-bow-charge-rifle-aim = 波赛克自瞄
 menu-item-shotgun-auto-shot = 霰弹枪扳机
 menu-item-super-grpple = 超级钩
+menu-item-auto-tapstrafe = 自动TS

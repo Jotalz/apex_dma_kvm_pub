@@ -149,27 +149,6 @@ bool IsInCrossHair(Entity &target) {
   return is_trigger;
 }
 
-// Used to change things on a timer
-/* unsigned char insidevalueItem = 1;
-void updateInsideValue()
-{
-        updateInsideValue_t = true;
-        while (updateInsideValue_t)
-        {
-                insidevalueItem++;
-                insidevalueItem %= 256;
-                std::this_thread::sleep_for(std::chrono::seconds(2));
-                printf("smooth: %f\n", smooth);
-                printf("bone: %i\n", bone);
-                printf("glowrnot: %f\n", glowrnot);
-                printf("glowgnot: %f\n", glowgnot);
-                printf("glowbnot: %f\n", glowbnot);
-
-
-        }
-        updateInsideValue_t = false;
-} */
-
 // Visual check and aim check.?
 float lastvis_esp[toRead];
 float lastvis_aim[toRead];
@@ -177,7 +156,7 @@ float lastvis_aim[toRead];
 std::vector<Entity> spectators, allied_spectators;
 std::mutex spectatorsMtx;
 
-void MapRadarTesting() {
+void MapRadarTesting() { //为什么这能把雷达搞出来...不就来回写了一个地址
   uintptr_t pLocal;
   apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, pLocal);
   int dt;
@@ -212,22 +191,15 @@ void ClientActions() {
       apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, local_player_ptr);
 
       // read game states
-      apex_mem.Read<typeof(button_state)>(g_Base + OFFSET_INPUT_SYSTEM + 0xb0,
-                                          button_state);
-      //int tduck_state, force_jump,force_toggle_duck;
-      int attack_state = 0, zoom_state = 0, jump_state = 0,backWardState = 0, force_duck = 0, curFrameNumber = 0,skyDriveState = 0,
-          strafeTick = 0,duck_state = 0, force_foreward = 0, foreward_state = 0, flags = 0, force_jump = 0;
-      float wallrunStart = 0, wallrunClear = 0, bhopTick = 0;
-      bool longclimb = false, jumpstart = false, bunnyhop = false;
+      apex_mem.Read<typeof(button_state)>(g_Base + OFFSET_INPUT_SYSTEM + 0xb0, button_state);
+      int attack_state = 0, zoom_state = 0, jump_state = 0,backWardState = 0, curFrameNumber = 0,skyDriveState = 0,
+          duck_state = 0, force_foreward = 0, foreward_state = 0, flags = 0;
+      float wallrunStart = 0, wallrunClear = 0;
+      bool longclimb = false;
       apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);     // 108开火
       apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);         // 109瞄准
-      //apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 切换下蹲
       apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);         //跳跃状态
-      apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
       apex_mem.Read<int>(g_Base + OFFSET_IN_BACKWARD, backWardState);  //后退状态
-      //apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
-      //apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck); //切换蹲起按键
-      apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck); //下蹲按键
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, curFrameNumber); // GlobalVars + 0x0008
       apex_mem.Read<int>(local_player_ptr + OFFSET_FLAGS, flags);  //玩家空间状态？
       apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNSTART, wallrunStart);
@@ -237,6 +209,10 @@ void ClientActions() {
       apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD, foreward_state);  //前进状态
       apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD + 0x8, force_foreward);  //前进按键
 
+      //apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 切换下蹲
+      //apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck); //切换蹲起按键
+      //apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
+      //apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck); //下蹲按键
       float world_time, traversal_start_time, traversal_progress;
       if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE, world_time)) {
         //memory_io_panic("read time_base");
@@ -260,70 +236,68 @@ void ClientActions() {
       //   printf("Jump Value: %i\n", force_jump);
       //   printf("ToggleDuck Value: %i\n", force_toggle_duck);
       //   printf("Duck Value: %i\n", force_duck);
-      bool tapStrip = true;
-      //autoTapstrafe
-      if (wallrunStart > wallrunClear) {
-          float climbTime = world_time - wallrunStart;
-          if (climbTime > 0.8) {
-              longclimb = true;
-              tapStrip = false;
-          }
-          else
-          {
-              tapStrip = true;
-          }
-      }
-      if (tapStrip) {
-          if (longclimb) {
-              if (world_time > wallrunClear + 0.1)
-                  longclimb = false;
-          }
-          //printf("longclimb:%d\n", longclimb);
-          //printf("duck_state:%d"\n, duck_state);
-          //printf("jump_state:%d"\n, jump_state);
-          //printf("foreward_state:%d"\n, foreward_state);
-          //printf("strafeTick:%d"\n, strafeTick);
-          //printf("flags:%d"\n, flags);
-          // when player is in air  and  not skydrive    and  not longclimb and not backward
-          if (((flags & 0x1) == 0) && !(skyDriveState > 0) && !longclimb && !(backWardState > 0))
-          {
-              if (!jumpstart) {
-                  jumpstart = true;
-                  strafeTick = 0;
+      if (g_settings.auto_tapstrafe){
+          bool ts_start = true;
+          //autoTapstrafe
+          if (wallrunStart > wallrunClear) {
+              float climbTime = world_time - wallrunStart;
+              if (climbTime > 0.8) {
+                  longclimb = true;
+                  ts_start = false;
               }
-              else if (((duck_state > 0) && (jump_state != 65)) || ((strafeTick > 7) && (strafeTick < 125) && (foreward_state == 33))) { //previously 33
-                  if (force_foreward == 0) {
-                      apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 5);
+              else
+              {
+                  ts_start = true;
+              }
+          }
+          if (ts_start) {
+              if (longclimb) {
+                  if (world_time > wallrunClear + 0.1)
+                      longclimb = false;
+              }
+              //printf("longclimb:%d\n", longclimb);
+              //printf("duck_state:%d"\n, duck_state); 向下蹲1 完全蹲下2 起身过程3 其他0
+              //printf("jump_state:%d"\n, jump_state); 按着跳跃65 其他0
+              //printf("foreward_state:%d"\n, foreward_state); 按w时33，其他0 滚轮前进不触发
+              //printf("flags:%d"\n, flags);  空中状态64 蹲下67 站立65
+              //printf("force_foreward :%d\n", force_foreward);按下w是1 其他0
+              //printf("force_jump :%d\n", force_jump);按着跳跃5 其他4
+              // when player is in air  and  not skydrive    and  not longclimb and not backward
+              if (((flags & 0x1) == 0) && !(skyDriveState > 0) && !longclimb && !(backWardState > 0))
+              {
+                  if (((duck_state > 0) && (foreward_state == 33))) { //previously 33
+                      if (force_foreward == 0) {
+                          apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 1);
+                      }
+                      else {
+                          apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 0);
+                      }
                   }
-                  else {
-                      apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 4);
+              }
+              else if ((flags & 0x1) != 0) {
+                  if (foreward_state == 0) {
+                      apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 0);
                   }
-              }
-              strafeTick++;
-          }
-          else if (jumpstart && ((flags & 0x1) != 0)) {
-              jumpstart = false;
-              strafeTick = 0;
-              if (foreward_state == 0) {
-                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 0);
-              }
-              else if (foreward_state == 33) {
-                  apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 1);
-              }
-          }
-          /////////////// bunny hop
-          else if (jump_state == 65 && ((flags & 0x1) != 0)) {
-              if (force_jump == 5 && !bunnyhop && (world_time > (bhopTick + 0.1))) {
-                  apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
-                  bunnyhop = true;
-              }
-              else if (bunnyhop) {
-                  apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 5);
-                  bunnyhop = false;
-                  bhopTick = world_time;
+                  else if (foreward_state == 33) {
+                      apex_mem.Write<int>(g_Base + OFFSET_IN_FORWARD + 0x8, 1);
+                  }
               }
           }
       }
+      ////// bunny hop
+      /*
+      if (jump_state == 65 && ((flags & 0x1) != 0)) {
+          if (force_jump == 5 && !bunnyhop && (world_time > (bhopTick + 0.1))) {
+              apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
+              bunnyhop = true;
+          }
+          else if (bunnyhop) {
+              apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 5);
+              bunnyhop = false;
+              bhopTick = world_time;
+          }
+      }*/
+
       if (g_settings.super_key_toggle) {
         /** SuperGlide
          * https://www.unknowncheats.me/forum/apex-legends/578160-external-auto-superglide-3.html
