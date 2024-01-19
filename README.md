@@ -107,7 +107,12 @@ Game version (Steam Only right now): v3.0.51.45
 Please star if you like it.
 Look forward to your testing and feedback.
 
-
+## Update OFFSETS
+1. Make sure you have properly formatted offsets.h and offsets.ini.
+2. Run the python script like this.
+    ```shell
+    py update.py offsets.h offsets.ini
+    ```
 
 ## Getting Started
 
