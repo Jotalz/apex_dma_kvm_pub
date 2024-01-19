@@ -74,10 +74,10 @@ public:
   bool isItem();
   bool isBox();
   bool isTrap();
-  bool isGlowing();
+  //bool isGlowing();
   void enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter);
-  void disableGlow();
-  void BlueGlow();
+  //void disableGlow();
+  //void BlueGlow();
 };
 
 class WeaponXEntity {

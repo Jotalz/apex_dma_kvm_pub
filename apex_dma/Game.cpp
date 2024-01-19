@@ -86,7 +86,7 @@ bool Entity::isKnocked() {
   return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0;
 }
 
-bool Entity::isAlive() { return *(int *)(buffer + OFFSET_LIFE_STATE) == 0; }
+bool Entity::isAlive() { return *(int *)(buffer + OFFSET_LIFE_STATE) == 0; } //>0 dead
 
 float Entity::lastVisTime() { return *(float *)(buffer + OFFSET_VISIBLE_TIME); }
 
@@ -272,9 +272,9 @@ bool Item::isTrap() {
   return strncmp(class_name, "caustic_trap", 13) == 0;
 }
 
-bool Item::isGlowing() {
+/*bool Item::isGlowing() {
   return *(int *)(buffer + OFFSET_ITEM_GLOW) == 1363184265;
-}
+}*/
 
 void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
     std::array<unsigned char, 4> highlightFunctionBits = {
@@ -543,9 +543,9 @@ void WeaponXEntity::update(uint64_t LocalPlayer) {
   apex_mem.Read<uint64_t>(entitylist + (wephandle << 5), wep_entity);
 
   projectile_speed = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);   //maybe its WeaponSettings.projectile_launch_speed now
   projectile_scale = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);  // maybe its WeaponSettings.projectile_gravity_scale now
   zoom_fov = 0;
   apex_mem.Read<float>(wep_entity + OFFSET_ZOOM_FOV, zoom_fov);
   ammo = 0;
