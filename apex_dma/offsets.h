@@ -41,7 +41,7 @@
 #define OFFSET_SKYDRIVESTATE 0x462c //m_skydiveState updated 1/15/2024
 #define OFFSET_GRAPPLE 0x2c08 //[RecvTable.DT_Player].m_grapple updated 1/15/2024
 #define OFFSET_GRAPPLE_ACTIVE 0x2c98 //[RecvTable.DT_Player].m_grappleActive updated 1/15/2024
-#define OFFSET_GRAPPLE_ATTACHED 0x0048//[RecvTable.DT_Player].m_grappleAttached updated 1/15/2024
+#define OFFSET_GRAPPLE_ATTACHED 0x0048//[RecvTable.DT_GrappleData].m_grappleAttached updated 1/15/2024
 #define OFFSET_WALLRUNSTART 0x3524 //m_wallRunStartTime updated 1/15/2024
 #define OFFSET_WALLRUNCLEAR 0x3528 //m_wallRunClearTime float updated 1/15/2024
 #define OFFSET_IN_DUCKSTATE 0x29ac //[DataMap.C_Player].m_duckState updated 1/15/2024
@@ -79,7 +79,7 @@
 #define OFFSET_TIME_BASE 0x2048 //m_currentFramePlayer.timeBase updated 1/11/2024
 #define OFFSET_VIEW_MODELS 0x2ce0 //m_hViewModels updated 1/11/2024
  
-#define OFFSET_GLOW_ENABLE 0x28C //updated 7 = enabled, 2 = disabled
+#define OFFSET_GLOW_ENABLE 0x28C //updated OFFSET_GLOW_CONTEXT_ID 7 = enabled, 2 = disabled
 #define OFFSET_GLOW_THROUGH_WALLS 0x26c //updated 2 = enabled, 5 = disabled
 #define OFFSET_GLOW_FIX 0x268 //updated 1/10/2024
 #define OFFSET_HIGHLIGHTGENERICCONTEXT 0x028d //m_highlightGenericContexts updated 11/20/2023
