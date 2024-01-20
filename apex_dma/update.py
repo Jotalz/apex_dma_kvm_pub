@@ -1,5 +1,4 @@
 import re
-from pprint import pprint
 import configparser
 from datetime import datetime
 import sys
