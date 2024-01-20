@@ -86,7 +86,7 @@ bool Entity::isKnocked() {
   return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0;
 }
 
-bool Entity::isAlive() { return *(int *)(buffer + OFFSET_LIFE_STATE) == 0; }
+bool Entity::isAlive() { return *(int *)(buffer + OFFSET_LIFE_STATE) == 0; } //>0 dead
 
 float Entity::lastVisTime() { return *(float *)(buffer + OFFSET_VISIBLE_TIME); }
 
@@ -156,7 +156,7 @@ float Entity::GetYaw() {
   return yaw;
 }
 
-bool Entity::isGlowing() { return *(uint8_t*)(buffer + OFFSET_GLOW_ENABLE) == 7; }
+bool Entity::isGlowing() { return *(uint8_t*)(buffer + OFFSET_GLOW_CONTEXT_ID) == 7; }
 
 bool Entity::isZooming() { return *(int *)(buffer + OFFSET_ZOOMING) == 1; }
 
@@ -170,7 +170,7 @@ void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_
       outline_size, // OutlineRadius: size * 255 / 8
       64 // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess << 7)
   };
-  apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, setting_index);
+  apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_CONTEXT_ID, setting_index);
   apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
 
   long highlight_settings_ptr;
@@ -210,14 +210,14 @@ void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
 
   std::array<unsigned char, 4> highlightFunctionBits = {0, 125, 64, 64};
   if (!enable_glow) {
-      apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_ENABLE, 0);
+      apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, 0);
       return;
   }
 
   long highlightSettingsPtr;
   apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
   uint8_t context_id = 99;
-  apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_ENABLE, context_id);
+  apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, context_id);
   apex_mem.Write<typeof(highlightFunctionBits)>(
       highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x0, highlightFunctionBits);
   apex_mem.Write<typeof(highlight_colors)>(
@@ -272,9 +272,9 @@ bool Item::isTrap() {
   return strncmp(class_name, "caustic_trap", 13) == 0;
 }
 
-bool Item::isGlowing() {
+/*bool Item::isGlowing() {
   return *(int *)(buffer + OFFSET_ITEM_GLOW) == 1363184265;
-}
+}*/
 
 void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter) {
     std::array<unsigned char, 4> highlightFunctionBits = {
@@ -283,7 +283,7 @@ void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float,
         outline_size,                  // HIGHLIGHT_OUTLINE_LOOT_SCANNED
         64};
     uint8_t contextId = setting_index;
-    apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_ENABLE, contextId);
+    apex_mem.Write<uint8_t>(ptr + OFFSET_GLOW_CONTEXT_ID, contextId);
     long highlightSettingsPtr;
     apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
     apex_mem.Write<typeof(highlightFunctionBits)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x0, highlightFunctionBits);
@@ -543,9 +543,9 @@ void WeaponXEntity::update(uint64_t LocalPlayer) {
   apex_mem.Read<uint64_t>(entitylist + (wephandle << 5), wep_entity);
 
   projectile_speed = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);   //maybe its WeaponSettings.projectile_launch_speed now
   projectile_scale = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);  // maybe its WeaponSettings.projectile_gravity_scale now
   zoom_fov = 0;
   apex_mem.Read<float>(wep_entity + OFFSET_ZOOM_FOV, zoom_fov);
   ammo = 0;

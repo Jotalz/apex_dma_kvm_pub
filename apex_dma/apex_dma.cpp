@@ -816,29 +816,35 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
 void DoActions() {
   actions_t = true;
   while (actions_t) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
     while (g_Base != 0) {   //读到游戏基址后开始循环
+      std::this_thread::sleep_for(std::chrono::milliseconds(30)); // don't change xD
+
+      uint64_t LocalPlayer = 0;
+      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);  //读取本地玩家的所在地址,即是当前视角的玩家，自己或者你死亡后观战的人
+      if (LocalPlayer == 0)
+          continue;
       const auto g_settings = global_settings();
-
-      char MapName[200] = {0};
-      uint64_t MapName_ptr;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_HOST_MAP, MapName_ptr);   //根据偏移读取当前地图名
-      apex_mem.ReadArray<char>(MapName_ptr, MapName, 200);
-
-      // printf("%s\n", MapName);
-      if (strcmp(MapName, "mp_rr_tropic_island_mu1_storm") == 0) {
+      char level_name[200] = {0};
+      uint64_t LevelName_ptr;
+      apex_mem.Read<uint64_t>(g_Base + OFFSET_LEVELNAME, LevelName_ptr);   //根据偏移读取当前地图名
+      apex_mem.ReadArray<char>(LevelName_ptr, level_name, 200);
+      // printf("%s\n", level_name);
+      if (strcmp(level_name, "mp_lobby") == 0) {
+        map = 0;
+      }else if (strcmp(level_name, "mp_rr_canyonlands_staging_mu1") == 0) {
         map = 1;
-      } else if (strcmp(MapName, "mp_rr_canyonlands_mu") == 0) {
+      } else if (strcmp(level_name, "mp_rr_tropic_island_mu1_storm") == 0) {
         map = 2;
-      } else if (strcmp(MapName, "mp_rr_desertlands_hu") == 0) {
+      } else if (strcmp(level_name, "mp_rr_desertlands_hu") == 0) {
         map = 3;
-      } else if (strcmp(MapName, "mp_rr_olympus") == 0) {
+      } else if (strcmp(level_name, "mp_rr_olympus") == 0) {
         map = 4;
-      } else if (strcmp(MapName, "mp_rr_divided_moon") == 0) {
+      } else if (strcmp(level_name, "mp_rr_divided_moon") == 0) {
         map = 5;
       } else {
-        map = 0;
+        map = -1;
       }
 
       if (g_settings.firing_range) {    //判断是否在射击场,从而区分应该循环的次数
@@ -851,13 +857,6 @@ void DoActions() {
       } else {
         itementcount = 10000;
       }
-      std::this_thread::sleep_for(
-          std::chrono::milliseconds(30)); // don't change xD
-
-      uint64_t LocalPlayer = 0;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);  //读取本地玩家的所在地址,即是当前视角的玩家，自己或者你死亡后观战的人
-      if (LocalPlayer == 0)
-        continue;
 
       Entity LPlayer = getEntity(LocalPlayer);  //根据地址生成玩家实体对象entity
 
@@ -1074,7 +1073,7 @@ static void EspLoop() {
         esp_local_pos = LocalPlayerPosition;
 
         uint64_t viewRenderer = 0;
-        apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRenderer);
+        apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRenderer);  // displays ESp, heath dist names etc
         uint64_t viewMatrix = 0;
         apex_mem.Read<uint64_t>(viewRenderer + OFFSET_MATRIX, viewMatrix);
 
