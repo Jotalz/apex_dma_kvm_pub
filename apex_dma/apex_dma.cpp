@@ -769,31 +769,32 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
   }
 
   if (g_settings.aim == 2) {
-    // vis check for shooting current aim entity
-    if (local_held_id != -251 && aimbot.aimentity == target.ptr) {
-      if (!vis) {
-        // turn on safety
-        aimbot.gun_safety = true;
-      } else {
-        aimbot.gun_safety = false;
+      // vis check for shooting current aim entity
+      if (local_held_id != -251 && aimbot.aimentity == target.ptr) {
+          if (!vis) {
+              // turn on safety
+              aimbot.gun_safety = true;
+          }
+          else {
+              aimbot.gun_safety = false;
+          }
       }
-    }
-   
-    // TriggerBot
-    if (aimbot.aimentity != 0) {
-      uint64_t LocalPlayer = 0;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
 
-      Entity Target = getEntity(aimbot.aimentity);
-      // Entity LPlayer = getEntity(LocalPlayer);
+      // TriggerBot
+      if (aimbot.aimentity != 0) {
+          uint64_t LocalPlayer = 0;
+          apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
+
+          Entity Target = getEntity(aimbot.aimentity);
+          // Entity LPlayer = getEntity(LocalPlayer);
 
 
-      if (trigger_ready && IsInCrossHair(Target)) {
-        TriggerBotRun();
+          if (trigger_ready && IsInCrossHair(Target)) {
+              TriggerBotRun();
+          }
       }
-    }
-  SetPlayerGlow(LPlayer, target, index, frame_number);
   }
+  SetPlayerGlow(LPlayer, target, index, frame_number);
   lastvis_aim[index] = target.lastVisTime();
 }
 
