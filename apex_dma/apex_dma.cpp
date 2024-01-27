@@ -750,7 +750,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
       return;
     }
   }
-  if (target.ptr != LPlayer.ptr) {
+
   Vector EntityPosition = target.getPosition();
   Vector LocalPlayerPosition = LPlayer.getPosition();
   float dist = LocalPlayerPosition.DistTo(EntityPosition);
@@ -768,12 +768,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
     aimbot.tmp_aimentity = target.ptr;
   }
 
-  if (aimbot.aimentity == target.ptr) {
-      if (g_settings.aim == 2 && local_held_id != -251) {
-          aimbot.gun_safety = !vis;
-      }
-  }
-  /*if (g_settings.aim == 2) {
+  if (g_settings.aim == 2) {
     // vis check for shooting current aim entity
     if (local_held_id != -251 && aimbot.aimentity == target.ptr) {
       if (!vis) {
@@ -783,7 +778,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
         aimbot.gun_safety = false;
       }
     }
-    */
+   
     // TriggerBot
     if (aimbot.aimentity != 0) {
       uint64_t LocalPlayer = 0;
