@@ -166,7 +166,7 @@ pub struct Settings {
     pub screen_height: u32,
     pub yuan_p: bool,
     pub debug_mode: bool,
-    pub super_key: bool,
+    //pub super_key: bool,
     pub keyboard: bool,
     pub gamepad: bool,
     pub aimbot_hot_key_1: i32,
@@ -174,7 +174,7 @@ pub struct Settings {
     pub trigger_bot_hot_key: i32,
     pub loot_filled_toggle: bool,
     pub player_filled_toggle: bool,
-    pub super_key_toggle: bool,
+    pub super_glide: bool,
     pub super_grpple:bool,
     pub auto_tapstrafe:bool,
     pub onevone: bool,
@@ -373,7 +373,7 @@ impl Default for Loot {
             weapon_r99: false,
             weapon_spitfire: false,
             weapon_r301: false,
-            // Snipers.. wingman is the odd one...and the bow..
+            // Snipers.. wingman is the odd one...
             weapon_wingman: false,
             weapon_longbow: false,
             weapon_charge_rifle: false,
@@ -393,7 +393,7 @@ impl Default for Settings {
             screen_height: 1080,
             yuan_p: false,
             debug_mode: false, //Used to close menu,show debug info
-            super_key: true,
+            //super_key: true,
             // Gamepad or Keyboard config, Only one true at once or it wont work.
             keyboard: true,
             gamepad: false,
@@ -406,7 +406,7 @@ impl Default for Settings {
             // Terminal Stuff
             loot_filled_toggle: false,
             player_filled_toggle: false,
-            super_key_toggle: true,
+            super_glide: true,
             super_grpple: true,
             auto_tapstrafe: true,
             // end Terminal Stuff
@@ -445,10 +445,10 @@ impl Default for Settings {
             bone: 2, // bone 0 head, 1 neck, 2 chest, 3 dick shot
             bone_nearest: false,
             bone_auto: true,
-            headshot_dist: 250.0 * 40.0,
+            headshot_dist: 200.0 * 40.0,
             skynade_dist: 120.0 * 40.0,
             smooth: 120.0, // min 85 no beaming, 100 somewhat beam people, 125 should be safe
-            skynade_smooth: 120.0 * 0.6667,
+            skynade_smooth: 120.0 * 1.2,
             // Player Glow Color and Brightness.
             // inside fill
             player_glow_inside_value: 14, // 0 = no fill, 14 = full fill
@@ -469,7 +469,7 @@ impl Default for Settings {
             // Item Configs
             // loot Fill
             loot_filled: 0, // 0 no fill, 14 100% fill
-            loot_outline: 0,
+            loot_outline: 32,
 
             loot: Loot::default(),
         }

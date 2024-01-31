@@ -57,7 +57,6 @@ public:
   float lastCrossHairTime();
   void SetViewAngles(SVector angles);
   void SetViewAngles(QAngle &angles);
-  Vector getBonePosition(int id);
   Vector getBonePositionByHitbox(int id);
   bool Observing(uint64_t entitylist);
   void get_name(uint64_t g_Base, uint64_t index, char *name);

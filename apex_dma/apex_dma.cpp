@@ -230,12 +230,6 @@ void ClientActions() {
         memory_io_panic("read traversal_progress");
       }
 
-      //   printf("Travel Time: %f\n", traversal_progress);
-      //   printf("Cur Frame: %i\n", curFrameNumber);
-      //   printf("Jump Value: %i\n", jump_state);
-      //   printf("Jump Value: %i\n", force_jump);
-      //   printf("ToggleDuck Value: %i\n", force_toggle_duck);
-      //   printf("Duck Value: %i\n", force_duck);
       if (g_settings.auto_tapstrafe){
           bool ts_start = true;
           //autoTapstrafe
@@ -298,7 +292,7 @@ void ClientActions() {
           }
       }*/
 
-      if (g_settings.super_key_toggle) {
+      if (g_settings.super_glide) {
         /** SuperGlide
          * https://www.unknowncheats.me/forum/apex-legends/578160-external-auto-superglide-3.html
          */
@@ -705,6 +699,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
   const auto g_settings = global_settings();
 
   int entity_team = target.getTeamId();
+  int local_team = LPlayer.getTeamId();
 
   if (!target.isAlive() || !LPlayer.isAlive()) {
     // Update yew to spec checker
@@ -726,16 +721,16 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
     // int entity_team = Target.getTeamId();
     // printf("Target Team: %i\n", entity_team);
 
-    uint64_t PlayerLocal;
+    /*uint64_t PlayerLocal;
     apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, PlayerLocal);
     int PlayerLocalTeamID;
-    apex_mem.Read<int>(PlayerLocal + OFFSET_TEAM, PlayerLocalTeamID);
+    apex_mem.Read<int>(PlayerLocal + OFFSET_TEAM, PlayerLocalTeamID);*/
 
     if (entity_team % 2)
       EntTeam = 1;
     else
       EntTeam = 2;
-    if (PlayerLocalTeamID % 2)
+    if (local_team % 2)
       LocTeam = 1;
     else
       LocTeam = 2;
@@ -929,42 +924,7 @@ void DoActions() {
         }
       }
 
-      { // refresh spectators count
-        // static uint32_t counter = 0;
-        // static std::map<uintptr_t, size_t> specs_test;
-        // if (counter < 10) {
-        //   auto tmp = tmp_specs;
-        //   for (auto it = specs_test.begin(); it != specs_test.end(); it++) {
-        //     if (tmp.extract(it->first).empty()) {
-        //       // it->second -= 1;
-        //     } else {
-        //       it->second += 1;
-        //     }
-        //   }
-        //   for (auto it = tmp.begin(); it != tmp.end(); it++) {
-        //     assert(!specs_test.contains(*it));
-        //     specs_test[*it] = 1;
-        //   }
-        // } else {
-        // std::vector<Entity> tmp_spec, tmp_all_spec;
-        // for (auto it = specs_test.begin(); it != specs_test.end(); it++) {
-        //   // if (it->second > counter / 2) {
-        //     Entity target = getEntity(it->first);
-        //     if (target.getTeamId() == team_player) {
-        //       tmp_all_spec.push_back(target);
-        //     } else {
-        //       tmp_spec.push_back(target);
-        //     }
-        //   // }
-        // }
-        // spectators = tmp_spec;
-        // allied_spectators = tmp_all_spec;
-
-        // specs_test.clear();
-        //  counter = 0;
-        // }
-        // counter++;
-
+      {
           { // refresh spectators count
 
               std::vector<Entity> tmp_spec, tmp_all_spec;

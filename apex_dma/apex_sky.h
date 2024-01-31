@@ -163,7 +163,7 @@ typedef struct {
   uint32_t screen_height;
   bool yuan_p;
   bool debug_mode;
-  bool super_key;
+  //bool super_key;
   bool keyboard;
   bool gamepad;
   int aimbot_hot_key_1;
@@ -171,7 +171,7 @@ typedef struct {
   int trigger_bot_hot_key;
   bool loot_filled_toggle;
   bool player_filled_toggle;
-  bool super_key_toggle;
+  bool super_glide;
   bool super_grpple;
   bool auto_tapstrafe;
   bool onevone;

@@ -320,13 +320,10 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
     // Add the target's velocity to the prediction context, with an offset
     // in the y direction
-    float distanceToTarget =
-        (TargetBonePosition - LocalCameraPosition).Length();
+    float distanceToTarget = (TargetBonePosition - LocalCameraPosition).Length();
     float timeToTarget = distanceToTarget / BulletSpeed;
     Vector targetPosAhead = TargetBonePosition + (targetVel * timeToTarget);
-    Ctx.TargetVel =
-        Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime),
-               targetVel.z);
+    Ctx.TargetVel = Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime), targetVel.z);
     Ctx.TargetPos = targetPosAhead;
 
     aim_target.x = Ctx.TargetPos.x;
@@ -408,7 +405,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone
-    float NearestBoneDistance = g_settings.max_dist;//max_dist是3800m,或许应该是aim_dist?没读懂
+    float NearestBoneDistance = g_settings.max_dist;
     for (int i = 0; i < 4; i++) {
       Vector currentBonePosition = target.getBonePositionByHitbox(i);
       float DistanceFromCrosshair =
@@ -428,11 +425,9 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
 
   if (local_held_id != -251) {
     QAngle CalculatedAnglesMin =
-        fun_calc_angles(LocalCamera, TargetBonePositionMin, targetVel,
-                        BulletSpeed, BulletGrav, deltaTime);
+        fun_calc_angles(LocalCamera, TargetBonePositionMin, targetVel, BulletSpeed, BulletGrav, deltaTime);
     QAngle CalculatedAnglesMax =
-        fun_calc_angles(LocalCamera, TargetBonePositionMax, targetVel,
-                        BulletSpeed, BulletGrav, deltaTime);
+        fun_calc_angles(LocalCamera, TargetBonePositionMax, targetVel, BulletSpeed, BulletGrav, deltaTime);
 
     double fov0 = Math::GetFov(SwayAngles, CalculatedAnglesMin);
     double fov1 = Math::GetFov(SwayAngles, CalculatedAnglesMax);

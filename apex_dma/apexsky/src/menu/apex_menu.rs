@@ -501,7 +501,7 @@ fn build_main_menu(
                     if new_val >= 50 && new_val <= 500 {
                         let settings = &mut lock_config!().settings;
                         settings.smooth = new_val.into();
-                        settings.skynade_smooth = settings.smooth * 0.6667;
+                        settings.skynade_smooth = settings.smooth * 1.2;
                         return None;
                     }
                 }
@@ -655,8 +655,8 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
-        settings.super_key_toggle,
-        super_key_toggle
+        settings.super_glide,
+        super_glide
     );
     menu = menu
         .add_item(
