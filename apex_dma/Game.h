@@ -186,10 +186,10 @@ enum weapon_id : int32_t {
   idweapon_3030_repeater = 112,
   idweapon_car_smg = 113,
   idweapon_nemesis = 114,
-  idthrowing_knife = 166,
-  idgrenade_thermite = 159,
-  idgrenade_frag = 160,
-  idgrenade_arc_star = 161,
+  idthrowing_knife = 158,
+  idgrenade_thermite = 167,
+  idgrenade_frag = 168,
+  idgrenade_arc_star = 169,
   idmax
 };
 
