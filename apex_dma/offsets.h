@@ -18,7 +18,7 @@
 #define OFFSET_BULLET_SCALE 0x1e84 //[Miscellaneous].CWeaponX!m_flProjectileScale updated 2024/02/16
 #define OFFSET_CROSSHAIR_LAST 0x1978 //[Miscellaneous].CWeaponX!lastCrosshairTargetTime updated 2024/02/16
 
-#define OFFSET_ITEM_ID 0x1518 //updated 1/10/2024
+#define OFFSET_ITEM_ID 0x1538 //updated 2/14/2024
 #define OFFSET_HOST_MAP 0x015eb2d0 + 0x58 //[ConVars].host_map + 0x58 updated 2024/02/16
 #define OFFSET_WEAPON_NAME 0x1758 //[RecvTable.DT_WeaponX].m_weaponNameIndex updated 2024/02/16
 #define OFFSET_WEAPON_BITFIELD 0x16e4 //[RecvTable.DT_WeaponX].m_modBitfieldFromPlayer updated 2024/02/16
