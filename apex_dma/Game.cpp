@@ -193,7 +193,7 @@ Vector Entity::GetCamPos() { return *(Vector *)(buffer + OFFSET_CAMERAPOS); }
 QAngle Entity::GetRecoil() { return *(QAngle *)(buffer + OFFSET_AIMPUNCH); }
 
 void Entity::get_name(uint64_t g_Base, uint64_t index, char *name) {
-  index *= 0x10;
+  index *= 0x18;
   uint64_t name_ptr = 0;
   apex_mem.Read<uint64_t>(g_Base + OFFSET_NAME_LIST + index, name_ptr);
   apex_mem.ReadArray<char>(name_ptr, name, 32);
