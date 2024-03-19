@@ -1,63 +1,55 @@
-name: build
-on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest]
-        build_type: [Release]
-        enable_ui: [on]
-        include:
-          - os: windows-latest
-            build_type: Release
-            enable_ui: on
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1
-      if: runner.os == 'Linux'
-      with:
-        key: ${{ matrix.os }}-${{ matrix.enable_ui }}
-    - uses: seanmiddleditch/gha-setup-ninja@master
-    - uses: ilammy/msvc-dev-cmd@v1
-      if: runner.os == 'Windows'
-    - name: Install Dependencies
-      shell: bash
-      run: |
-        if [[ "${{ runner.os }}" == "Linux" ]] ; then
-          sudo apt-get update -qq
-          sudo apt-get install -y \
-            libx11-dev libxcursor-dev libxi-dev
-        fi
-    - name: Generating Makefiles
-      shell: bash
-      run: |
-        if [[ "${{ runner.os }}" == "Windows" ]] ; then
-          export enable_ccache=off
-        else
-          export enable_ccache=on
-        fi
-        curl -L https://github.com/blueloveTH/aseprite/releases/download/v0.01/skia.zip --output skia.zip
-        7z x skia.zip
-        cmake -S . -B build -G Ninja \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DENABLE_UI=${{ matrix.enable_ui }} \
-          -DENABLE_CCACHE=$enable_ccache \
-          -DLAF_BACKEND=skia \
-          -DSKIA_DIR=./skia \
-          -DSKIA_LIBRARY_DIR=./skia/out/Release-x64 \
-          -DSKIA_LIBRARY=./skia/out/Release-x64/skia.lib
-    - name: Compiling
-      shell: bash
-      run: |
-        cd build && ninja
-    - uses: actions/upload-artifact@v3
-      with:
-        name: aseprite
-        path: |
-          D:/a/aseprite/aseprite/build/bin/data
-          D:/a/aseprite/aseprite/build/bin/aseprite.exe
+ # This is a basic workflow to help you get started with Actions
+ ​
+ name: CI
+ ​
+ # Controls when the action will run. Triggers the workflow on push or pull request
+ # events but only for the master branch
+ on:
+   push:
+     branches: [ master ]
+   pull_request:
+     branches: [ master ]
+ ​
+ # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+ jobs:
+   # This workflow contains a single job called "build"
+   build:
+     # The type of runner that the job will run on
+     runs-on: ubuntu-latest
+ ​
+     # Steps represent a sequence of tasks that will be executed as part of the job
+     steps:
+     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+     - uses: actions/checkout@v2
+ ​
+     # Runs a single command using the runners shell
+     - name: Run a one-line script
+       run: echo Hello, world!
+ ​
+     # Runs a set of commands using the runners shell
+     - name: Run a multi-line script
+       run: |
+         echo Add other actions to build,
+         echo test, and deploy your project.
+         docker run -v $GITHUB_WORKSPACE:/src cdrx/pyinstaller-windows:latest 'pyinstaller -F --clean -y --dist ./ --workpath /tmp test2.py'
+         zip -r $GITHUB_WORKSPACE/test2.zip $GITHUB_WORKSPACE/test2.exe
+     - name: Create Release
+       id: create_release
+       uses: actions/create-release@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         tag_name: ${{ github.ref }}
+         release_name: Release ${{ github.ref }}
+         draft: false
+         prerelease: false
+     - name: Upload Release Asset
+       id: upload-release-asset
+       uses: actions/upload-release-asset@v1
+       env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: ${{ github.workspace }}/test2.zip
+         asset_name: nainiu_upload.zip
+         asset_content_type: application/zip
