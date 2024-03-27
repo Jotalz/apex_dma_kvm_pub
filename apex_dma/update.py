@@ -70,7 +70,7 @@ def update_offsets(offset_h_path, offset_ini_path):
         print(ConsoleColors.RED + "NotFindLines Lines:")
         for line in notFindLines:
             print(line)
-        print(ConsoleColors.RESET)
+        print(ConsoleColors.RESET,end="")
 
     if unrecognizedLines:
         print(ConsoleColors.YELLOW + "Unrecognized Lines:")

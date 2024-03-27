@@ -3,7 +3,7 @@
 
 #define OFFSET_ENTITYLIST 0x1DD40F8 //[Miscellaneous].cl_entitylist updated 2024/03/07
 #define OFFSET_LOCAL_ENT 0x2182bf8 //[Miscellaneous].LocalPlayer updated 2024/03/27
-#define OFFSET_NAME_LIST 0xC5E1150 //[Miscellaneous].NameList updated 2024/03/07
+#define OFFSET_NAME_LIST 0xC5FEC00 //[Miscellaneous].NameList updated 2024/03/07
 #define OFFSET_GLOBAL_VARS 0x16f8b90 //[Miscellaneous].GlobalVars updated 2024/03/27
 #define OFFSET_MATRIX 0x11a350 //[Miscellaneous].ViewMatrix updated 2024/03/27
 #define OFFSET_RENDER 0x73f14f8 //[Miscellaneous].ViewRender updated 2024/03/27
@@ -18,7 +18,7 @@
 #define OFFSET_BULLET_SCALE 0x1eac //[Miscellaneous].CWeaponX!m_flProjectileScale updated 2024/03/27
 #define OFFSET_CROSSHAIR_LAST 0x1998 //[Miscellaneous].CWeaponX!lastCrosshairTargetTime updated 2024/03/27
 
-#define OFFSET_ITEM_ID 0x1538 //updated 2/14/2024
+#define OFFSET_ITEM_ID 0x1558 //updated 2/14/2024
 #define OFFSET_HOST_MAP 0x016104c0 + 0x58 //[ConVars].host_map + 0x58 updated 2024/03/27
 #define OFFSET_WEAPON_NAME 0x1778 //[RecvTable.DT_WeaponX].m_weaponNameIndex updated 2024/03/27
 #define OFFSET_WEAPON_BITFIELD 0x1704 //[RecvTable.DT_WeaponX].m_modBitfieldFromPlayer updated 2024/03/27
