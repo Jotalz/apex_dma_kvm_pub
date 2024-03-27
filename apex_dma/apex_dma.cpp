@@ -1790,7 +1790,6 @@ static void item_glow_t() {
             int settingIndex = 73;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        // new gun, nemesis
         else if (g_settings.loot.weapon_nemesis && ItemID == 135) {      //复仇女神
             std::array<float, 3> highlightParameter = { 0.2, 1, 0 };
             int settingIndex = 73;
