@@ -150,7 +150,6 @@ bool WorldToScreen(Vector from, float *m_vMatrix, int targetWidth,
 float CalculateFov(Entity &from, Entity &target);
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth);
 void get_class_name(uint64_t entity_ptr, char *out_str);
-void charge_rifle_hack(uint64_t entity_ptr);
 
 enum weapon_id : int32_t {
   idweapon_r301 = 0,
@@ -159,7 +158,7 @@ enum weapon_id : int32_t {
   idsheila_stationary = 14,
   idsheila = 58,
   idweapon_rampage = 6,
-  idmelee,
+  idmelee = 116,
   idsnipers_mark = 78,
   idweapon_alternator = 81,
   idweapon_re45 = 82,

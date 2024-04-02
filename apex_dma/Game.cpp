@@ -383,6 +383,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   case idweapon_sentinel:
   case idweapon_triple_take:
   case idweapon_wingman:
+  case idsnipers_mark:
     weap_headshot = true;
     break;
   default:
