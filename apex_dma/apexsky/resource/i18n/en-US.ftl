@@ -8,6 +8,7 @@ menu-item-keyboard = Keyboard
 menu-item-gamepad = Gamepad
 menu-item-item-glow = Item Glow
 menu-item-player-glow = Player Glow
+menu-item-player-glow-dist = Player Distance
 menu-item-smooth-value = Smooth Value
 input-prompt-smooth-value = New value for 'smooth' (50 to 500):
 info-invalid-smooth-value = Invalid value.
@@ -34,9 +35,12 @@ menu-item-loot-glow-filled = Loot Glow Filled
 menu-item-player-glow-filled = Player Glow Filled
 menu-item-player-outline-size = Player Outline Glow Setting Size
 input-prompt-player-outlines = Player Outlines (0 to 255): 
+input-prompt-player-distance = Player Glow Distance (10 to 500):
 info-player-outline-updated = Player Outline updated to: {$value}
 info-invalid-outline-size = Invalid value.
     'outlinesize' value must be between 0 and 255.
+info-invalid-distance-size = Invalid value.
+    "glow distance" value must be between 10 and 500.
 menu-item-update-glow-colors = Update Glow Colors
 menu-item-change-ads-fov = Change ADS FOV
 input-prompt-ads-fov = New value for 'ADS FOV':

@@ -8,6 +8,7 @@ menu-item-keyboard = 鍵盤滑鼠模式
 menu-item-gamepad = 手把模式
 menu-item-item-glow = 物品發光
 menu-item-player-glow = 玩家發光
+menu-item-player-glow-dist = 玩家熱能距離
 menu-item-smooth-value = 平滑
 input-prompt-smooth-value = 瞄準平滑值 (50~500):
 info-invalid-smooth-value = 無效值。
@@ -34,9 +35,12 @@ menu-item-loot-glow-filled = 物品發光填充
 menu-item-player-glow-filled = 玩家發光填充
 menu-item-player-outline-size = 熱能輪廓設置
 input-prompt-player-outlines = 熱能輪廓半徑 (0~255):
+input-prompt-player-distance = 玩家熱能距離 (10~500):
 info-player-outline-updated = "熱能輪廓半徑" 已設爲: {$value}
 info-invalid-outline-size = 輸入無效。
     「熱能輪廓大小」必須介於 0 到 255 之間。
+info-invalid-distance = 输入无效。
+    "玩家熱能距離" 必須介於 0 到 500 之間。
 menu-item-update-glow-colors = 熱能顏色設置
 menu-item-change-ads-fov = 開鏡FOV
 input-prompt-ads-fov = 設置 "開鏡自瞄FOV" 值:
