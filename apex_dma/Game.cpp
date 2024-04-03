@@ -162,7 +162,7 @@ bool Entity::isZooming() { return *(int *)(buffer + OFFSET_ZOOMING) == 1; }
 
 extern uint64_t g_Base;
 
-void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_size,std::array<float, 3> highlight_parameter) {
+void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_size,std::array<float, 3> highlight_parameter,float glow_dist) {
   const unsigned char outsidevalue = 125;
   std::array<unsigned char, 4> highlightFunctionBits = {
       inside_value, // InsideFunction
@@ -179,6 +179,7 @@ void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_
       highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x0,highlightFunctionBits);
   apex_mem.Write<typeof(highlight_parameter)>(
       highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x4, highlight_parameter);
+  apex_mem.Write<float>(ptr + 0x264, glow_dist);
   apex_mem.Write(g_Base + OFFSET_GLOW_FIX, 1);
 }
 

@@ -51,9 +51,8 @@ public:
   QAngle GetRecoil();
   Vector GetViewAnglesV();
   float GetYaw();
-  void enableGlow(int setting_index, uint8_t inside_value,
-                  uint8_t outline_size,
-                  std::array<float, 3> highlight_parameter);
+  void enableGlow(int setting_index, uint8_t inside_value, uint8_t outline_size,
+                  std::array<float, 3> highlight_parameter, float glow_dist);
   float lastCrossHairTime();
   void SetViewAngles(SVector angles);
   void SetViewAngles(QAngle &angles);

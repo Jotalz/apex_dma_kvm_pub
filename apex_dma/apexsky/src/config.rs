@@ -166,7 +166,6 @@ pub struct Settings {
     pub screen_height: u32,
     pub yuan_p: bool,
     pub debug_mode: bool,
-    //pub super_key: bool,
     pub keyboard: bool,
     pub gamepad: bool,
     pub aimbot_hot_key_1: i32,
@@ -203,6 +202,7 @@ pub struct Settings {
     pub main_map_radar_dot_size2: i32,
     pub aim_dist: f32,
     pub max_dist: f32,
+    pub glow_dist: f32,
     pub map_radar_testing: bool,
     pub show_aim_target: bool,
     pub game_fps: f32,
@@ -393,14 +393,12 @@ impl Default for Settings {
             screen_height: 1080,
             yuan_p: false,
             debug_mode: false, //Used to close menu,show debug info
-            //super_key: true,
             // Gamepad or Keyboard config, Only one true at once or it wont work.
             keyboard: true,
             gamepad: false,
             aimbot_hot_key_1: 108,
             aimbot_hot_key_2: 79,
             // Done with Gamepad or Keyboard config
-            // triggerbot?
             trigger_bot_hot_key: 81,
             shotgun_auto_shot: true,
             // Terminal Stuff
@@ -447,6 +445,7 @@ impl Default for Settings {
             bone_auto: true,
             headshot_dist: 200.0 * 40.0,
             skynade_dist: 120.0 * 40.0,
+            glow_dist: 200.0 * 40.0,
             smooth: 120.0, // min 85 no beaming, 100 somewhat beam people, 125 should be safe
             skynade_smooth: 120.0 * 1.2,
             // Player Glow Color and Brightness.

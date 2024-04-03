@@ -31,7 +31,7 @@ info-invalid-bone-value = 輸入無效。
     瞄準部位可設置爲: x, 0, 1, 2, 3
 info-invalid-value = 輸入無效。
 menu-item-loot-glow-filled = 物品發光填充
-menu-item-player-glow-filled = 熱能發光填充
+menu-item-player-glow-filled = 玩家發光填充
 menu-item-player-outline-size = 熱能輪廓設置
 input-prompt-player-outlines = 熱能輪廓半徑 (0~255):
 info-player-outline-updated = "熱能輪廓半徑" 已設爲: {$value}
@@ -100,8 +100,8 @@ input-prompt-keycode =
     （例如，108 表示滑鼠左鍵）
 hotkey-menu-title = 熱鍵選單
 hotkey-item-aimbot1 = Aimbot熱鍵1
-hotkey-item-aimbot2 = Aimbot熱鍵2
-hotkey-item-trigger-bot = 自動扳機熱鍵
+hotkey-item-aimbot2 = Aimbot熱鍵2(按下平滑-30)
+hotkey-item-trigger-bot = 自動扳機熱鍵（已取消）
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
 info-invalid-keycode = 無效值。「{$item_label}」值必須介於 0 和 255 之間。

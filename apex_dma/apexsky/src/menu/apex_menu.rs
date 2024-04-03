@@ -885,12 +885,27 @@ fn build_main_menu(
             }
             None
         },
-    );
+        )
+        .add_input_item(
+            item_text(format!("34 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
+            &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
+            |val| {
+                if let Some(new_val) = val.parse::<u16>().ok() {
+                    if new_val >= 10 && new_val <= 500 {
+                        let settings = &mut lock_config!().settings;
+                        settings.glow_dist = new_val; //[10, 500]
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidDistance).to_string())
+            },
+        );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
         format!(
-            "34 - {}",
+            "35 - {}",
             i18n_msg!(i18n_bundle, MenuItemSuperGrpple)
         ),
         settings.super_grpple,
@@ -900,7 +915,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "35 - {}",
+            "36 - {}",
             i18n_msg!(i18n_bundle, MenuItemAutoTapstrafe)
         ),
         settings.auto_tapstrafe,
@@ -910,7 +925,7 @@ fn build_main_menu(
         .add_item(
             format_item(
                 &i18n_bundle,
-                format!("36 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
+                format!("37 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
                 if settings.no_overlay {
                     Span::from(i18n_msg!(i18n_bundle, MenuValueNoOverlay).to_string())
                 } else {
