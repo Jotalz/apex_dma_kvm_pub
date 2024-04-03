@@ -46,6 +46,7 @@ pub struct Loot {
     pub healthsmall: bool,
     pub shieldbattsmall: bool,
     pub shieldbattlarge: bool,
+    pub mobile_respawn: bool,
     // Ammo
     pub sniperammo: bool,
     pub heavyammo: bool,
@@ -116,7 +117,6 @@ pub struct Loot {
     // Supply Drop Weapons
     pub weapon_kraber: bool,
     pub weapon_bow: bool,
-    pub weapon_prowler: bool,
     // Shotguns
     pub weapon_mastiff: bool,
     pub weapon_eva8: bool,
@@ -135,6 +135,7 @@ pub struct Loot {
     pub weapon_3030_repeater: bool,
     pub weapon_rampage: bool,
     pub weapon_car_smg: bool,
+    pub weapon_prowler: bool,
     // Light weapons
     pub weapon_p2020: bool,
     pub weapon_re45: bool,
@@ -276,6 +277,7 @@ impl Default for Loot {
             healthsmall: false,
             shieldbattsmall: false,
             shieldbattlarge: true,
+            mobile_respawn: true,
             // Ammo
             sniperammo: false,
             heavyammo: false,
@@ -346,7 +348,6 @@ impl Default for Loot {
             // Supply Drop Weapons
             weapon_kraber: true,
             weapon_bow: false,
-            weapon_prowler: false,
             // Shotguns
             weapon_mastiff: false,
             weapon_eva8: false,
@@ -365,6 +366,7 @@ impl Default for Loot {
             weapon_3030_repeater: false,
             weapon_rampage: false,
             weapon_car_smg: false,
+            weapon_prowler: false,
             // Light weapons
             weapon_p2020: false,
             weapon_re45: false,

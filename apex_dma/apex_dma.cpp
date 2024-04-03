@@ -1820,8 +1820,8 @@ static void item_glow_t() {
             int settingIndex = 67;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (ItemID == 293) {                                       //重生信标
-            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+        else if (g_settings.loot.mobile_respawn && ItemID == 293) {       //重生信标
+            std::array<float, 3> highlightParameter = { 0, 0.6, 0.4 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }

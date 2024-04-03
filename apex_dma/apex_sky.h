@@ -52,6 +52,7 @@ typedef struct {
   bool healthsmall;
   bool shieldbattsmall;
   bool shieldbattlarge;
+  bool mobile_respawn;
   // Ammo
   bool sniperammo;
   bool heavyammo;

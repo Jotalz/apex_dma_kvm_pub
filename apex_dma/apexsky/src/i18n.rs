@@ -185,6 +185,7 @@ pub enum MessageId {
     LootLargeHealth,
     LootSmallShieldBatt,
     LootLargeShieldBatt,
+    LootMobileRespawn,
     NadesMenuTitle,
     NadeItemsSection,
     LootFragGrenade,

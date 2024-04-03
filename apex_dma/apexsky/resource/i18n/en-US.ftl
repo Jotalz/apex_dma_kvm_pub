@@ -200,6 +200,7 @@ loot-small-health = Syringe
 loot-large-health = Med Kit
 loot-small-shield-batt = Shield Cell
 loot-large-shield-batt = Shield Battery
+loot-mobile-respawn = Mobile Rebirth Beacon
 nades-menu-title = Grenade Items Menu
 nade-items-section = Grenades:
 loot-frag-grenade = Frag Grenade

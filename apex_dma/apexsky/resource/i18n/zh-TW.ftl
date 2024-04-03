@@ -199,6 +199,7 @@ loot-small-health = 注射器
 loot-large-health = 醫療包
 loot-small-shield-batt = 小型電池
 loot-large-shield-batt = 大型電池
+loot-mobile-respawn = 移動重生信標
 nades-menu-title = 手榴彈選單
 nade-items-section = 手榴彈:
 loot-frag-grenade = 碎片手榴彈
