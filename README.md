@@ -1,9 +1,8 @@
 <a name="readme-top"></a>
-
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
-
+<p align="right">(<a href="#readme-bottom">go to bottom</a>)</p>
 <br />
 <div align="center">
 
@@ -167,8 +166,10 @@ sudo apt install cmake clang libzstd-dev libglfw3-dev libfreetype6-dev libvulkan
 
 ```shell
 git clone --recurse https://github.com/Jotalz/apex_dma_kvm_pub
-cd apex_dma_kvm_pub/apex_dma
-./build.sh
+cd apex_dma_kvm_pub
+git submodule update --init --recursive
+cd apex_dma
+bash ./build.sh
 ```
 
 
@@ -209,7 +210,7 @@ cd apex_dma_kvm_pub/apex_dma
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+<a name="readme-bottom"></a>
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/chettoy/apex_dma_kvm_pub.svg?style=for-the-badge
 [contributors-url]: https://github.com/chettoy/apex_dma_kvm_pub/graphs/contributors
