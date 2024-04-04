@@ -1,8 +1,9 @@
 <a name="readme-top"></a>
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Issues][issues-shield]][issues-url]
-<p align="right">(<a href="#readme-bottom">go to bottom</a>)</p>
+
 <br />
 <div align="center">
 
@@ -11,8 +12,7 @@
   <p align="center">
     Apex Legends QEMU/KVM hack
     <br />
-    <br />
-    <br />
+    <p align="right">(<a href="#readme-bottom">go to bottom</a>)</p>
     <a href="https://www.unknowncheats.me/forum/apex-legends/406426-kvm-vmread-apex-esp-aimbot.html">UnknownCheats thread</a>
     ·
     <a href="https://github.com/Jotalz/apex_dma_kvm_pub/issues">Report Bug</a>
@@ -208,9 +208,9 @@ bash ./build.sh
 * [Nexilist/xap-client](https://github.com/Nexilist/xap-client)
 * [chettoy/apex_dma_kvm_pub](https://github.com/chettoy/apex_dma_kvm_pub)
 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 <a name="readme-bottom"></a>
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/chettoy/apex_dma_kvm_pub.svg?style=for-the-badge
 [contributors-url]: https://github.com/chettoy/apex_dma_kvm_pub/graphs/contributors
