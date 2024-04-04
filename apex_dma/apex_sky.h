@@ -164,7 +164,6 @@ typedef struct {
   uint32_t screen_height;
   bool yuan_p;
   bool debug_mode;
-  //bool super_key;
   bool keyboard;
   bool gamepad;
   int aimbot_hot_key_1;

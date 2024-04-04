@@ -893,7 +893,7 @@ fn build_main_menu(
                 if let Some(new_val) = val.parse::<u16>().ok() {
                     if new_val >= 10 && new_val <= 500 {
                         let settings = &mut lock_config!().settings;
-                        settings.glow_dist = new_val.into(); //[10, 500]
+                        settings.glow_dist = (new_val * 40).into(); //[10, 500]
                         return None;
                     }
                 }
