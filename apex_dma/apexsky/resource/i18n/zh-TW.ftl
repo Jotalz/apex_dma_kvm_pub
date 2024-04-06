@@ -8,6 +8,7 @@ menu-item-keyboard = 鍵盤滑鼠模式
 menu-item-gamepad = 手把模式
 menu-item-item-glow = 物品發光
 menu-item-player-glow = 玩家發光
+menu-item-player-glow-dist = 玩家熱能距離
 menu-item-smooth-value = 平滑
 input-prompt-smooth-value = 瞄準平滑值 (50~500):
 info-invalid-smooth-value = 無效值。
@@ -31,12 +32,15 @@ info-invalid-bone-value = 輸入無效。
     瞄準部位可設置爲: x, 0, 1, 2, 3
 info-invalid-value = 輸入無效。
 menu-item-loot-glow-filled = 物品發光填充
-menu-item-player-glow-filled = 熱能發光填充
+menu-item-player-glow-filled = 玩家發光填充
 menu-item-player-outline-size = 熱能輪廓設置
 input-prompt-player-outlines = 熱能輪廓半徑 (0~255):
+input-prompt-player-distance = 玩家熱能距離 (10~500):
 info-player-outline-updated = "熱能輪廓半徑" 已設爲: {$value}
 info-invalid-outline-size = 輸入無效。
     「熱能輪廓大小」必須介於 0 到 255 之間。
+info-invalid-distance = 输入无效。
+    "玩家熱能距離" 必須介於 0 到 500 之間。
 menu-item-update-glow-colors = 熱能顏色設置
 menu-item-change-ads-fov = 開鏡FOV
 input-prompt-ads-fov = 設置 "開鏡自瞄FOV" 值:
@@ -100,8 +104,8 @@ input-prompt-keycode =
     （例如，108 表示滑鼠左鍵）
 hotkey-menu-title = 熱鍵選單
 hotkey-item-aimbot1 = Aimbot熱鍵1
-hotkey-item-aimbot2 = Aimbot熱鍵2
-hotkey-item-trigger-bot = 自動扳機熱鍵
+hotkey-item-aimbot2 = Aimbot熱鍵2(按下平滑-30)
+hotkey-item-trigger-bot = 自動扳機熱鍵（已取消）
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
 info-invalid-keycode = 無效值。「{$item_label}」值必須介於 0 和 255 之間。
@@ -195,6 +199,7 @@ loot-small-health = 注射器
 loot-large-health = 醫療包
 loot-small-shield-batt = 小型電池
 loot-large-shield-batt = 大型電池
+loot-mobile-respawn = 移動重生信標
 nades-menu-title = 手榴彈選單
 nade-items-section = 手榴彈:
 loot-frag-grenade = 碎片手榴彈

@@ -577,10 +577,10 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
       // enable glow
       if (g_settings.player_glow) {     //如果设置里开了发光，就执行发光
         Target.enableGlow(setting_index, g_settings.player_glow_inside_value,
-            g_settings.player_glow_outline_size, highlight_parameter);
+            g_settings.player_glow_outline_size, highlight_parameter, g_settings.glow_dist);
       }
       if (!g_settings.player_glow) {      //如果设置里关闭了发光，并且玩家仍在发光，就将发光效果取消掉
-        Target.enableGlow(setting_index, 0, 0, highlight_parameter);
+        Target.enableGlow(setting_index, 0, 0, highlight_parameter, g_settings.glow_dist);
       }
     }
   }
@@ -1820,8 +1820,8 @@ static void item_glow_t() {
             int settingIndex = 67;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
-        else if (ItemID == 293) {                                       //重生信标
-            std::array<float, 3> highlightParameter = { 0, 0, 1 };
+        else if (g_settings.loot.mobile_respawn && ItemID == 293) {       //重生信标
+            std::array<float, 3> highlightParameter = { 0, 0.6, 0.4 };
             int settingIndex = 67;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
