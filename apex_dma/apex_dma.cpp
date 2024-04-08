@@ -104,7 +104,7 @@ void TriggerBotRun() {
   // 设置随机数生成器
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(150, 300);  // 正常或稍快的反应时间
+  std::uniform_int_distribution<> dis(50, 200);  // 正常或稍快的反应时间
   // 生成随机时间间隔，防止行为检测
   int randomInterval = dis(gen);
   std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
@@ -450,7 +450,7 @@ void ClientActions() {
       default:
           triggerbot_shotgun = false;
       }
-      if (g_settings.shotgun_auto_shot && triggerbot_shotgun && isPressed(109)) {
+      if (g_settings.shotgun_auto_shot && triggerbot_shotgun && zoom_state) {
           trigger_ready = true;
       }
       else {
