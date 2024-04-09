@@ -52,6 +52,7 @@ typedef struct {
   bool healthsmall;
   bool shieldbattsmall;
   bool shieldbattlarge;
+  bool mobile_respawn;
   // Ammo
   bool sniperammo;
   bool heavyammo;
@@ -163,7 +164,6 @@ typedef struct {
   uint32_t screen_height;
   bool yuan_p;
   bool debug_mode;
-  //bool super_key;
   bool keyboard;
   bool gamepad;
   int aimbot_hot_key_1;
@@ -200,6 +200,7 @@ typedef struct {
   int32_t main_map_radar_dot_size2;
   float aim_dist;
   float max_dist;
+  float glow_dist;
   bool map_radar_testing;
   bool show_aim_target;
   float game_fps;

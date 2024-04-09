@@ -39,8 +39,10 @@ pub enum MessageId {
     MenuItemPlayerGlowFilled,
     MenuItemPlayerOutlineSize,
     InputPromptPlayerOutlines,
+    InputPromptPlayerDistance,
     InfoPlayerOutlineUpdated,
     InfoInvalidOutlineSize,
+    InfoInvalidDistance,
     MenuItemUpdateGlowColors,
     MenuItemChangeAdsFov,
     InputPromptAdsFov,
@@ -183,6 +185,7 @@ pub enum MessageId {
     LootLargeHealth,
     LootSmallShieldBatt,
     LootLargeShieldBatt,
+    LootMobileRespawn,
     NadesMenuTitle,
     NadeItemsSection,
     LootFragGrenade,
@@ -226,6 +229,7 @@ pub enum MessageId {
     MenuItemShotgunAutoShot,
     MenuItemSuperGrpple,
     MenuItemAutoTapstrafe,
+    MenuItemPlayerGlowDist,
 }
 
 pub fn get_fluent_bundle() -> FluentBundle<FluentResource> {

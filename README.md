@@ -12,8 +12,7 @@
   <p align="center">
     Apex Legends QEMU/KVM hack
     <br />
-    <br />
-    <br />
+    <p align="right">(<a href="#readme-bottom">go to bottom</a>)</p>
     <a href="https://www.unknowncheats.me/forum/apex-legends/406426-kvm-vmread-apex-esp-aimbot.html">UnknownCheats thread</a>
     ·
     <a href="https://github.com/Jotalz/apex_dma_kvm_pub/issues">Report Bug</a>
@@ -167,8 +166,10 @@ sudo apt install cmake clang libzstd-dev libglfw3-dev libfreetype6-dev libvulkan
 
 ```shell
 git clone --recurse https://github.com/Jotalz/apex_dma_kvm_pub
-cd apex_dma_kvm_pub/apex_dma
-./build.sh
+cd apex_dma_kvm_pub
+git submodule update --init --recursive
+cd apex_dma
+bash ./build.sh
 ```
 
 
@@ -207,7 +208,7 @@ cd apex_dma_kvm_pub/apex_dma
 * [Nexilist/xap-client](https://github.com/Nexilist/xap-client)
 * [chettoy/apex_dma_kvm_pub](https://github.com/chettoy/apex_dma_kvm_pub)
 
-
+<a name="readme-bottom"></a>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
