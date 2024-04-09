@@ -404,9 +404,9 @@ void ClientActions() {
           aimbot.gun_safety = false;
         }
       }
-      int isGrppleActived, isGrppleAttached;
-      apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
       if (g_settings.super_grpple) {
+          int isGrppleActived, isGrppleAttached;
+          apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
           if (isGrppleActived) {
               apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
               if (isGrppleAttached == 1) {
