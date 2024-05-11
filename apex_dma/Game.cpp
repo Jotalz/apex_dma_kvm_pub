@@ -342,12 +342,12 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth) {
   const auto g_settings = global_settings();
-  if (g_settings.firing_range) {    //Èç¹ûÊÇÉä»÷³¡²¢ÇÒnot alive·µ»Ø0
+  if (g_settings.firing_range) {    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½not aliveï¿½ï¿½ï¿½ï¿½0
     if (!target.isAlive()) {
       return QAngle(0, 0, 0);
     }
   } else {
-    if (!target.isAlive() || target.isKnocked()) {  //²»ÔÚÉä»÷³¡µ«²»ÊÇalive»òÕßÒÑ¾­µ¹µØ·µ»Ø0
+    if (!target.isAlive() || target.isKnocked()) {  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½aliveï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½0
       return QAngle(0, 0, 0);
     }
   }
@@ -358,7 +358,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow
       || weap_id == weapon_id::idweapon_charge_rifle)) {
       return QAngle(0, 0, 0);
-  }     //¹­ºÍ³äÄÜ×ÔÃé¿ª¹Ø
+  }     //ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¿ªï¿½ï¿½
   float BulletSpeed = curweap.get_projectile_speed();
   float BulletGrav = curweap.get_projectile_gravity();
 
@@ -398,12 +398,12 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   float deltaTime = 1.0 / g_settings.game_fps;
 
   if (weap_headshot) {
-    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //ÊÇÁÐ±íÖÐµÄÎäÆ÷²¢ÇÒÐ¡ÓÚÉèÖÃµÄ±¬Í·¾àÀë¾ÍËøÍ·
+    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //ï¿½ï¿½ï¿½Ð±ï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ÃµÄ±ï¿½Í·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·
       TargetBonePositionMax = TargetBonePositionMin =
           target.getBonePositionByHitbox(0);
     } else {
       TargetBonePositionMax = TargetBonePositionMin =
-          target.getBonePositionByHitbox(g_settings.bone);  //·ñÔò¸ù¾ÝÉèÖÃµÄ×ÔÃéÎ»ÖÃÃé×¼
+          target.getBonePositionByHitbox(g_settings.bone);  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½×¼
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone
