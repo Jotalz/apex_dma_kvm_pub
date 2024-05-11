@@ -342,12 +342,12 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth) {
   const auto g_settings = global_settings();
-  if (g_settings.firing_range) {    //��������������not alive����0
+  if (g_settings.firing_range) {    
     if (!target.isAlive()) {
       return QAngle(0, 0, 0);
     }
   } else {
-    if (!target.isAlive() || target.isKnocked()) {  //���������������alive�����Ѿ����ط���0
+    if (!target.isAlive() || target.isKnocked()) {
       return QAngle(0, 0, 0);
     }
   }
@@ -358,7 +358,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow
       || weap_id == weapon_id::idweapon_charge_rifle)) {
       return QAngle(0, 0, 0);
-  }     //���ͳ������鿪��
+  }     
   float BulletSpeed = curweap.get_projectile_speed();
   float BulletGrav = curweap.get_projectile_gravity();
 
@@ -398,12 +398,12 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   float deltaTime = 1.0 / g_settings.game_fps;
 
   if (weap_headshot) {
-    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //���б��е���������С�����õı�ͷ�������ͷ
+    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { 
       TargetBonePositionMax = TargetBonePositionMin =
           target.getBonePositionByHitbox(0);
     } else {
       TargetBonePositionMax = TargetBonePositionMin =
-          target.getBonePositionByHitbox(g_settings.bone);  //����������õ�����λ����׼
+          target.getBonePositionByHitbox(g_settings.bone); 
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone
