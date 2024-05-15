@@ -147,7 +147,7 @@ int Memory::open_proc(const char *name) {
   int ret;
   const char *target_proc = name;
   const char *target_module = name;
-
+  constexpr uint16_t MZ_Header = 0x5a4d;
   // find a specific process based on its name
   // via process_by_name
 
@@ -157,7 +157,52 @@ int Memory::open_proc(const char *name) {
 
     printf("%s process found: 0x%lx] %d %s %s\n", target_proc, info->address,
            info->pid, info->name, info->path);
+    uint64_t proc_address = info->address;
+    char *base_section = new char[8];
+    uint64_t *base_section_value = (uint64_t *)base_section;
+    memset(base_section, 0, 8);
+    CSliceMut<uint8_t> slice(base_section, 8);
+    os.read_raw_into(proc_address + 0x520, slice); // win11 22h2
+    printf("base_section:%p\n", *base_section_value);
+    uint16_t header;
+    Read<uint16_t>(*base_section_value,header);
+    if (header != MZ_Header)
+      {
+        for (size_t dtb = 0; dtb < SIZE_MAX; dtb += 0x1000)
+          {
+            proc.hProcess.set_dtb(dtb, Address_INVALID);
+            Read<uint16_t>(*base_section_value,header);
+            if (header == MZ_Header)
+              {
+                printf("fixed dtp:%p\n", dtb);
+                proc.baseaddr = *base_section_value;
+                status = process_status::FOUND_READY;
+              }
+          }
+        status = process_status::FOUND_NO_ACCESS;
+        close_proc();
 
+      printf("unable to find module: %s\n", target_module);
+      log_debug_errorcode(ret);
+      }
+    return ret;
+  }
+}
+    /*auto check_MZ_Header = [this,&proc_address]{
+      uint16_t header;
+      return Read<uint16_t>(proc_address,header) && header == MZ_Header;
+    };
+    if (!check_MZ_Header()){
+      for (size_t dtb=0;dtb<=std::numeric_limits<size_t>::max();dtb += 4096){
+        if(!set_dtb(dtb,invalid())){
+          continue;
+        }
+      }
+        if(check_MZ_Header()){
+
+        }
+    }*/
+    /*
     // find the module by its name
     ModuleInfo module_info;
     if (!(ret = proc.hProcess.module_by_name(CSliceRef<uint8_t>(target_module),
@@ -180,7 +225,7 @@ int Memory::open_proc(const char *name) {
   }
 
   return ret;
-}
+}*/
 
 Memory::~Memory() {
   if (inventory) {
