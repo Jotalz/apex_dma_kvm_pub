@@ -82,10 +82,6 @@ bool Entity::isDummy() {
   return strncmp(class_name, "CAI_BaseNPC", 11) == 0;
 }
 
-bool Entity::isSpec() {
-  return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0;
-}
-
 bool Entity::isKnocked() {
   return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0;
 }
