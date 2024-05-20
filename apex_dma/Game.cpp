@@ -342,12 +342,12 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth) {
   const auto g_settings = global_settings();
-  if (g_settings.firing_range) {    //如果是射击场并且not alive返回0
+  if (g_settings.firing_range) {    
     if (!target.isAlive()) {
       return QAngle(0, 0, 0);
     }
   } else {
-    if (!target.isAlive() || target.isKnocked()) {  //不在射击场但不是alive或者已经倒地返回0
+    if (!target.isAlive() || target.isKnocked()) {
       return QAngle(0, 0, 0);
     }
   }
@@ -358,7 +358,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow
       || weap_id == weapon_id::idweapon_charge_rifle)) {
       return QAngle(0, 0, 0);
-  }     //弓和充能自瞄开关
+  }     
   float BulletSpeed = curweap.get_projectile_speed();
   float BulletGrav = curweap.get_projectile_gravity();
 
@@ -398,12 +398,12 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float s
   float deltaTime = 1.0 / g_settings.game_fps;
 
   if (weap_headshot) {
-    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { //是列表中的武器并且小于设置的爆头距离就锁头
+    if (LocalCamera.DistTo(target.getPosition()) <= g_settings.headshot_dist) { 
       TargetBonePositionMax = TargetBonePositionMin =
           target.getBonePositionByHitbox(0);
     } else {
       TargetBonePositionMax = TargetBonePositionMin =
-          target.getBonePositionByHitbox(g_settings.bone);  //否则根据设置的自瞄位置瞄准
+          target.getBonePositionByHitbox(g_settings.bone); 
     }
   } else if (g_settings.bone_nearest) {
     // find nearest bone

@@ -147,7 +147,7 @@ int Memory::open_proc(const char *name) {
   int ret;
   const char *target_proc = name;
   const char *target_module = name;
-
+  constexpr uint16_t MZ_Header = 0x5a4d;
   // find a specific process based on its name
   // via process_by_name
 
@@ -157,24 +157,23 @@ int Memory::open_proc(const char *name) {
 
     printf("%s process found: 0x%lx] %d %s %s\n", target_proc, info->address,
            info->pid, info->name, info->path);
-
-    // find the module by its name
-    ModuleInfo module_info;
-    if (!(ret = proc.hProcess.module_by_name(CSliceRef<uint8_t>(target_module),
-                                             &module_info))) {
-      printf("%s module found: 0x%lx] 0x%lx %s %s\n", target_proc,
-             module_info.address, module_info.base, module_info.name,
-             module_info.path);
-
-      proc.baseaddr = module_info.base;
+    const short MZ_HEADER = 0x5A4D;
+    char *base_section = new char[8];
+    long *base_section_value= (long *)base_section;
+    memset(base_section, 0, 8);
+    CSliceMut<uint8_t> slice(base_section, 8);
+    os.read_raw_into(proc.hProcess.info()->address + 0x520, slice); //win10
+    proc.baseaddr=*base_section_value;
+    //遍历dtb
+    for (size_t dtb = 0; dtb < SIZE_MAX; dtb += 4096){
+        proc.hProcess.set_dtb(dtb, Address_INVALID);
+        short header;
+        Read<short>(*base_section_value,header);
+            if(header==MZ_HEADER){
+	              break;
+            }
+        }
       status = process_status::FOUND_READY;
-    } else {
-      status = process_status::FOUND_NO_ACCESS;
-      close_proc();
-
-      printf("unable to find module: %s\n", target_module);
-      log_debug_errorcode(ret);
-    }
   } else {
     status = process_status::NOT_FOUND;
   }
