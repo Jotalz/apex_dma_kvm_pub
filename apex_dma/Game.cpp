@@ -82,6 +82,10 @@ bool Entity::isDummy() {
   return strncmp(class_name, "CAI_BaseNPC", 11) == 0;
 }
 
+bool Entity::isSpec() {
+  return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0;
+}
+
 bool Entity::isKnocked() {
   return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0;
 }
@@ -198,6 +202,28 @@ void Entity::get_name(uint64_t g_Base, uint64_t index, char *name) {
   uint64_t name_ptr = 0;
   apex_mem.Read<uint64_t>(g_Base + OFFSET_NAME_LIST + index, name_ptr);
   apex_mem.ReadArray<char>(name_ptr, name, 32);
+}
+
+bool Entity::isSpec(uint64_t localptr){
+    if (!isPlayer())
+			return false;
+    if (isAlive())
+      return false;
+    uint64_t ObserverList;
+    apex_mem.Read<uint64_t>(g_Base +OFF_OBSERVER_LIST, ObserverList);
+    uint64_t nameIndex = 0;
+    apex_mem.Read<uint64_t>(ptr + OFFSET_NAME_LIST, nameIndex);
+    int Index;
+    apex_mem.Read<int>(ObserverList + nameIndex * 8 + 0x964,Index);
+    if (Index != -1){
+      uint64_t SpectatorAddr;
+       apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + ((Index & 0xFFFF) << 5),SpectatorAddr); 
+      if ((SpectatorAddr == localptr))
+        {
+          return true;
+        }
+      }
+    return false;
 }
 
 void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,

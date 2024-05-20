@@ -17,7 +17,7 @@
 #define OFFSET_BULLET_SPEED 0x1ea4 //[Miscellaneous].CWeaponX!m_flProjectileSpeed updated 2024/05/11
 #define OFFSET_BULLET_SCALE 0x1eac //[Miscellaneous].CWeaponX!m_flProjectileScale updated 2024/05/11
 #define OFFSET_CROSSHAIR_LAST 0x1998 //[Miscellaneous].CWeaponX!lastCrosshairTargetTime updated 2024/05/11
-
+#define OFF_OBSERVER_LIST 0x1EACCE8				  //+0x20C8
 #define OFFSET_ITEM_ID 0x1558 //[RecvTable.DT_PropSurvival].m_customScriptInt updated 2024/05/11
 #define OFFSET_HOST_MAP 0x016d5570 + 0x58 //[ConVars].host_map + 0x58 updated 2024/05/11
 #define OFFSET_WEAPON_NAME 0x1778 //[RecvTable.DT_WeaponX].m_weaponNameIndex updated 2024/05/11

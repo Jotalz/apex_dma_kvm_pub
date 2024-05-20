@@ -599,7 +599,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
     // Update yew to spec checker
     tick_yew(target.ptr, target.GetYaw());
     // Exclude self from list when watching others
-    if (target.ptr != LPlayer.ptr && is_spec(target.ptr)) {
+    if (target.ptr != LPlayer.ptr && target.isSpec(LPlayer.ptr)) {
       tmp_specs.insert(target.ptr);
     }
     // if (target.ptr != LPlayer.ptr && LPlayer.GetYaw() == target.GetYaw()) {
@@ -765,7 +765,7 @@ void DoActions() {
         static uintptr_t lplayer_ptr = 0;
         if (lplayer_ptr != LPlayer.ptr) {   //如果LPlayer.ptr不为0，即前面读取都是顺利的，则将本地玩家指针传给lplayer_ptr
           lplayer_ptr = LPlayer.ptr;
-          init_spec_checker(lplayer_ptr);   //函数定义在rust里，\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
+          //init_spec_checker(lplayer_ptr);   //函数定义在rust里，\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
         }
         tick_yew(lplayer_ptr, LPlayer.GetYaw());
       }

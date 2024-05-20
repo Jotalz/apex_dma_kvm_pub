@@ -36,6 +36,7 @@ public:
   bool isKnocked();
   bool isAlive();
   float lastVisTime();
+  bool isSpec(uint64_t localptr);
   int getTeamId();
   int getHealth();
   int getShield();
