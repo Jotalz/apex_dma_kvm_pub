@@ -208,7 +208,7 @@ bool Entity::isSpec(uint64_t localptr){
     uint64_t ObserverList;
     apex_mem.Read<uint64_t>(g_Base +OFF_OBSERVER_LIST, ObserverList);
     uint64_t nameIndex = 0;
-    apex_mem.Read<uint64_t>(ptr + OFFSET_NAME_LIST, nameIndex);
+    apex_mem.Read<uint64_t>(ptr + 0X38, nameIndex);
     int Index;
     apex_mem.Read<int>(ObserverList + nameIndex * 8 + 0x964,Index);
     if (Index != -1){
