@@ -239,7 +239,7 @@ void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
 
   long highlightSettingsPtr;
   apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
-  uint8_t context_id = 99;
+  uint8_t context_id = 75;
   apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, context_id);
   apex_mem.Write<typeof(highlightFunctionBits)>(
       highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x0, highlightFunctionBits);
