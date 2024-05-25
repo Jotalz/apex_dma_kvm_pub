@@ -522,7 +522,7 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
       // set glow color
       if (!(g_settings.firing_range) &&
           (Target.isKnocked() || !Target.isAlive())) {  //不在训练场并且倒地或者没活着
-        setting_index = 64;
+        setting_index = 70;
         highlight_parameter = {g_settings.glow_r_knocked,
                                g_settings.glow_g_knocked,
                                g_settings.glow_b_knocked};
@@ -536,22 +536,22 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
           int shield = Target.getShield();
           int health = Target.getHealth();
           if (shield + health <= 100) { // Orange
-            setting_index = 69;
+            setting_index = 66;
             highlight_parameter = {255 / 255.0, 165 / 255.0, 0 / 255.0};
           } else if (shield + health <= 150) { // white
-            setting_index = 70;
+            setting_index = 67;
             highlight_parameter = {247 / 255.0, 247 / 255.0, 247 / 255.0};
           } else if (shield + health <= 175) { // blue
-            setting_index = 66;
+            setting_index = 68;
             highlight_parameter = {39 / 255.0, 178 / 255.0, 255 / 255.0};
           } else if (shield + health <= 200) { // purple
-            setting_index = 63;
+            setting_index = 69;
             highlight_parameter = {206 / 255.0, 59 / 255.0, 255 / 255.0};
           } else if (shield + health <= 225) { // red
-            setting_index = 62;
+            setting_index = 72;
             highlight_parameter = {219 / 255.0, 2 / 255.0, 2 / 255.0};
           } else {
-            setting_index = 61;
+            setting_index = 71;
             highlight_parameter = {2 / 255.0, 2 / 255.0, 2 / 255.0};
           }
         } else {
@@ -566,9 +566,9 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index,
         if (it != centity_to_index.end() &&
             Target.check_love_player(it->second)) {
           int frame_frag = frame_number / ((int)g_settings.game_fps);
-          if (setting_index == 67 ||
+          if (setting_index == 74 ||
               frame_frag % 2 == 0) { // vis: always, else: 1s time slice
-            setting_index = 68;
+            setting_index = 73;
             rainbowColor(frame_number, highlight_parameter);    //返回一个rgb色彩到highlight_parameter
           }
         }
@@ -595,8 +595,8 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
   int entity_team = target.getTeamId();
   int local_team = LPlayer.getTeamId();
 
-  if (target.ptr != LPlayer.ptr) {
-    if (target.isSpec(LPlayer.ptr)) {
+  if (!target.isAlive() || !LPlayer.isAlive()) {
+    if (target.ptr != LPlayer.ptr && target.isSpec(LPlayer.ptr)) {
       tmp_specs.insert(target.ptr);
     }
     return;
@@ -1390,7 +1390,7 @@ static void item_glow_t() {
         }
         else if (g_settings.loot.shotgunammo && ItemID == 143) { //霰弹子弹
             std::array<float, 3> highlightParameter = { 0.5, 0.0862, 0 };   //暗红
-            int settingIndex = 47;
+            int settingIndex = 41;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         else if (g_settings.loot.lasersight1 && ItemID == 242) { //激光瞄准器，以下3个等级
@@ -1646,18 +1646,18 @@ static void item_glow_t() {
         // Nades
         else if (g_settings.loot.grenade_frag && ItemID == 226) {    //破片手雷
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
-            int settingIndex = 47;
+            int settingIndex = 41;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
 
         else if (g_settings.loot.grenade_thermite && ItemID == 225) {    //铝热剂
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
-            int settingIndex = 47;
+            int settingIndex = 41;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         else if (g_settings.loot.grenade_arc_star && ItemID == 227) {        //电弧星
             std::array<float, 3> highlightParameter = { 0, 0, 1 };
-            int settingIndex = 64;
+            int settingIndex = 41;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         // Weapons
@@ -1810,12 +1810,12 @@ static void item_glow_t() {
         }
         else if (ItemID == 289) {                                       //保险库钥匙？
             std::array<float, 3> highlightParameter = { 1, 0, 0 };
-            int settingIndex = 42;
+            int settingIndex = 41;
             item.enableGlow(settingIndex, 64, highlightParameter);
         }
         else if (g_settings.loot.mobile_respawn && ItemID == 293) {       //重生信标
             std::array<float, 3> highlightParameter = { 0, 0.6, 0.4 };
-            int settingIndex = 47;
+            int settingIndex = 41;
             item.enableGlow(settingIndex, 32, highlightParameter);
         }
         // CREDITS to Rikkie
