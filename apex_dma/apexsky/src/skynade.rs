@@ -14,7 +14,7 @@ pub fn skynade_angle(
     const WEAP_ID_ARC_STAR: u32 = 176;
 
     let (lob, pitches, z_offset): (bool, &[pitches::Pitch], f32) =
-        match (weapon_mod_bitfield & 0x4 != 0, weapon_id) {
+        match (weapon_mod_bitfield & 0x8 != 0, weapon_id) {
             (false, WEAP_ID_THERMITE_GRENADE) => (false, &pitches::GRENADE_PITCHES, 0.0),
             (false, WEAP_ID_FRAG_GRENADE) => (true, &pitches::GRENADE_PITCHES, 70.0),
             (false, WEAP_ID_ARC_STAR) => (false, &pitches::ARC_PITCHES, 25.0),

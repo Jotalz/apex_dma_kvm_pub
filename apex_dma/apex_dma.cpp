@@ -758,7 +758,6 @@ void DoActions() {
         static uintptr_t lplayer_ptr = 0;
         if (lplayer_ptr != LPlayer.ptr) {   //如果LPlayer.ptr不为0，即前面读取都是顺利的，则将本地玩家指针传给lplayer_ptr
           lplayer_ptr = LPlayer.ptr;
-          //init_spec_checker(lplayer_ptr);   //函数定义在rust里，\apex_dma\apexsky\src\lib.rs  \apex_dma\apexsky\src\skyapex\spectators.rs
         }
         tick_yew(lplayer_ptr, LPlayer.GetYaw());
       }

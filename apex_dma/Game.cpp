@@ -180,7 +180,7 @@ void Entity::enableGlow(int setting_index, uint8_t inside_value,uint8_t outline_
   apex_mem.Write<typeof(highlight_parameter)>(
       highlight_settings_ptr + HIGHLIGHT_TYPE_SIZE * setting_index + 0x4, highlight_parameter);
   apex_mem.Write<float>(ptr + 0x264, glow_dist);
-  apex_mem.Write(ptr + OFFSET_GLOW_FIX, 1);
+  apex_mem.Write(ptr + OFFSET_GLOW_FIX, 0);
 }
 
 void Entity::SetViewAngles(SVector angles) {
