@@ -210,7 +210,7 @@ bool Entity::isSpec(uint64_t localptr){
     uint64_t nameIndex = 0;
     apex_mem.Read<uint64_t>(ptr + 0X38, nameIndex);
     int Index;
-    apex_mem.Read<int>(ObserverList + nameIndex * 8 + 0x964,Index);
+    apex_mem.Read<int>(ObserverList + nameIndex * 8 + 0x974,Index);
     if (Index != -1){
       uint64_t SpectatorAddr;
        apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + ((Index & 0xFFFF) << 5),SpectatorAddr); 
