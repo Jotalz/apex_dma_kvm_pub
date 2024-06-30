@@ -81,7 +81,7 @@
 #define OFFSET_GLOW_THROUGH_WALLS 0x26c //updated 2 = enabled, 5 = disabled
 #define OFFSET_GLOW_FIX 0x278 //updated 1/10/2024
 #define OFFSET_HIGHLIGHTGENERICCONTEXT 0x029d //[RecvTable.DT_HighlightSettings].m_highlightGenericContexts updated 2024/06/28
-#define OFFSET_GLOW_CONTEXT_ID OFFSET_GLOW_ENABLE //updated Script_Highlight_SetCurrentContext
+#define OFFSET_GLOW_CONTEXT_ID 0x29C  //[DT_HighlightSettings].m_highlightServerActiveStates updated 2024/06/30
 #define OFFSET_GLOW_THROUGH_WALLS_GLOW_VISIBLE_TYPE OFFSET_GLOW_THROUGH_WALLS //updated
 #define HIGHLIGHT_SETTINGS 0xb0d8f70 //updated 2024/04/09 HighlightSettings
 #define HIGHLIGHT_TYPE_SIZE 0x34 //updated 1/10/2024
