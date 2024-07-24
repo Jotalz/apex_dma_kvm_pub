@@ -15,7 +15,7 @@ extern Memory apex_mem;
 
 float bulletspeed = 0.08;
 float bulletgrav = 0.05;
-
+std::array<unsigned char, 4> Item::ItemRarityIds = { 15, 40, 45, 52 };
 // glowtype not used, but dont delete its still used.
 extern int glowtype;
 extern int glowtype2;
@@ -313,6 +313,14 @@ void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float,
     apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
 }
 
+	void Item::setItemGlow(){
+		std::array<unsigned char, 4> highlightFunctionBits = { 0, 125, 64, 64 };
+    long highlightSettingsPtr;
+    apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+			for (int highlightId : ItemRarityIds) {
+				 apex_mem.Write<typeof(highlightFunctionBits)>(highlightSettingsPtr + (HIGHLIGHT_TYPE_SIZE * highlightId) + 0, highlightFunctionBits);
+			}
+	}
 /*void Item::disableGlow() {
   apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 0);
   apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 0, 0);

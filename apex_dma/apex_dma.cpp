@@ -1165,7 +1165,8 @@ static void item_glow_t() {
       if (!g_settings.item_glow) {
         break;
       }
-
+      Item::setItemGlow();
+/*
       uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
       // item ENTs to loop, 10k-15k is normal. 10k might be better but will
       // not show all the death boxes i think.
@@ -1227,8 +1228,8 @@ static void item_glow_t() {
             }
             break;
           }
-        }   
-        */
+        } 
+        
         if (g_settings.loot.lightbackpack && ItemID == 220) {       //白包
             std::array<float, 3> highlightParameter = { 1, 1, 1 };  //高亮颜色，111是白色，因为lightbackpack是白包
             int settingIndex = 63;
@@ -1822,6 +1823,7 @@ static void item_glow_t() {
         // weapon ids and item ids code, you are a life saver!
 
       } // for(item) loop end
+*/
       treasure_clues = new_treasure_clues;
     } // while(item_glow) loop end
   }   // while(item_t) loop end

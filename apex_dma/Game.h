@@ -70,11 +70,13 @@ public:
   uint64_t ptr;
   uint8_t buffer[0x3FF0];
   Vector getPosition();
+  static std::array<unsigned char, 4> ItemRarityIds;
   bool isItem();
   bool isBox();
   bool isTrap();
   //bool isGlowing();
   void enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter);
+  static void setItemGlow();
   //void disableGlow();
   //void BlueGlow();
 };
