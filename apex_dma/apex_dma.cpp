@@ -1823,8 +1823,8 @@ static void item_glow_t() {
         // weapon ids and item ids code, you are a life saver!
 
       } // for(item) loop end
-*/
       treasure_clues = new_treasure_clues;
+*/
     } // while(item_glow) loop end
   }   // while(item_t) loop end
   item_t = false;
