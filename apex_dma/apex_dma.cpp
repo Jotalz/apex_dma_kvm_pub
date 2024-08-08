@@ -29,27 +29,22 @@ Memory apex_mem;
 // Just setting things up, dont edit.
 bool active = true;
 aimbot_state_t aimbot;
-int team_player = 0;
+int LocalTeamID = 0;
 const int toRead = 100;
 bool trigger_ready = false;
 extern Vector aim_target; // for esp
 int map_testing_local_team = 0;
 
-// Removed but not all the way, dont edit.
-int glowtype;
-int glowtype2;
 // float triggerdist = 50.0f;
 bool actions_t = false;
 bool cactions_t = false;
-bool updateInsideValue_t = false;
-bool TriggerBotRun_t = false;
 bool terminal_t = false;
 bool overlay_t = false;
 bool esp_t = false;
 bool aim_t = false;
-bool vars_t = false;
 bool item_t = false;
 bool control_t = false;
+bool isdone = false;  //Prevent frequent writes during the superGrpple
 uint64_t g_Base;
 bool next2 = false;
 bool valid = false;
@@ -63,11 +58,15 @@ int itementcount = 10000;
 int map = 0;
 std::vector<TreasureClue> treasure_clues;
 std::map<uint64_t, uint64_t> centity_to_index; // Map centity to entity index
+float lastvis_esp[toRead];
+float lastvis_aim[toRead];
+std::vector<Entity> spectators, allied_spectators;
+std::mutex spectatorsMtx;
 
+uint64_t PlayerLocal;
+int EntTeam;
+int LocTeam;
 //^^ Don't EDIT^^
-
-std::vector<uint64_t> wish_list{191, 209, 210, 220, 234,
-                                242, 258, 260, 429496729795, 52776987629977800};
 
 uint32_t button_state[4];
 bool isPressed(uint32_t button_code)
@@ -105,7 +104,7 @@ void TriggerBotRun()
   // 设置随机数生成器
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(50, 200); // 正常或稍快的反应时间
+  std::uniform_int_distribution<> dis(10, 50); // 正常或稍快的反应时间
   // 生成随机时间间隔，防止行为检测
   int randomInterval = dis(gen);
   std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
@@ -114,15 +113,6 @@ void TriggerBotRun()
   apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
   // printf("TriggerBotRun\n");
 }
-
-/*inline void AutoGrapple(uintptr_t LocalPlayerEntity)    //自动超级钩
-{
-    apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
-    auto Gn = apex_mem.Read<int>(LocalPlayerEntity + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED);
-    if (Gn == 1) {
-        apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 5);
-    }
-}*/
 
 bool IsInCrossHair(Entity &target)
 {
@@ -160,15 +150,8 @@ bool IsInCrossHair(Entity &target)
   return is_trigger;
 }
 
-// Visual check and aim check.?
-float lastvis_esp[toRead];
-float lastvis_aim[toRead];
-// std::set<uintptr_t> tmp_specs;
-std::vector<Entity> spectators, allied_spectators;
-std::mutex spectatorsMtx;
-
 void MapRadarTesting()
-{ // 为什么这能把雷达搞出来...不就来回写了一个地址
+{
   uintptr_t pLocal;
   apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, pLocal);
   int dt;
@@ -186,11 +169,6 @@ void MapRadarTesting()
   }
   map_testing_local_team = 0;
 }
-
-uint64_t PlayerLocal;
-int PlayerLocalTeamID;
-int EntTeam;
-int LocTeam;
 
 void ClientActions()
 {
@@ -461,12 +439,13 @@ void ClientActions()
         if (isGrppleActived)
         {
           apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
-          if (isGrppleAttached == 1)
+          if (isGrppleAttached == 1 && !isdone)
           {
             apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
             apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
           }
+          isdone = isGrppleAttached;
         }
       }
       if (g_settings.keyboard)
@@ -501,19 +480,26 @@ void ClientActions()
           aimbot.aiming = false;
         }
       }
-      bool triggerbot_shotgun;
+      bool triggerbot_clickgun;
       switch (local_weapon_id)
       {
       case idweapon_eva8:
       case idweapon_mastiff:
       case idweapon_mozambique:
       case idweapon_peacekeeper:
-        triggerbot_shotgun = true;
+      case idweapon_sentinel:
+      case idweapon_longbow:
+      case idweapon_g7_scout:
+      case idweapon_kraber:
+      case idweapon_p2020:
+      case idweapon_triple_take:
+      case idweapon_3030_repeater:
+        triggerbot_clickgun = true;
         break;
       default:
-        triggerbot_shotgun = false;
+        triggerbot_clickgun = false;
       }
-      if (g_settings.shotgun_auto_shot && triggerbot_shotgun && zoom_state)
+      if (g_settings.shotgun_auto_shot && triggerbot_clickgun && zoom_state)
       {
         trigger_ready = true;
       }
@@ -698,17 +684,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
   }
 
   if (g_settings.tdm_toggle)
-  { // Check if the target entity is on the same
-    // team as the
-    // local player
-    // int entity_team = Target.getTeamId();
-    // printf("Target Team: %i\n", entity_team);
-
-    /*uint64_t PlayerLocal;
-    apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, PlayerLocal);
-    int PlayerLocalTeamID;
-    apex_mem.Read<int>(PlayerLocal + OFFSET_TEAM, PlayerLocalTeamID);*/
-
+  {
     if (entity_team % 2)
       EntTeam = 1;
     else
@@ -727,7 +703,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t entitylist,
   if (!g_settings.firing_range)
   {
     if (entity_team < 0 || entity_team > 50 ||
-        (entity_team == team_player && !g_settings.onevone))
+        (entity_team == LocalTeamID && !g_settings.onevone))
     {
       return;
     }
@@ -870,8 +846,8 @@ void DoActions()
 
       Entity LPlayer = getEntity(LocalPlayer); // 根据地址生成玩家实体对象entity
 
-      team_player = LPlayer.getTeamId(); // 获取自己所在队伍的id
-      if (team_player < 0 || team_player > 50)
+      LocalTeamID = LPlayer.getTeamId(); // 获取自己所在队伍的id
+      if (LocalTeamID < 0 || LocalTeamID > 50)
       { // id不对开始新的while循环不继续执行
         continue;
       }
@@ -957,7 +933,7 @@ void DoActions()
           for (auto it = tmp_specs.begin(); it != tmp_specs.end(); it++)
           {
             Entity target = getEntity(*it);
-            if (target.getTeamId() == team_player)
+            if (target.getTeamId() == LocalTeamID)
             {
               tmp_all_spec.push_back(target);
             }
@@ -1068,8 +1044,8 @@ static void EspLoop()
           continue;
         }
         Entity LPlayer = getEntity(LocalPlayer);
-        int team_player = LPlayer.getTeamId();
-        if (team_player < 0 || team_player > 50)
+        int LocalTeamID = LPlayer.getTeamId();
+        if (LocalTeamID < 0 || LocalTeamID > 50)
         {
           next2 = true;
           while (next2 && g_Base != 0 && overlay_t && g_settings.esp)
@@ -1141,7 +1117,7 @@ static void EspLoop()
             }
 
             // Exlude teammates if not 1v1
-            if (entity_team == team_player && !g_settings.onevone)
+            if (entity_team == LocalTeamID && !g_settings.onevone)
             {
               continue;
             }
@@ -1428,22 +1404,22 @@ static void item_glow_t()
         }
       }
 
-      if (g_settings.loot.lightbackpack && ItemID == 220) {       //白包
+      if (g_settings.loot.lightbackpack && ItemID == 229) {       //白包
           std::array<float, 3> highlightParameter = { 1, 1, 1 };  //高亮颜色，111是白色，因为lightbackpack是白包
           int settingIndex = 63;
           item.enableGlow(settingIndex, 32, highlightParameter);
       }
-      else if (g_settings.loot.medbackpack && ItemID == 221) {     //蓝包
+      else if (g_settings.loot.medbackpack && ItemID == 230) {     //蓝包
           std::array<float, 3> highlightParameter = { 0, 0, 1 };
           int settingIndex = 52;
           item.enableGlow(settingIndex, 32, highlightParameter);
       }
-      else if (g_settings.loot.heavybackpack && ItemID == 222) {   //紫包
+      else if (g_settings.loot.heavybackpack && ItemID == 231) {   //紫包
           std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };  //#4B0082
           int settingIndex = 45;
           item.enableGlow(settingIndex, 64, highlightParameter);
       }
-      else if (g_settings.loot.goldbackpack && ItemID == 223) {     //金包
+      else if (g_settings.loot.goldbackpack && ItemID == 232) {     //金包
           std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
           int settingIndex = 15;
           item.enableGlow(settingIndex, 64, highlightParameter);
@@ -1481,25 +1457,25 @@ static void item_glow_t()
           int settingIndex = 40;
           item.enableGlow(settingIndex, 32, highlightParameter);
       }
-      else if (g_settings.loot.shieldupgradehead1 && ItemID == 196) {  //白头
+      else if (g_settings.loot.shieldupgradehead1 && ItemID == 206) {  //白头
           std::array<float, 3> highlightParameter = { 1, 1, 1 };
 
           int settingIndex = 63;
           item.enableGlow(settingIndex, 32, highlightParameter);
       }
-      else if (g_settings.loot.shieldupgradehead2 && ItemID == 197) {  //蓝头
+      else if (g_settings.loot.shieldupgradehead2 && ItemID == 207) {  //蓝头
 
           std::array<float, 3> highlightParameter = { 0, 0, 1 };
           int settingIndex = 52;
           item.enableGlow(settingIndex, 32, highlightParameter);
       }
-      else if (g_settings.loot.shieldupgradehead3 && ItemID == 198) {  //紫头
+      else if (g_settings.loot.shieldupgradehead3 && ItemID == 208) {  //紫头
           std::array<float, 3> highlightParameter = { 0.2941, 0, 0.5098 };
 
           int settingIndex = 45;
           item.enableGlow(settingIndex, 32, highlightParameter);
       }
-      else if (g_settings.loot.shieldupgradehead4 && ItemID == 199) {      //金头
+      else if (g_settings.loot.shieldupgradehead4 && ItemID == 209) {      //金头
 
           std::array<float, 3> highlightParameter = { 1, 0.8431, 0 };
           int settingIndex = 15;
@@ -2079,9 +2055,6 @@ int main(int argc, char *argv[])
         esp_t = false;
         actions_t = false;
         cactions_t = false;
-        // Used to change things on a timer
-        updateInsideValue_t = false;
-        TriggerBotRun_t = false;
         terminal_t = false;
         overlay_t = false;
         item_t = false;

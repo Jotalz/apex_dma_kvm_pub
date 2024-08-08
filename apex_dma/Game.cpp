@@ -16,9 +16,7 @@ extern Memory apex_mem;
 float bulletspeed = 0.08;
 float bulletgrav = 0.05;
 std::array<unsigned char, 4> Item::ItemRarityIds = { 15, 42, 47, 54 };
-// glowtype not used, but dont delete its still used.
-extern int glowtype;
-extern int glowtype2;
+
 // setting up vars, dont edit
 extern float veltest;
 extern Vector aim_target;
