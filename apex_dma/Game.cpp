@@ -15,7 +15,7 @@ extern Memory apex_mem;
 
 float bulletspeed = 0.08;
 float bulletgrav = 0.05;
-std::array<unsigned char, 4> Item::ItemRarityIds = { 15, 40, 45, 52 };
+std::array<unsigned char, 4> Item::ItemRarityIds = { 15, 42, 47, 54 };
 // glowtype not used, but dont delete its still used.
 extern int glowtype;
 extern int glowtype2;
@@ -570,9 +570,9 @@ void WeaponXEntity::update(uint64_t LocalPlayer) {
   apex_mem.Read<uint64_t>(entitylist + (wephandle << 5), wep_entity);
 
   projectile_speed = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);   //maybe its WeaponSettings.projectile_launch_speed now
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);   //[Miscellaneous].CWeaponX!m_flProjectileSpeed in past
   projectile_scale = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);  // maybe its WeaponSettings.projectile_gravity_scale now
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);  //[Miscellaneous].CWeaponX!m_flProjectileScale
   zoom_fov = 0;
   apex_mem.Read<float>(wep_entity + OFFSET_ZOOM_FOV, zoom_fov);
   ammo = 0;
