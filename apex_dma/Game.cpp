@@ -220,14 +220,12 @@ bool Entity::isSpec(uint64_t localptr){
     return false;
 }
 
-void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
-                               std::array<float, 3> highlight_colors) {
+void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow, std::array<float, 3> highlight_colors) {
   uint64_t view_model_handle;
   apex_mem.Read<uint64_t>(ptr + OFFSET_VIEW_MODELS, view_model_handle);
   view_model_handle &= 0xFFFF;
   uint64_t view_model_ptr = 0;
-  apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + (view_model_handle << 5),
-                          view_model_ptr);
+  apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + (view_model_handle << 5), view_model_ptr);
 
   std::array<unsigned char, 4> highlightFunctionBits = {0, 125, 64, 64};
   if (!enable_glow) {
@@ -237,18 +235,12 @@ void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
 
   long highlightSettingsPtr;
   apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
-  uint8_t context_id = 74;
+  uint8_t context_id = 70;
   apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, context_id);
   apex_mem.Write<typeof(highlightFunctionBits)>(
       highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x0, highlightFunctionBits);
   apex_mem.Write<typeof(highlight_colors)>(
       highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x4, highlight_colors);
-
-  // Fix highlight Wraith and Ashe's disappear
-  // apex_mem.Write(ptr + 0x270, 1);
-  // int val1;
-  // apex_mem.Read(ptr + 0x270, val1);
-  // printf("0x270=%d\n", val1);
 }
 
 bool Entity::check_love_player(uint64_t entity_index) {
