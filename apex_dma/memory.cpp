@@ -87,17 +87,17 @@ void Memory::check_proc() {
   }
 }
 
-Memory::Memory() { log_init(LevelFilter::LevelFilter_Info); }
+Memory::Memory() { mf_log_init(LevelFilter::LevelFilter_Info); }
 
 int Memory::open_os() {
   // load all available plugins
   if (inventory) {
-    inventory_free(inventory);
+    mf_inventory_free(inventory);
     inventory = nullptr;
   }
-  inventory = inventory_scan();
+  inventory = mf_inventory_scan();
   if (!inventory) {
-    log_error("unable to create inventory");
+    mf_log_error("unable to create inventory");
     return 1;
   }
   printf("inventory initialized: %p\n", inventory);
@@ -117,12 +117,12 @@ int Memory::open_os() {
   // initialize the connector plugin
   if (conn) {
     printf("Using %s connector.\n", conn_name);
-    if (inventory_create_connector(inventory, conn_name, conn_arg,
+    if (mf_inventory_create_connector(inventory, conn_name, conn_arg,
                                    &connector)) {
       printf("Unable to initialize %s connector.\n", conn_name);
       printf("Fallback to %s connector.\n", conn2_name);
 
-      if (inventory_create_connector(inventory, conn2_name, conn2_arg,
+      if (mf_inventory_create_connector(inventory, conn2_name, conn2_arg,
                                      &connector)) {
         printf("Unable to initialize %s connector.\n", conn2_name);
         return 1;
@@ -134,7 +134,7 @@ int Memory::open_os() {
   }
 
   // initialize the OS plugin
-  if (inventory_create_os(inventory, os_name, os_arg, conn, &os)) {
+  if (mf_inventory_create_os(inventory, os_name, os_arg, conn, &os)) {
     printf("unable to initialize OS\n");
     return 1;
   }
@@ -183,9 +183,9 @@ int Memory::open_proc(const char *name) {
 
 Memory::~Memory() {
   if (inventory) {
-    inventory_free(inventory);
+    mf_inventory_free(inventory);
     inventory = nullptr;
-    log_info("inventory freed");
+    mf_log_info("inventory freed");
   }
 }
 
