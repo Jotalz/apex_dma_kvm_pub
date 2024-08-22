@@ -30,7 +30,7 @@ Memory apex_mem;
 bool active = true;
 aimbot_state_t aimbot;
 int LocalTeamID = 0;
-const int toRead = 100;
+const int toRead = 70;
 bool trigger_ready = false;
 extern Vector aim_target; // for esp
 int map_testing_local_team = 0;
@@ -53,7 +53,6 @@ extern float bulletgrav;
 Vector esp_local_pos;
 int local_held_id = 2147483647;
 uint32_t local_weapon_id = 2147483647;
-int playerentcount = 61;
 int itementcount = 10000;
 int map = 0;
 std::vector<TreasureClue> treasure_clues;
@@ -601,7 +600,7 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
         setting_index = 66;
         highlight_parameter = {255 / 255.0, 165 / 255.0, 0 / 255.0};
       }
-      else if (shield + health <= 740)
+      else if (shield + health <= 150)
       { // white
         setting_index = 67;
         highlight_parameter = {247 / 255.0, 247 / 255.0, 247 / 255.0};
@@ -796,11 +795,11 @@ void DoActions()
       {
         map = 0;
       }
-      else if (strcmp(level_name, "mp_rr_canyonlands_staging_mu1") == 0)
+      else if (strcmp(level_name, "mp_rr_canyonlands_hu") == 0)
       {
         map = 1;
       }
-      else if (strcmp(level_name, "mp_rr_tropic_island_mu1_storm") == 0)
+      else if (strcmp(level_name, "mp_rr_tropic_island_mu2") == 0)
       {
         map = 2;
       }
@@ -808,11 +807,11 @@ void DoActions()
       {
         map = 3;
       }
-      else if (strcmp(level_name, "mp_rr_olympus") == 0)
+      else if (strcmp(level_name, "mp_rr_olympus_mu2") == 0)
       {
         map = 4;
       }
-      else if (strcmp(level_name, "mp_rr_divided_moon") == 0)
+      else if (strcmp(level_name, "mp_rr_divided_moon_mu1") == 0)
       {
         map = 5;
       }
@@ -820,18 +819,9 @@ void DoActions()
       {
         map = -1;
       }
-
-      if (g_settings.firing_range)
-      { // 判断是否在射击场,从而区分应该循环的次数
-        playerentcount = 16000;
-      }
-      else
-      {
-        playerentcount = 61;
-      }
       if (g_settings.deathbox)
       { // 如果开了死亡之箱高亮则需要更多物品循环
-        itementcount = 74000;
+        itementcount = 15000;
       }
       else
       {
@@ -873,7 +863,7 @@ void DoActions()
       if (g_settings.firing_range)
       {
         int c = 0;
-        for (int i = 0; i < playerentcount; i++)
+        for (int i = 0; i < 1000; i++)
         {
           uint64_t entityAddr = 0;
           apex_mem.Read<uint64_t>(entityListPtr + ((uint64_t)i << 5), entityAddr);
@@ -1341,8 +1331,8 @@ static void item_glow_t()
         // Item filter glow name setup and search.
         char glowName[200] = {0};
         uint64_t name_ptr;
-        apex_mem.Read<uint64_t>(entityAddr + OFFSET_MODELNAME, name_ptr); // 这个实体的数组指针再加上名称偏移量，得到实体名称数组的地址
-        apex_mem.ReadArray<char>(name_ptr, glowName, 200);             // 将实体名称存到glowName
+        apex_mem.Read<uint64_t>(entityAddr + OFFSET_MODELNAME, name_ptr); // 这个实体的数组指针再加上模型名称偏移量，得到实体模型名称数组的地址
+        apex_mem.ReadArray<char>(name_ptr, glowName, 200);             // 将实体模型名称存到glowName
 
         // item ids?
         uint64_t ItemID;
