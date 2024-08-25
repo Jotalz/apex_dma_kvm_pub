@@ -30,7 +30,7 @@ Memory apex_mem;
 bool active = true;
 aimbot_state_t aimbot;
 int LocalTeamID = 0;
-const int toRead = 70;
+const int toRead = 100;
 bool trigger_ready = false;
 extern Vector aim_target; // for esp
 int map_testing_local_team = 0;
@@ -556,9 +556,10 @@ void ControlLoop()
   control_t = true;
   while (control_t)
   {
-    std::lock_guard<std::mutex> lock(spectatorsMtx);
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    spectatorsMtx.lock();
     int spec_count = spectators.size();
+    spectatorsMtx.unlock();
     if (spec_count > 0)
     {
       kbd_backlight_blink(spec_count);
@@ -757,6 +758,8 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     // TriggerBot
     if (aimbot.aimentity != 0)
     {
+      //uint64_t LocalPlayer = 0;
+      //apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
       if (trigger_ready && IsInCrossHair(Target))
@@ -843,16 +846,16 @@ void DoActions()
       {
         continue;
       }
-      /*
-            {
-              static uintptr_t lplayer_ptr = 0;
-              if (lplayer_ptr != LPlayer.ptr)
-              {
-                lplayer_ptr = LPlayer.ptr;
-              }
-              tick_yew(lplayer_ptr, LPlayer.GetYaw());
-            }
-      */
+      
+      {
+        static uintptr_t lplayer_ptr = 0;
+        if (lplayer_ptr != LPlayer.ptr)
+        {
+          lplayer_ptr = LPlayer.ptr;
+        }
+        tick_yew(lplayer_ptr, LPlayer.GetYaw());
+      }
+      
       int frame_number = 0;
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number); // 读取游戏的实际帧数
       std::set<uintptr_t> tmp_specs;
@@ -863,7 +866,7 @@ void DoActions()
       if (g_settings.firing_range)
       {
         int c = 0;
-        for (int i = 0; i < 1000; i++)
+        for (int i = 0; i < 15000; i++)
         {
           uint64_t entityAddr = 0;
           apex_mem.Read<uint64_t>(entityListPtr + ((uint64_t)i << 5), entityAddr);
