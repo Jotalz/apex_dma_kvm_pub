@@ -91,6 +91,7 @@ pub enum MessageId {
     HotkeyItemAimbot1,
     HotkeyItemAimbot2,
     HotkeyItemTriggerBot,
+    HotkeyItemQuickGlow,
     MenuItemKeyCodes,
     ItemFilterMenuTitle,
     InfoInvalidKeycode,

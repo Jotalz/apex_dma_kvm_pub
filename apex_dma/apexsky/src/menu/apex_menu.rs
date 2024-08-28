@@ -1200,9 +1200,25 @@ fn build_hotkey_menu(
                 Some(text_invalid_keycode!(i18n_bundle, HotkeyItemTriggerBot))
             },
         )
+        .add_input_item(
+            menu_item_keycode(
+                format!("4 - {}", i18n_msg!(i18n_bundle, HotkeyItemQuickGlow)),
+                settings.aimbot_hot_key_2,
+            ),
+            &prompt_text_keycode!(i18n_bundle, HotkeyItemQuickGlow),
+            |val| {
+                if let Some(keycode) = val.parse::<u8>().ok() {
+                    let settings = &mut lock_config!().settings;
+                    settings.quickglow_hot_key = keycode as i32;
+                    return None;
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(text_invalid_keycode!(i18n_bundle, HotkeyItemQuickGlow))
+            },
+        )
         .add_dummy_item()
         .add_item(
-            item_text(format!("4 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
+            item_text(format!("5 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
             |handler: &mut TerminalMenu| {
                 handler.nav_menu(MenuLevel::KeyCodesMenu);
                 None
@@ -1211,7 +1227,7 @@ fn build_hotkey_menu(
         .add_dummy_item()
         .add_item(
             item_text(format!(
-                "5 - {}",
+                "6 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {

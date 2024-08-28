@@ -172,6 +172,7 @@ pub struct Settings {
     pub aimbot_hot_key_1: i32,
     pub aimbot_hot_key_2: i32,
     pub trigger_bot_hot_key: i32,
+    pub quickglow_hot_key: i32,
     pub loot_filled_toggle: bool,
     pub player_filled_toggle: bool,
     pub super_glide: bool,
@@ -402,6 +403,7 @@ impl Default for Settings {
             aimbot_hot_key_2: 79,
             // Done with Gamepad or Keyboard config
             trigger_bot_hot_key: 81,
+            quickglow_hot_key: 93,
             shotgun_auto_shot: true,
             // Terminal Stuff
             loot_filled_toggle: false,
