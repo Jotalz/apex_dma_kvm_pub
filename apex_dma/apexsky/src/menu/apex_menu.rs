@@ -1203,7 +1203,7 @@ fn build_hotkey_menu(
         .add_input_item(
             menu_item_keycode(
                 format!("4 - {}", i18n_msg!(i18n_bundle, HotkeyItemQuickGlow)),
-                settings.aimbot_hot_key_2,
+                settings.quickglow_hot_key,
             ),
             &prompt_text_keycode!(i18n_bundle, HotkeyItemQuickGlow),
             |val| {
