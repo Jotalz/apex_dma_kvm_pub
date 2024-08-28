@@ -516,7 +516,14 @@ void ClientActions()
         aimbot.max_fov = g_settings.non_ads_fov;
       }
       if (isPressed(g_settings.quickglow_hot_key)){
-        quick_glow = !quick_glow;
+        static std::chrono::milliseconds lastPressTime;
+        std::chrono::milliseconds now_ms =
+                duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch());
+        if (now_ms >= lastPressTime + std::chrono::milliseconds(200)){
+            quick_glow = !quick_glow;
+            lastPressTime = now_ms;
+        }
       }
       // Trigger ring check on F8 key press for over 0.5 seconds
       static std::chrono::steady_clock::time_point tduckStartTime;
