@@ -32,6 +32,7 @@ aimbot_state_t aimbot;
 int LocalTeamID = 0;
 const int toRead = 100;
 bool trigger_ready = false;
+bool quick_glow = true;
 extern Vector aim_target; // for esp
 int map_testing_local_team = 0;
 
@@ -514,7 +515,16 @@ void ClientActions()
       {
         aimbot.max_fov = g_settings.non_ads_fov;
       }
-
+      if (isPressed(g_settings.quickglow_hot_key)){
+        static std::chrono::milliseconds lastPressTime;
+        std::chrono::milliseconds now_ms =
+                duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch());
+        if (now_ms >= lastPressTime + std::chrono::milliseconds(200)){
+            quick_glow = !quick_glow;
+            lastPressTime = now_ms;
+        }
+      }
       // Trigger ring check on F8 key press for over 0.5 seconds
       static std::chrono::steady_clock::time_point tduckStartTime;
       static bool mapRadarTestingEnabled = false;
@@ -652,12 +662,12 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
   }
 
   // enable glow
-  if (g_settings.player_glow)
+  if (g_settings.player_glow && quick_glow)
   { // 如果设置里开了发光，就执行发光
     Target.enableGlow(setting_index, g_settings.player_glow_inside_value,
                       g_settings.player_glow_outline_size, highlight_parameter, g_settings.glow_dist);
   }
-  if (!g_settings.player_glow)
+  if (!g_settings.player_glow || !quick_glow)
   { // 如果设置里关闭了发光，并且玩家仍在发光，就将发光效果取消掉
     Target.enableGlow(setting_index, 0, 0, highlight_parameter, g_settings.glow_dist);
   }
@@ -846,7 +856,7 @@ void DoActions()
       {
         continue;
       }
-      
+      /*
       {
         static uintptr_t lplayer_ptr = 0;
         if (lplayer_ptr != LPlayer.ptr)
@@ -855,7 +865,7 @@ void DoActions()
         }
         tick_yew(lplayer_ptr, LPlayer.GetYaw());
       }
-      
+      */
       int frame_number = 0;
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number); // 读取游戏的实际帧数
       std::set<uintptr_t> tmp_specs;
