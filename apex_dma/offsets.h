@@ -1,13 +1,13 @@
-//Date 2024/08/28
-//GameVersion = v3.0.79.44
+//Date 2024/08/30
+//GameVersion = v3.0.79.45
 
-#define OFFSET_ENTITYLIST 0x01f15ee0 + 0xA8 //[ConVars].gamepad_aim_assist_melee updated 2024/08/28 # [Miscellaneous].cl_entitylist
-#define OFFSET_LOCAL_ENT 0x23e91f8 //[Miscellaneous].LocalPlayer updated 2024/08/28
+#define OFFSET_ENTITYLIST 0x01f55f10 + 0xA8 //[ConVars].gamepad_aim_assist_melee updated 2024/08/30 # [Miscellaneous].cl_entitylist
+#define OFFSET_LOCAL_ENT 0x2429238 //[Miscellaneous].LocalPlayer updated 2024/08/30
 #define OFFSET_NAME_LIST 0xd388450 //[Miscellaneous].NameList updated 2024/08/28
 #define OFFSET_GLOBAL_VARS 0x17ec040 //[Miscellaneous].GlobalVars updated 2024/08/28
 #define OFFSET_MATRIX 0x11a350 //[Miscellaneous].ViewMatrix updated 2024/08/28
-#define OFFSET_RENDER 0x769b558 //[Miscellaneous].ViewRender updated 2024/08/28
-#define OFFSET_LEVELNAME 0x17ec544 //[Miscellaneous].LevelName updated 2024/08/28
+#define OFFSET_RENDER 0x76DD058 //[Miscellaneous].ViewRender updated 2024/08/30
+#define OFFSET_LEVELNAME 0x182C554 //[Miscellaneous].LevelName updated 2024/08/30
 #define OFFSET_CLIENTSTATE OFFSET_LEVELNAME - 0x1c0   //updated 1/11/2024
 #define OFFSET_SIGNONSTATE OFFSET_CLIENTSTATE + 0xAC //updated 1/10/2024 SignonState (ClientState + 0xAC)
 #define OFFSET_INPUT_SYSTEM 0x1898e00 //[Miscellaneous].InputSystem updated 2024/08/28 
@@ -65,13 +65,13 @@
 #define OFFSET_YAW 0x223c - 0x8 //[DataMap.C_Player].m_currentFramePlayer.m_ammoPoolCount - 0x8 updated 2024/08/28
 #define OFFSET_TIME_BASE 0x2088 //[DataMap.C_Player].m_currentFramePlayer.timeBase updated 2024/08/28
 
-#define OFFSET_IN_ATTACK 0x0769b658 //[Buttons].in_attack updated 2024/08/28
+#define OFFSET_IN_ATTACK 0x76DD178 //[Buttons].in_attack updated 2024/08/30
 #define OFFSET_IN_TOGGLE_DUCK 0x0769b698 //[Buttons].in_toggle_duck updated 2024/08/28
-#define OFFSET_IN_ZOOM 0x0769b7f0 //[Buttons].in_zoom updated 2024/08/28
-#define OFFSET_IN_FORWARD 0x0769b5a8 //[Buttons].in_forward updated 2024/08/28
-#define OFFSET_IN_JUMP 0x0769b778 //[Buttons].in_jump updated 2024/08/28
-#define OFFSET_IN_DUCK 0x0769b868 //[Buttons].in_duck updated 2024/08/28
-#define OFFSET_IN_BACKWARD 0x0769b5d0 //[Buttons].in_backward updated 2024/08/28
+#define OFFSET_IN_ZOOM 0x76dd300 //[Buttons].in_zoom updated 2024/08/30
+#define OFFSET_IN_FORWARD 0x076dd0a8 //[Buttons].in_forward updated 2024/08/30
+#define OFFSET_IN_JUMP 0x076dd270 //[Buttons].in_jump updated 2024/08/30
+#define OFFSET_IN_DUCK 0x076dd368 //[Buttons].in_duck updated 2024/08/30
+#define OFFSET_IN_BACKWARD 0x076dd0d0 //[Buttons].in_backward updated 2024/08/30
 #define OFFSET_IN_USE 0x0769b7e0 //[Buttons].in_use updated 2024/08/28
 
 #define OFFSET_OBSERVER_MODE 0x3524 //[RecvTable.DT_LocalPlayerExclusive].m_iObserverMode updated 2024/08/28
