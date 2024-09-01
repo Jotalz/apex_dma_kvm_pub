@@ -515,14 +515,16 @@ void ClientActions()
       {
         aimbot.max_fov = g_settings.non_ads_fov;
       }
-      if (isPressed(g_settings.quickglow_hot_key)){
+      if (isPressed(g_settings.quickglow_hot_key))
+      {
         static std::chrono::milliseconds lastPressTime;
         std::chrono::milliseconds now_ms =
-                duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch());
-        if (now_ms >= lastPressTime + std::chrono::milliseconds(200)){
-            quick_glow = !quick_glow;
-            lastPressTime = now_ms;
+            duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch());
+        if (now_ms >= lastPressTime + std::chrono::milliseconds(200))
+        {
+          quick_glow = !quick_glow;
+          lastPressTime = now_ms;
         }
       }
       // Trigger ring check on F8 key press for over 0.5 seconds
@@ -768,8 +770,8 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     // TriggerBot
     if (aimbot.aimentity != 0)
     {
-      //uint64_t LocalPlayer = 0;
-      //apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
+      // uint64_t LocalPlayer = 0;
+      // apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
       if (trigger_ready && IsInCrossHair(Target))
@@ -1345,7 +1347,7 @@ static void item_glow_t()
         char glowName[200] = {0};
         uint64_t name_ptr;
         apex_mem.Read<uint64_t>(entityAddr + OFFSET_MODELNAME, name_ptr); // 这个实体的数组指针再加上模型名称偏移量，得到实体模型名称数组的地址
-        apex_mem.ReadArray<char>(name_ptr, glowName, 200);             // 将实体模型名称存到glowName
+        apex_mem.ReadArray<char>(name_ptr, glowName, 200);                // 将实体模型名称存到glowName
 
         // item ids?
         uint64_t ItemID;
@@ -1509,13 +1511,13 @@ static void item_glow_t()
           item.enableGlow(settingIndex, 48, highlightParameter);
         }
         else if (g_settings.loot.sniperammo && ItemID == 154)
-        {                                                                     // 狙击弹药
+        {                                                                // 狙击弹药
           std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098}; // 紫色
           int settingIndex = 73;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
         else if (g_settings.loot.heavyammo && ItemID == 153)
-        {                                                                     // 重型弹药
+        {                                                      // 重型弹药
           std::array<float, 3> highlightParameter = {1, 1, 1}; // 改成墨绿色
           int settingIndex = 71;
           item.enableGlow(settingIndex, 32, highlightParameter);
