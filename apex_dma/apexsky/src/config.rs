@@ -217,6 +217,7 @@ pub struct Settings {
     pub headshot_dist: f32,
     pub skynade_dist: f32,
     pub smooth: f32,
+    pub smooth_sub: f32,
     pub skynade_smooth: f32,
     pub player_glow_inside_value: u8,
     pub player_glow_outline_size: u8,
@@ -451,6 +452,7 @@ impl Default for Settings {
             skynade_dist: 120.0 * 40.0,
             glow_dist: 200.0 * 40.0,
             smooth: 120.0, // min 85 no beaming, 100 somewhat beam people, 125 should be safe
+            smooth_sub: 120,
             skynade_smooth: 120.0 * 1.2,
             // Player Glow Color and Brightness.
             // inside fill

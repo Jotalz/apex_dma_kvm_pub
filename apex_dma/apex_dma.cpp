@@ -104,7 +104,7 @@ void TriggerBotRun()
   // 设置随机数生成器
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(10, 50); // 正常或稍快的反应时间
+  std::uniform_int_distribution<> dis(1, 20); // 正常或稍快的反应时间
   // 生成随机时间间隔，防止行为检测
   int randomInterval = dis(gen);
   std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
@@ -168,6 +168,28 @@ void MapRadarTesting()
     apex_mem.Write<int>(pLocal + OFFSET_TEAM, dt);
   }
   map_testing_local_team = 0;
+}
+
+void MapRadarTesting2(uint64_t localptr)
+{
+  int localPlayerTeamID;
+  apex_mem.Read<int>(localptr + OFFSET_TEAM, localPlayerTeamID);
+  if (localPlayerTeamID != 1)
+  {
+    using namespace std::chrono;
+    auto start_time = steady_clock::now();
+    auto end_time = start_time + milliseconds(200); // 200 milliseconds
+    while (steady_clock::now() < end_time)
+    {
+      apex_mem.Write<int>(localptr + OFFSET_TEAM, 1);
+    }
+    start_time = steady_clock::now();
+    end_time = start_time + milliseconds(200); // 200 milliseconds
+    while (steady_clock::now() < end_time)
+    {
+      apex_mem.Write<int>(localptr + OFFSET_TEAM, localPlayerTeamID);
+    }
+  }
 }
 
 void ClientActions()
@@ -399,6 +421,23 @@ void ClientActions()
         }
       }
 
+      if (g_settings.super_grpple)
+      {
+        int isGrppleActived, isGrppleAttached;
+        apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
+        if (isGrppleActived)
+        {
+          apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
+          if (isGrppleAttached == 1 && !isdone)
+          {
+            apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
+          }
+          isdone = isGrppleAttached;
+        }
+      }
+
       { /* calc game fps */
         static int last_checkpoint_frame = 0;
         static std::chrono::milliseconds checkpoint_time;
@@ -432,40 +471,21 @@ void ClientActions()
           aimbot.gun_safety = false;
         }
       }
-      if (g_settings.super_grpple)
-      {
-        int isGrppleActived, isGrppleAttached;
-        apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE_ACTIVE, isGrppleActived);
-        if (isGrppleActived)
-        {
-          apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
-          if (isGrppleAttached == 1 && !isdone)
-          {
-            apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
-            apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
-          }
-          isdone = isGrppleAttached;
-        }
-      }
       if (g_settings.keyboard)
       {
-        if (isPressed(g_settings.aimbot_hot_key_1) ||
-            isPressed(g_settings.aimbot_hot_key_2)) // Left and Right click(add smooth later)
+        if (isPressed(g_settings.aimbot_hot_key_2))
         {
           aimbot.aiming = true;
+          aimbot.smooth = g_settings.smooth_sub;
+        }
+        else if (isPressed(g_settings.aimbot_hot_key_1))
+        {
+          aimbot.aiming = true;
+          aimbot.smooth = g_settings.smooth;
         }
         else
         {
           aimbot.aiming = false;
-        }
-        if (isPressed(g_settings.aimbot_hot_key_2))
-        {
-          aimbot.smooth = g_settings.smooth - 30;
-        }
-        else
-        {
-          aimbot.smooth = g_settings.smooth;
         }
       }
       if (g_settings.gamepad)
@@ -528,35 +548,12 @@ void ClientActions()
         }
       }
       // Trigger ring check on F8 key press for over 0.5 seconds
-      static std::chrono::steady_clock::time_point tduckStartTime;
-      static bool mapRadarTestingEnabled = false;
-      if (g_settings.map_radar_testing && isPressed(99))
+      //static std::chrono::steady_clock::time_point tduckStartTime;
+      //static bool mapRadarTestingEnabled = false;
+      if (isPressed(99) && g_settings.map_radar_testing)
       { // KEY_F8
-        if (mapRadarTestingEnabled)
-        {
-          MapRadarTesting();
-        }
-
-        if (tduckStartTime == std::chrono::steady_clock::time_point())
-        {
-          tduckStartTime = std::chrono::steady_clock::now();
-        }
-
-        auto currentTime = std::chrono::steady_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                            currentTime - tduckStartTime)
-                            .count();
-        if (duration >= 250)
-        {
-          mapRadarTestingEnabled = true;
-        }
+        MapRadarTesting2(local_player_ptr);
       }
-      else
-      {
-        tduckStartTime = std::chrono::steady_clock::time_point();
-        mapRadarTestingEnabled = false;
-      }
-
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
   }
@@ -717,7 +714,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     {
       return;
     }
-    if (map_testing_local_team != 0 && entity_team == map_testing_local_team)
+    if (local_team != 0 && entity_team == local_team)
     {
       return;
     }
@@ -846,31 +843,21 @@ void DoActions()
       Entity LPlayer = getEntity(LocalPlayer); // 根据地址生成玩家实体对象entity
 
       LocalTeamID = LPlayer.getTeamId(); // 获取自己所在队伍的id
-      if (LocalTeamID < 0 || LocalTeamID > 50)
-      { // id不对开始新的while循环不继续执行
+      if (LocalTeamID < 0 || LocalTeamID > 50)  // 不在游戏中不继续执行
+      {
         continue;
       }
       uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
 
       uint64_t baseEntity = 0;
       apex_mem.Read<uint64_t>(entityListPtr, baseEntity); // Check base entity is not Null
-      if (baseEntity == 0)
+      if (baseEntity == 0) // CWORLD 实体，应该是每一局开局创建的
       {
         continue;
       }
-      /*
-      {
-        static uintptr_t lplayer_ptr = 0;
-        if (lplayer_ptr != LPlayer.ptr)
-        {
-          lplayer_ptr = LPlayer.ptr;
-        }
-        tick_yew(lplayer_ptr, LPlayer.GetYaw());
-      }
-      */
       int frame_number = 0;
       apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number); // 读取游戏的实际帧数
-      std::set<uintptr_t> tmp_specs;
+      std::set<uintptr_t> tmp_specs = {};
       aimbot.target_score_max = (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; // 初始化分数
       aimbot.tmp_aimentity = 0;
       centity_to_index.clear();
@@ -890,32 +877,37 @@ void DoActions()
             continue;
           }
           Entity Target = getEntity(entityAddr);
+          if (Target.isDummy() || (Target.isPlayer() && g_settings.onevone)){
+            ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
+            c++;
+          }
+          /*
           if (!Target.isDummy() && !g_settings.onevone)
           {
             continue;
           }
           ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
           c++;
+          */
         }
       }
       else
       {
         for (int i = 0; i < toRead; i++)
         {
-          uint64_t centity = 0;
-          apex_mem.Read<uint64_t>(entityListPtr + ((uint64_t)i << 5), centity);
-          if (centity == 0)
+          uint64_t entityAddr = 0;
+          apex_mem.Read<uint64_t>(entityListPtr + ((uint64_t)i << 5), entityAddr);
+          if (entityAddr == 0)
             continue;
-          centity_to_index.insert_or_assign(centity, i);
+          centity_to_index.insert_or_assign(entityAddr, i);
 
-          if (LocalPlayer == centity)
+          if (LocalPlayer == entityAddr)
             continue;
-          Entity Target = getEntity(centity);
+          Entity Target = getEntity(entityAddr);
           if (!Target.isPlayer())
           {
             continue;
           }
-
           ProcessPlayer(LPlayer, Target, i, frame_number, tmp_specs);
         }
       }
@@ -1010,7 +1002,7 @@ Matrix view_matrix_data = {};
 // ESP loop.. this helps right?
 static void EspLoop()
 {
-  esp_t = true;
+  esp_t = false; // i won't use it...
   while (esp_t)
   {
     std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -1112,10 +1104,6 @@ static void EspLoop()
             {
               continue;
             }
-            // if (map_testing_local_team != 0 &&
-            //     entity_team == map_testing_local_team) {
-            //   continue;
-            // }
 
             Vector EntityPosition = Target.getPosition();
             float dist = LocalPlayerPosition.DistTo(EntityPosition);
@@ -1233,14 +1221,14 @@ static void AimbotLoop()
       local_held_id = HeldID;                                      // 读取本地玩家手持物品id赋值给local_held_id
 
       // Read WeaponID
-      ulong ehWeaponHandle;
+      uint64_t ehWeaponHandle;
       apex_mem.Read<uint64_t>(LocalPlayer + OFFSET_ACTIVE_WEAPON, ehWeaponHandle);
       ehWeaponHandle &= 0xFFFF; // eHandle
-      ulong pWeapon;
+      uint64_t pWeapon;
       uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
       apex_mem.Read<uint64_t>(entityListPtr + (ehWeaponHandle * 0x20), pWeapon);
       uint32_t weaponID;
-      apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_NAME, weaponID); // 0x1738
+      apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_NAME, weaponID);
       local_weapon_id = weaponID;
       // printf("%d\n", weaponID);
 

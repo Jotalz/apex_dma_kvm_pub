@@ -214,6 +214,7 @@ typedef struct {
   float headshot_dist;
   float skynade_dist;
   float smooth;
+  float smooth_sub;
   float skynade_smooth;
   uint8_t player_glow_inside_value;
   uint8_t player_glow_outline_size;

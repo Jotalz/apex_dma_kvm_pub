@@ -512,7 +512,38 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!(" 8 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
+                format!(" 8 - {}", i18n_msg!(i18n_bundle, MenuItemSmoothValue)),
+                if settings.smooth_sub < 90.0 {
+                    Span::styled(
+                        format!("{}", settings.smooth_sub),
+                        Style::default().fg(Color::Red),
+                    )
+                } else if settings.smooth_sub > 120.0 {
+                    Span::styled(
+                        format!("{}", settings.smooth_sub),
+                        Style::default().fg(Color::Green),
+                    )
+                } else {
+                    Span::from(format!("{}", settings.smooth_sub))
+                },
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptSmoothValue),
+            |val| {
+                if let Some(new_val) = val.parse::<u16>().ok() {
+                    if new_val >= 50 && new_val <= 500 {
+                        let settings = &mut lock_config!().settings;
+                        settings.smooth_sub = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidSmoothValue).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!(" 9 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
                 Span::from(
                     if settings.bone_nearest {
                         i18n_msg!(i18n_bundle, MenuValueBoneNearest)
@@ -559,7 +590,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!(" 9 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
+                format!(" 10 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
                 settings.loot_filled_toggle,
             ),
             |_| {
@@ -572,7 +603,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("10 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
+                format!("11 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
                 settings.player_filled_toggle,
             ),
             |_| {
@@ -585,7 +616,7 @@ fn build_main_menu(
         )
         .add_input_item(
             item_text(format!(
-                "11 - {}",
+                "12 - {}",
                 i18n_msg!(i18n_bundle, MenuItemPlayerOutlineSize)
             )),
             &i18n_msg!(i18n_bundle, InputPromptPlayerOutlines),
@@ -605,7 +636,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "12 - {}",
+                "13 - {}",
                 i18n_msg!(i18n_bundle, MenuItemUpdateGlowColors)
             )),
             |handle: &mut TerminalMenu| {
@@ -616,7 +647,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("13 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
+                format!("14 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
                 Span::from(format!("{}", settings.ads_fov)),
             ),
             &i18n_msg!(i18n_bundle, InputPromptAdsFov),
@@ -635,7 +666,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("14 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
+                format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
                 Span::from(format!("{}", settings.non_ads_fov)),
             ),
             &i18n_msg!(i18n_bundle, InputPromptNonAdsFov),
@@ -654,14 +685,14 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
+        format!("16 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
         settings.super_glide,
         super_glide
     );
     menu = menu
         .add_item(
             item_text(format!(
-                "16 - {}",
+                "17 - {}",
                 i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
             )),
             |handle: &mut TerminalMenu| {
@@ -671,7 +702,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "17 - {}",
+                "18 - {}",
                 i18n_msg!(i18n_bundle, MenuItemHotkeySettings)
             )),
             |handle: &mut TerminalMenu| {
