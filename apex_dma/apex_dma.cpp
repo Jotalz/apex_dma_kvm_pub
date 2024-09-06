@@ -2066,13 +2066,11 @@ int main(int argc, char *argv[])
   std::thread esp_thr;
   std::thread actions_thr;
   std::thread cactions_thr;
-  // Used to change things on a timer
-  // std::thread updateInsideValue_thr;
   std::thread TriggerBotRun_thr;
   std::thread terminal_thr;
   std::thread overlay_thr;
   std::thread itemglow_thr;
-  std::thread control_thr;
+  //std::thread control_thr;
 
   if (apex_mem.open_os() != 0)
   {
@@ -2092,7 +2090,7 @@ int main(int argc, char *argv[])
         terminal_t = false;
         overlay_t = false;
         item_t = false;
-        control_t = false;
+        //control_t = false;
         g_Base = 0;
         quit_tui_menu();
 
@@ -2100,13 +2098,11 @@ int main(int argc, char *argv[])
         esp_thr.~thread();
         actions_thr.~thread();
         cactions_thr.~thread();
-        // Used to change things on a timer
-        // updateInsideValue_thr.~thread();
         TriggerBotRun_thr.~thread();
         terminal_thr.~thread();
         overlay_thr.~thread();
         itemglow_thr.~thread();
-        control_thr.~thread();
+        //control_thr.~thread();
       }
 
       std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -2124,20 +2120,17 @@ int main(int argc, char *argv[])
         esp_thr = std::thread(EspLoop);
         actions_thr = std::thread(DoActions);
         cactions_thr = std::thread(ClientActions);
-        // Used to change things on a timer
-        // updateInsideValue_thr = std::thread(updateInsideValue);
         TriggerBotRun_thr = std::thread(TriggerBotRun);
         itemglow_thr = std::thread(item_glow_t);
-        control_thr = std::thread(ControlLoop);
+        //control_thr = std::thread(ControlLoop);
+
         aimbot_thr.detach();
         esp_thr.detach();
         actions_thr.detach();
         cactions_thr.detach();
-        // Used to change things on a timer
-        // updateInsideValue_thr.detach();
         TriggerBotRun_thr.detach();
         itemglow_thr.detach();
-        control_thr.detach();
+        //control_thr.detach();
       }
     }
     else
