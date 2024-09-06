@@ -512,7 +512,38 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!(" 8 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
+                format!(" 8 - {}", i18n_msg!(i18n_bundle, MenuItemSmoothSubValue)),
+                if settings.smooth_sub < 90.0 {
+                    Span::styled(
+                        format!("{}", settings.smooth_sub),
+                        Style::default().fg(Color::Red),
+                    )
+                } else if settings.smooth_sub > 120.0 {
+                    Span::styled(
+                        format!("{}", settings.smooth_sub),
+                        Style::default().fg(Color::Green),
+                    )
+                } else {
+                    Span::from(format!("{}", settings.smooth_sub))
+                },
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptSmoothSubValue),
+            |val| {
+                if let Some(new_val) = val.parse::<u16>().ok() {
+                    if new_val >= 50 && new_val <= 500 {
+                        let settings = &mut lock_config!().settings;
+                        settings.smooth_sub = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidSmoothValue).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!(" 9 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
                 Span::from(
                     if settings.bone_nearest {
                         i18n_msg!(i18n_bundle, MenuValueBoneNearest)
@@ -559,7 +590,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!(" 9 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
+                format!(" 10 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
                 settings.loot_filled_toggle,
             ),
             |_| {
@@ -572,7 +603,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("10 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
+                format!("11 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
                 settings.player_filled_toggle,
             ),
             |_| {
@@ -585,7 +616,7 @@ fn build_main_menu(
         )
         .add_input_item(
             item_text(format!(
-                "11 - {}",
+                "12 - {}",
                 i18n_msg!(i18n_bundle, MenuItemPlayerOutlineSize)
             )),
             &i18n_msg!(i18n_bundle, InputPromptPlayerOutlines),
@@ -605,7 +636,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "12 - {}",
+                "13 - {}",
                 i18n_msg!(i18n_bundle, MenuItemUpdateGlowColors)
             )),
             |handle: &mut TerminalMenu| {
@@ -616,7 +647,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("13 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
+                format!("14 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
                 Span::from(format!("{}", settings.ads_fov)),
             ),
             &i18n_msg!(i18n_bundle, InputPromptAdsFov),
@@ -635,7 +666,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("14 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
+                format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
                 Span::from(format!("{}", settings.non_ads_fov)),
             ),
             &i18n_msg!(i18n_bundle, InputPromptNonAdsFov),
@@ -654,14 +685,14 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
+        format!("16 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
         settings.super_glide,
         super_glide
     );
     menu = menu
         .add_item(
             item_text(format!(
-                "16 - {}",
+                "17 - {}",
                 i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
             )),
             |handle: &mut TerminalMenu| {
@@ -671,7 +702,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "17 - {}",
+                "18 - {}",
                 i18n_msg!(i18n_bundle, MenuItemHotkeySettings)
             )),
             |handle: &mut TerminalMenu| {
@@ -700,7 +731,7 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("20 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
+        format!("21 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
         settings.deathbox,
         deathbox
     );
@@ -708,7 +739,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("21 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
+                format!("22 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
                 settings.keyboard,
             ),
             |_| {
@@ -721,7 +752,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("22 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
+                format!("23 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
                 settings.gamepad,
             ),
             |_| {
@@ -735,7 +766,7 @@ fn build_main_menu(
         .add_dummy_item()
         .add_item(
             item_text(format!(
-                "23 - {}",
+                "24 - {}",
                 i18n_msg!(i18n_bundle, MenuItemSaveSettings)
             )),
             |_| {
@@ -752,7 +783,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "24 - {}",
+                "25 - {}",
                 i18n_msg!(i18n_bundle, MenuItemLoadSettings)
             )),
             |_| {
@@ -771,7 +802,7 @@ fn build_main_menu(
         .add_item(
             format_item(
                 &i18n_bundle,
-                format!("25 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
+                format!("26 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
                 Span::from(
                     if settings.no_nade_aim {
                         i18n_msg!(i18n_bundle, MenuValueNoNadeAim)
@@ -790,21 +821,21 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("26 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
+        format!("27 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
         settings.onevone,
         onevone
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("27 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
+        format!("28 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
         settings.aim_no_recoil,
         aim_no_recoil
     );
     menu = menu.add_input_item(
         format_item(
             &i18n_bundle,
-            format!("28 - {}", i18n_msg!(i18n_bundle, MenuItemSetFpsPredict)),
+            format!("29 - {}", i18n_msg!(i18n_bundle, MenuItemSetFpsPredict)),
             Span::from(if settings.calc_game_fps {
                 i18n_msg!(i18n_bundle, MenuValueCalcFps).to_string()
             } else {
@@ -828,7 +859,7 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("29 - {}", i18n_msg!(i18n_bundle, MenuItemBigMapFeat)),
+        format!("30 - {}", i18n_msg!(i18n_bundle, MenuItemBigMapFeat)),
         settings.map_radar_testing,
         map_radar_testing
     );
@@ -836,7 +867,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "30 - {}",
+            "31 - {}",
             i18n_msg!(i18n_bundle, MenuItemPlayerArmorGlowColor)
         ),
         settings.player_glow_armor_color,
@@ -846,7 +877,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "31 - {}",
+            "32 - {}",
             i18n_msg!(i18n_bundle, MenuItemFavoritePlayerGlow)
         ),
         settings.player_glow_love_user,
@@ -855,7 +886,7 @@ fn build_main_menu(
     menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
-            format!("32 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
+            format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
             settings.weapon_model_glow,
         ),
         |_handle: &mut TerminalMenu| {
@@ -872,7 +903,7 @@ fn build_main_menu(
     menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
-            format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemKbdBacklightCtrl)),
+            format!("34 - {}", i18n_msg!(i18n_bundle, MenuItemKbdBacklightCtrl)),
             settings.kbd_backlight_control,
         ),
         |_handle: &mut TerminalMenu| {
@@ -887,7 +918,7 @@ fn build_main_menu(
         },
         )
         .add_input_item(
-            item_text(format!("34 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
+            item_text(format!("35 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
             &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
             |val| {
                 if let Some(new_val) = val.parse::<u16>().ok() {
@@ -905,7 +936,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "35 - {}",
+            "36 - {}",
             i18n_msg!(i18n_bundle, MenuItemSuperGrpple)
         ),
         settings.super_grpple,
@@ -915,7 +946,7 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "36 - {}",
+            "37 - {}",
             i18n_msg!(i18n_bundle, MenuItemAutoTapstrafe)
         ),
         settings.auto_tapstrafe,
@@ -925,7 +956,7 @@ fn build_main_menu(
         .add_item(
             format_item(
                 &i18n_bundle,
-                format!("37 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
+                format!("38 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
                 if settings.no_overlay {
                     Span::from(i18n_msg!(i18n_bundle, MenuValueNoOverlay).to_string())
                 } else {
@@ -1200,9 +1231,25 @@ fn build_hotkey_menu(
                 Some(text_invalid_keycode!(i18n_bundle, HotkeyItemTriggerBot))
             },
         )
+        .add_input_item(
+            menu_item_keycode(
+                format!("4 - {}", i18n_msg!(i18n_bundle, HotkeyItemQuickGlow)),
+                settings.quickglow_hot_key,
+            ),
+            &prompt_text_keycode!(i18n_bundle, HotkeyItemQuickGlow),
+            |val| {
+                if let Some(keycode) = val.parse::<u8>().ok() {
+                    let settings = &mut lock_config!().settings;
+                    settings.quickglow_hot_key = keycode as i32;
+                    return None;
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(text_invalid_keycode!(i18n_bundle, HotkeyItemQuickGlow))
+            },
+        )
         .add_dummy_item()
         .add_item(
-            item_text(format!("4 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
+            item_text(format!("5 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
             |handler: &mut TerminalMenu| {
                 handler.nav_menu(MenuLevel::KeyCodesMenu);
                 None
@@ -1211,7 +1258,7 @@ fn build_hotkey_menu(
         .add_dummy_item()
         .add_item(
             item_text(format!(
-                "5 - {}",
+                "6 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {

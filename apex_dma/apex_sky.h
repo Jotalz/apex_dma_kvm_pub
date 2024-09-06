@@ -169,6 +169,7 @@ typedef struct {
   int aimbot_hot_key_1;
   int aimbot_hot_key_2;
   int trigger_bot_hot_key;
+  int quickglow_hot_key;
   bool loot_filled_toggle;
   bool player_filled_toggle;
   bool super_glide;
@@ -213,6 +214,7 @@ typedef struct {
   float headshot_dist;
   float skynade_dist;
   float smooth;
+  float smooth_sub;
   float skynade_smooth;
   uint8_t player_glow_inside_value;
   uint8_t player_glow_outline_size;

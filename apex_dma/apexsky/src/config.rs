@@ -172,6 +172,7 @@ pub struct Settings {
     pub aimbot_hot_key_1: i32,
     pub aimbot_hot_key_2: i32,
     pub trigger_bot_hot_key: i32,
+    pub quickglow_hot_key: i32,
     pub loot_filled_toggle: bool,
     pub player_filled_toggle: bool,
     pub super_glide: bool,
@@ -216,6 +217,7 @@ pub struct Settings {
     pub headshot_dist: f32,
     pub skynade_dist: f32,
     pub smooth: f32,
+    pub smooth_sub: f32,
     pub skynade_smooth: f32,
     pub player_glow_inside_value: u8,
     pub player_glow_outline_size: u8,
@@ -402,6 +404,7 @@ impl Default for Settings {
             aimbot_hot_key_2: 79,
             // Done with Gamepad or Keyboard config
             trigger_bot_hot_key: 81,
+            quickglow_hot_key: 93,
             shotgun_auto_shot: true,
             // Terminal Stuff
             loot_filled_toggle: false,
@@ -449,6 +452,7 @@ impl Default for Settings {
             skynade_dist: 120.0 * 40.0,
             glow_dist: 200.0 * 40.0,
             smooth: 120.0, // min 85 no beaming, 100 somewhat beam people, 125 should be safe
+            smooth_sub: 120.0,
             skynade_smooth: 120.0 * 1.2,
             // Player Glow Color and Brightness.
             // inside fill

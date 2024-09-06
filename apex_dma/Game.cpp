@@ -15,10 +15,8 @@ extern Memory apex_mem;
 
 float bulletspeed = 0.08;
 float bulletgrav = 0.05;
+std::array<unsigned char, 4> Item::ItemRarityIds = { 15, 42, 47, 54 };
 
-// glowtype not used, but dont delete its still used.
-extern int glowtype;
-extern int glowtype2;
 // setting up vars, dont edit
 extern float veltest;
 extern Vector aim_target;
@@ -200,14 +198,34 @@ void Entity::get_name(uint64_t g_Base, uint64_t index, char *name) {
   apex_mem.ReadArray<char>(name_ptr, name, 32);
 }
 
-void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
-                               std::array<float, 3> highlight_colors) {
+bool Entity::isSpec(uint64_t localptr){
+    /*if (!isPlayer())
+			return false;
+    if (isAlive())
+      return false;*/
+    uint64_t ObserverList;
+    apex_mem.Read<uint64_t>(g_Base +OFF_OBSERVER_LIST, ObserverList);
+    uint64_t nameIndex = 0;
+    apex_mem.Read<uint64_t>(ptr + 0X38, nameIndex);
+    int Index;
+    apex_mem.Read<int>(ObserverList + nameIndex * 8 + 0x974,Index);
+    if (Index != -1){
+      uint64_t SpectatorAddr;
+       apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + ((Index & 0xFFFF) << 5),SpectatorAddr); 
+      if ((SpectatorAddr == localptr))
+        {
+          return true;
+        }
+      }
+    return false;
+}
+
+void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow, std::array<float, 3> highlight_colors) {
   uint64_t view_model_handle;
   apex_mem.Read<uint64_t>(ptr + OFFSET_VIEW_MODELS, view_model_handle);
   view_model_handle &= 0xFFFF;
   uint64_t view_model_ptr = 0;
-  apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + (view_model_handle << 5),
-                          view_model_ptr);
+  apex_mem.Read<uint64_t>(g_Base + OFFSET_ENTITYLIST + (view_model_handle << 5), view_model_ptr);
 
   std::array<unsigned char, 4> highlightFunctionBits = {0, 125, 64, 64};
   if (!enable_glow) {
@@ -217,18 +235,12 @@ void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow,
 
   long highlightSettingsPtr;
   apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
-  uint8_t context_id = 99;
+  uint8_t context_id = 71;
   apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, context_id);
   apex_mem.Write<typeof(highlightFunctionBits)>(
       highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x0, highlightFunctionBits);
   apex_mem.Write<typeof(highlight_colors)>(
       highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * context_id + 0x4, highlight_colors);
-
-  // Fix highlight Wraith and Ashe's disappear
-  // apex_mem.Write(ptr + 0x270, 1);
-  // int val1;
-  // apex_mem.Read(ptr + 0x270, val1);
-  // printf("0x270=%d\n", val1);
 }
 
 bool Entity::check_love_player(uint64_t entity_index) {
@@ -291,6 +303,14 @@ void Item::enableGlow(int setting_index, uint8_t outline_size, std::array<float,
     apex_mem.Write<typeof(highlight_parameter)>(highlightSettingsPtr + HIGHLIGHT_TYPE_SIZE * contextId + 0x4, highlight_parameter);
 }
 
+	void Item::setItemGlow(){
+		std::array<unsigned char, 4> highlightFunctionBits = { 0, 125, 64, 64 };
+    long highlightSettingsPtr;
+    apex_mem.Read<long>(g_Base + HIGHLIGHT_SETTINGS, highlightSettingsPtr);
+			for (int highlightId : ItemRarityIds) {
+				 apex_mem.Write<typeof(highlightFunctionBits)>(highlightSettingsPtr + (HIGHLIGHT_TYPE_SIZE * highlightId) + 0, highlightFunctionBits);
+			}
+	}
 /*void Item::disableGlow() {
   apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 0);
   apex_mem.Write<int>(ptr + OFFSET_HIGHLIGHTSERVERACTIVESTATES + 0, 0);
@@ -540,9 +560,9 @@ void WeaponXEntity::update(uint64_t LocalPlayer) {
   apex_mem.Read<uint64_t>(entitylist + (wephandle << 5), wep_entity);
 
   projectile_speed = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);   //maybe its WeaponSettings.projectile_launch_speed now
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SPEED, projectile_speed);   //[Miscellaneous].CWeaponX!m_flProjectileSpeed in past
   projectile_scale = 0;
-  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);  // maybe its WeaponSettings.projectile_gravity_scale now
+  apex_mem.Read<float>(wep_entity + OFFSET_BULLET_SCALE, projectile_scale);  //[Miscellaneous].CWeaponX!m_flProjectileScale
   zoom_fov = 0;
   apex_mem.Read<float>(wep_entity + OFFSET_ZOOM_FOV, zoom_fov);
   ammo = 0;
