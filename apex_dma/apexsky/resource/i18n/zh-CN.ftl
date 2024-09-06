@@ -10,7 +10,9 @@ menu-item-item-glow = 物品发光
 menu-item-player-glow = 玩家热能
 menu-item-player-glow-dist = 玩家热能距离
 menu-item-smooth-value = 平滑
+menu-item-smooth-sub-value = 副键平滑
 input-prompt-smooth-value = 瞄准平滑值 (50~500):
+input-prompt-smooth-sub-value = 副键平滑值 (高优先级):
 info-invalid-smooth-value = 输入无效。
     平滑值可设置范围是 50 到 500
 menu-item-change-bone-aim = 瞄准部位设置

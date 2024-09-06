@@ -452,7 +452,7 @@ impl Default for Settings {
             skynade_dist: 120.0 * 40.0,
             glow_dist: 200.0 * 40.0,
             smooth: 120.0, // min 85 no beaming, 100 somewhat beam people, 125 should be safe
-            smooth_sub: 120,
+            smooth_sub: 120.0,
             skynade_smooth: 120.0 * 1.2,
             // Player Glow Color and Brightness.
             // inside fill

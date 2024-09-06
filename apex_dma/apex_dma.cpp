@@ -257,7 +257,7 @@ void ClientActions()
         if (wallrunStart > wallrunClear)
         {
           float climbTime = world_time - wallrunStart;
-          if (climbTime > 0.8)
+          if (climbTime > 0.8) // 长时间爬墙不是ts
           {
             longclimb = true;
             ts_start = false;
@@ -269,11 +269,6 @@ void ClientActions()
         }
         if (ts_start)
         {
-          if (longclimb)
-          {
-            if (world_time > wallrunClear + 0.1)
-              longclimb = false;
-          }
           // printf("longclimb:%d\n", longclimb);
           // printf("duck_state:%d"\n, duck_state); 向下蹲1 完全蹲下2 起身过程3 其他0
           // printf("jump_state:%d"\n, jump_state); 按着跳跃65 其他0
@@ -332,9 +327,9 @@ void ClientActions()
 
         static float start_jump_time = 0;
         static bool start_sg = false;
-        static std::chrono::milliseconds last_sg_finish;
+        static std::chrono::time_point<std::chrono::steady_clock> last_sg_finish;
 
-        float hang_start, hang_cancel, trav_start, hang_max, action_interval;
+        float hang_start, hang_cancel, trav_start, hang_max, action_interval,total_interval;
         int release_wait;
         {
           // for 75 fps
@@ -344,8 +339,8 @@ void ClientActions()
           hang_max = 1.5;
           action_interval = 0.011;
           release_wait = 50;
-          if (abs(g_settings.game_fps - 144.0) <
-              abs(g_settings.game_fps - 75.0))
+          total_interval = 800;
+          if (abs(g_settings.game_fps - 144.0) < abs(g_settings.game_fps - 75.0))
           {
             // for 144 fps
             hang_start = 0.05;
@@ -353,9 +348,9 @@ void ClientActions()
             trav_start = 0.90;
             hang_max = 0.75;
             action_interval = 0.007;
-            release_wait = 25;
-            if (abs(g_settings.game_fps - 240.0) <
-                abs(g_settings.game_fps - 144.0))
+            release_wait = 35;
+            total_interval = 560;
+            if (abs(g_settings.game_fps - 240.0) < abs(g_settings.game_fps - 144.0))
             {
               // for 240 fps
               hang_start = 0.033;
@@ -364,6 +359,7 @@ void ClientActions()
               hang_max = 0.2;
               action_interval = 0.004;
               release_wait = 20;
+              total_interval = 320;
             }
           }
         }
@@ -377,10 +373,8 @@ void ClientActions()
           if (traversal_progress > trav_start && hang_on_wall < hang_max &&
               !start_sg)
           {
-            std::chrono::milliseconds now_ms =
-                duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch());
-            if ((now_ms - last_sg_finish).count() > 320 && jump_state > 0)
+            auto now_ms = std::chrono::steady_clock::now();
+            if (std::chrono::duration_cast<std::chrono::milliseconds>(now_ms - last_sg_finish).count() > total_interval && jump_state > 0)
             {
               // start SG
               start_jump_time = world_time;
@@ -397,8 +391,7 @@ void ClientActions()
           float current_time;
           while (true)
           {
-            if (apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE,
-                                     current_time))
+            if (apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE, current_time))
             {
               if (current_time - start_jump_time < action_interval)
               {
@@ -414,8 +407,7 @@ void ClientActions()
           std::this_thread::sleep_for(std::chrono::milliseconds(release_wait));
           apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
           // Write<int>(g_Base + OFFSET_IN_DUCK + 0x8, 4);
-          last_sg_finish = duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now().time_since_epoch());
+          last_sg_finish = std::chrono::steady_clock::now();
           // g_logger += "sg\n";
           start_sg = false;
         }
@@ -440,18 +432,16 @@ void ClientActions()
 
       { /* calc game fps */
         static int last_checkpoint_frame = 0;
-        static std::chrono::milliseconds checkpoint_time;
+        static std::chrono::time_point<std::chrono::steady_clock> checkpoint_time;
         if (g_settings.calc_game_fps && curFrameNumber % 100 == 0)
         {
-          std::chrono::milliseconds ms =
-              duration_cast<std::chrono::milliseconds>(
-                  std::chrono::system_clock::now().time_since_epoch());
+          auto ms = std::chrono::steady_clock::now();
           int delta_frame = curFrameNumber - last_checkpoint_frame;
           if (delta_frame > 90 && delta_frame < 120)
           {
             auto duration = ms - checkpoint_time;
             auto settings_state = g_settings;
-            settings_state.game_fps = delta_frame * 1000.0f / duration.count();
+            settings_state.game_fps = delta_frame * 1000.0f / std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
             update_settings(settings_state);
           }
           last_checkpoint_frame = curFrameNumber;
@@ -537,10 +527,8 @@ void ClientActions()
       }
       if (isPressed(g_settings.quickglow_hot_key))
       {
-        static std::chrono::milliseconds lastPressTime;
-        std::chrono::milliseconds now_ms =
-            duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch());
+        static std::chrono::time_point<std::chrono::steady_clock> lastPressTime;
+        auto now_ms = std::chrono::steady_clock::now();
         if (now_ms >= lastPressTime + std::chrono::milliseconds(200))
         {
           quick_glow = !quick_glow;

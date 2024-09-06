@@ -10,7 +10,9 @@ menu-item-item-glow = Item Glow
 menu-item-player-glow = Player Glow
 menu-item-player-glow-dist = Player Glow Distance
 menu-item-smooth-value = Smooth Value
+menu-item-smooth-sub-value = Smooth Value Sub
 input-prompt-smooth-value = New value for 'smooth' (50 to 500):
+input-prompt-smooth-sub-value = Secondary key smoothing value (50 to 500):
 info-invalid-smooth-value = Invalid value.
     'smooth' value must be between 50 and 500.
 menu-item-change-bone-aim = Change Bone Aim Value
