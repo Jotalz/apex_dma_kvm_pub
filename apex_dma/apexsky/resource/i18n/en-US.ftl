@@ -106,8 +106,8 @@ input-prompt-keycode =
     (e.g., 108 for Left mouse button)
 hotkey-menu-title = Hotkey Menu
 hotkey-item-aimbot1 = Aimbot Hot Key 1
-hotkey-item-aimbot2 = Aimbot Hot Key 2(Smooth -30 If Hold)
-hotkey-item-trigger-bot = Trigger Bot Hot Key(Cancelled)
+hotkey-item-aimbot2 = Aimbot Hot Key 2
+hotkey-item-trigger-bot = Trigger Bot Hot Key
 hotkey-item-quick-glow = Temporary Glow Switch hotkey
 menu-item-key-codes = Key Codes
 item-filter-menu-title = Item Filter Menu

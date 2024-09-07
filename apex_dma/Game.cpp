@@ -229,7 +229,7 @@ void Entity::glow_weapon_model(uint64_t g_Base, bool enable_glow, std::array<flo
 
   std::array<unsigned char, 4> highlightFunctionBits = {0, 125, 64, 64};
   if (!enable_glow) {
-      apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, 0);
+      apex_mem.Write<uint8_t>(view_model_ptr + OFFSET_GLOW_CONTEXT_ID, 90);
       return;
   }
 

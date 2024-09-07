@@ -106,8 +106,8 @@ input-prompt-keycode =
     （例如，108 表示滑鼠左鍵）
 hotkey-menu-title = 熱鍵選單
 hotkey-item-aimbot1 = Aimbot熱鍵1
-hotkey-item-aimbot2 = Aimbot熱鍵2(按下平滑-30)
-hotkey-item-trigger-bot = 自動扳機熱鍵（已取消）
+hotkey-item-aimbot2 = Aimbot熱鍵2
+hotkey-item-trigger-bot = 自動扳機熱鍵
 hotkey-item-quick-glow = 臨時開關熱能熱鍵
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
