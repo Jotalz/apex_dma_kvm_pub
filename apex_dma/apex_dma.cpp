@@ -309,7 +309,7 @@ void ClientActions()
         static bool start_sg = false;
         static std::chrono::time_point<std::chrono::steady_clock> last_sg_finish;
 
-        float hang_start, hang_cancel, trav_start, hang_max, action_interval,total_interval;
+        float hang_start, hang_cancel, trav_start, hang_max, action_interval, total_interval;
         int release_wait;
         {
           // for 75 fps
@@ -489,13 +489,16 @@ void ClientActions()
       default:
         triggerbot_clickgun = false;
       }
-      if (g_settings.shotgun_auto_shot && triggerbot_clickgun && g_settings.trigger_bot_hot_key)
+      if (g_settings.shotgun_auto_shot && triggerbot_clickgun)
       {
-        trigger_ready = true;
-      }
-      else
-      {
-        trigger_ready = false;
+        if (isPressed(g_settings.trigger_bot_hot_key))
+        {
+          trigger_ready = true;
+        }
+        else
+        {
+          trigger_ready = false;
+        }
       }
       if (zoom_state > 0)
       { // 根据是否开镜选择不同的自瞄范围
@@ -516,8 +519,8 @@ void ClientActions()
         }
       }
       // Trigger ring check on F8 key press for over 0.5 seconds
-      //static std::chrono::steady_clock::time_point tduckStartTime;
-      //static bool mapRadarTestingEnabled = false;
+      // static std::chrono::steady_clock::time_point tduckStartTime;
+      // static bool mapRadarTestingEnabled = false;
       if (isPressed(99) && g_settings.map_radar_testing)
       { // KEY_F8
         MapRadarTesting(local_player_ptr);
@@ -810,8 +813,8 @@ void DoActions()
 
       Entity LPlayer = getEntity(LocalPlayer); // 根据地址生成玩家实体对象entity
 
-      LocalTeamID = LPlayer.getTeamId(); // 获取自己所在队伍的id
-      if (LocalTeamID < 0 || LocalTeamID > 50)  // 不在游戏中不继续执行
+      LocalTeamID = LPlayer.getTeamId();       // 获取自己所在队伍的id
+      if (LocalTeamID < 0 || LocalTeamID > 50) // 不在游戏中不继续执行
       {
         continue;
       }
@@ -819,7 +822,7 @@ void DoActions()
 
       uint64_t baseEntity = 0;
       apex_mem.Read<uint64_t>(entityListPtr, baseEntity); // Check base entity is not Null
-      if (baseEntity == 0) // CWORLD 实体，应该是每一局开局创建的
+      if (baseEntity == 0)                                // CWORLD 实体，应该是每一局开局创建的
       {
         continue;
       }
@@ -845,7 +848,8 @@ void DoActions()
             continue;
           }
           Entity Target = getEntity(entityAddr);
-          if (Target.isDummy() || (Target.isPlayer() && g_settings.onevone)){
+          if (Target.isDummy() || (Target.isPlayer() && g_settings.onevone))
+          {
             ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
             c++;
           }
@@ -1760,13 +1764,13 @@ static void item_glow_t()
           int settingIndex = 33;
           item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.hammer_point && ItemID == 284)
+        else if (g_settings.loot.hammer_point && ItemID == 286)
         { // 锤击点
           std::array<float, 3> highlightParameter = {1, 0.8431, 0};
           int settingIndex = 33;
           item.enableGlow(settingIndex, 48, highlightParameter);
         }
-        else if (g_settings.loot.disruptor_rounds && ItemID == 286)
+        else if (g_settings.loot.disruptor_rounds && ItemID == 287)
         { // 干扰器
           std::array<float, 3> highlightParameter = {1, 0.8431, 0};
           int settingIndex = 33;
@@ -1835,43 +1839,43 @@ static void item_glow_t()
           int settingIndex = 37;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_lstar && ItemID == 7)
+        else if (g_settings.loot.weapon_lstar && ItemID == 145)
         { // lstar
           std::array<float, 3> highlightParameter = {0.2, 1, 0};
           int settingIndex = 36;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_nemesis && ItemID == 145)
+        else if (g_settings.loot.weapon_nemesis && ItemID == 13)
         { // 复仇女神
           std::array<float, 3> highlightParameter = {0.2, 1, 0};
           int settingIndex = 36;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_havoc && ItemID == 13)
+        else if (g_settings.loot.weapon_havoc && ItemID == 19)
         { // 哈沃克
           std::array<float, 3> highlightParameter = {0.2, 1, 0};
           int settingIndex = 36;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_devotion && ItemID == 19)
+        else if (g_settings.loot.weapon_devotion && ItemID == 24)
         { // 专注轻机枪
           std::array<float, 3> highlightParameter = {0.2, 1, 0};
           int settingIndex = 36;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_triple_take && ItemID == 24)
+        else if (g_settings.loot.weapon_triple_take && ItemID == 62)
         { // 三重狙击枪
           std::array<float, 3> highlightParameter = {0.2, 1, 0};
           int settingIndex = 36;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_flatline && ItemID == 29)
+        else if (g_settings.loot.weapon_flatline && ItemID == 34)
         { // 平行
           std::array<float, 3> highlightParameter = {0, 1, 1};
           int settingIndex = 38;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_hemlock && ItemID == 34)
+        else if (g_settings.loot.weapon_hemlock && ItemID == 139)
         { // 汉姆洛克
           std::array<float, 3> highlightParameter = {0, 1, 1};
           int settingIndex = 38;
@@ -1883,7 +1887,7 @@ static void item_glow_t()
           int settingIndex = 39;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_alternator && ItemID == 73)
+        else if (g_settings.loot.weapon_alternator && ItemID == 45)
         { // 转换者
           std::array<float, 3> highlightParameter = {1, 0.5490, 0};
           int settingIndex = 39;
@@ -1901,7 +1905,7 @@ static void item_glow_t()
           int settingIndex = 38;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_volt && ItemID == 62)
+        else if (g_settings.loot.weapon_volt && ItemID == 63)
         { // 电能冲锋枪
           std::array<float, 3> highlightParameter = {0.2, 1, 0};
           int settingIndex = 36;
@@ -1979,19 +1983,19 @@ static void item_glow_t()
           int settingIndex = 34;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_3030_repeater && ItemID == 139)
+        else if (g_settings.loot.weapon_3030_repeater && ItemID == 147)
         {
           std::array<float, 3> highlightParameter = {0, 1, 1};
           int settingIndex = 38;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_rampage && ItemID == 147)
+        else if (g_settings.loot.weapon_rampage && ItemID == 148)
         { // 暴走
           std::array<float, 3> highlightParameter = {0, 1, 1};
           int settingIndex = 38;
           item.enableGlow(settingIndex, 32, highlightParameter);
         }
-        else if (g_settings.loot.weapon_car_smg && ItemID == 742)
+        else if (g_settings.loot.weapon_car_smg && ItemID == 142)
         {
           std::array<float, 3> highlightParameter = {0, 1, 1};
           int settingIndex = 38;
@@ -2050,7 +2054,7 @@ int main(int argc, char *argv[])
   std::thread terminal_thr;
   std::thread overlay_thr;
   std::thread itemglow_thr;
-  //std::thread control_thr;
+  // std::thread control_thr;
 
   if (apex_mem.open_os() != 0)
   {
@@ -2070,7 +2074,7 @@ int main(int argc, char *argv[])
         terminal_t = false;
         overlay_t = false;
         item_t = false;
-        //control_t = false;
+        // control_t = false;
         g_Base = 0;
         quit_tui_menu();
 
@@ -2082,7 +2086,7 @@ int main(int argc, char *argv[])
         terminal_thr.~thread();
         overlay_thr.~thread();
         itemglow_thr.~thread();
-        //control_thr.~thread();
+        // control_thr.~thread();
       }
 
       std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -2102,7 +2106,7 @@ int main(int argc, char *argv[])
         cactions_thr = std::thread(ClientActions);
         TriggerBotRun_thr = std::thread(TriggerBotRun);
         itemglow_thr = std::thread(item_glow_t);
-        //control_thr = std::thread(ControlLoop);
+        // control_thr = std::thread(ControlLoop);
 
         aimbot_thr.detach();
         esp_thr.detach();
@@ -2110,7 +2114,7 @@ int main(int argc, char *argv[])
         cactions_thr.detach();
         TriggerBotRun_thr.detach();
         itemglow_thr.detach();
-        //control_thr.detach();
+        // control_thr.detach();
       }
     }
     else
