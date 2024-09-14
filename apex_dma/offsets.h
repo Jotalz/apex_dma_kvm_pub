@@ -65,7 +65,7 @@
 #define OFFSET_IN_TOGGLE_DUCK 0x076DD218 //[Buttons].in_toggle_duck updated 2024/09/14
 #define OFFSET_IN_ZOOM 0x76DD370 //[Buttons].in_zoom updated 2024/09/14
 #define OFFSET_IN_FORWARD 0x076dd128 //[Buttons].in_forward updated 2024/09/14
-#define OFFSET_IN_JUMP 0x076dd2f8 //[Buttons].in_jump updated 2024/09/14
+#define OFFSET_IN_JUMP 0x076dd2e0 //[Buttons].in_jump updated 2024/09/14
 #define OFFSET_IN_DUCK 0x076dd3e8 //[Buttons].in_duck updated 2024/09/14
 #define OFFSET_IN_BACKWARD 0x076dd150 //[Buttons].in_backward updated 2024/09/14
 #define OFFSET_IN_USE 0x076dd360 //[Buttons].in_use updated 2024/09/14

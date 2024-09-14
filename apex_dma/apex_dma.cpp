@@ -45,6 +45,8 @@ bool aim_t = false;
 bool item_t = false;
 
 extern Vector aim_target; // for esp
+extern float bulletspeed;
+extern float bulletgrav;
 bool next2 = false;
 bool valid = false;
 Vector esp_local_pos;
@@ -476,7 +478,7 @@ void ClientActions()
       case idweapon_longbow:
       case idweapon_g7_scout:
       case idweapon_kraber:
-      case idweapon_p2020:
+      //case idweapon_p2020:
       case idweapon_triple_take:
       case idweapon_3030_repeater:
         triggerbot_clickgun = true;
@@ -726,7 +728,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
       {
         static std::chrono::time_point<std::chrono::steady_clock> last_trigger_time;
         auto now_ms = std::chrono::steady_clock::now();
-        if (now_ms >= last_trigger_time + std::chrono::milliseconds(250))
+        if (now_ms >= last_trigger_time + std::chrono::milliseconds(300))
         {
           TriggerBotRun();
           last_trigger_time = now_ms;
@@ -1215,7 +1217,11 @@ static void AimbotLoop()
           cancel_targeting();
           continue;
         }
-
+        if (weaponID == 2)
+        {
+          bulletspeed = 10.08;
+          bulletgrav = 10.05;
+        }
         if (HeldID == -251)
         { // auto throw
           QAngle Angles_g = CalculateBestBoneAim(LPlayer, target, 999.9f, aimbot.smooth);

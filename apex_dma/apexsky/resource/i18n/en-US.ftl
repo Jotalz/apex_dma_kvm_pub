@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = Enabled
 menu-value-disabled = Disabled
-main-menu-title = Main Menu
+main-menu-title = Main Menu GameVersion-v3.0.79.51
 menu-item-firing-range = Firing Range
 menu-item-tdm-toggle = TDMToggle
 menu-item-keyboard = Keyboard

@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = 启用
 menu-value-disabled = 禁用
-main-menu-title = 主菜单 GameVersion-v3.0.79.44
+main-menu-title = 主菜单 GameVersion-v3.0.79.51
 menu-item-firing-range = 射击场模式
 menu-item-tdm-toggle = 团队模式
 menu-item-keyboard = 键鼠模式
