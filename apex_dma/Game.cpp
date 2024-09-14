@@ -12,6 +12,8 @@
 #include <thread>
 
 extern Memory apex_mem;
+float bulletspeed = 0.08;
+float bulletgrav = 0.05;
 
 std::array<unsigned char, 4> Item::ItemRarityIds = {15, 42, 47, 54};
 

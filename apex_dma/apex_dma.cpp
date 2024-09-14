@@ -25,6 +25,7 @@
 #include <fstream>
 // this is a test, with seconds
 Memory apex_mem;
+uint64_t g_Base;
 
 // Just setting things up, dont edit.
 bool active = true;
@@ -33,9 +34,8 @@ int LocalTeamID = 0;
 const int ToRead = 100;
 bool TriggerReady = false;
 bool QuickGlow = true;
-extern Vector aim_target; // for esp
+bool Isdone = false; // Prevent frequent writes during the superGrpple
 
-// float triggerdist = 50.0f;
 bool actions_t = false;
 bool cactions_t = false;
 bool terminal_t = false;
@@ -43,9 +43,8 @@ bool overlay_t = false;
 bool esp_t = false;
 bool aim_t = false;
 bool item_t = false;
-bool control_t = false;
-bool isdone = false; // Prevent frequent writes during the superGrpple
-uint64_t g_Base;
+
+extern Vector aim_target; // for esp
 bool next2 = false;
 bool valid = false;
 Vector esp_local_pos;
@@ -60,7 +59,6 @@ float lastvis_aim[ToRead];
 std::vector<Entity> spectators, allied_spectators;
 std::mutex spectatorsMtx;
 
-uint64_t PlayerLocal;
 int EntTeam;
 int LocTeam;
 //^^ Don't EDIT^^
@@ -397,13 +395,13 @@ void ClientActions()
         if (isGrppleActived)
         {
           apex_mem.Read<int>(local_player_ptr + OFFSET_GRAPPLE + OFFSET_GRAPPLE_ATTACHED, isGrppleAttached);
-          if (isGrppleAttached == 1 && !isdone)
+          if (isGrppleAttached == 1 && !Isdone)
           {
             apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 5);
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
             apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x08, 4);
           }
-          isdone = isGrppleAttached;
+          Isdone = isGrppleAttached;
         }
       }
 
@@ -2023,7 +2021,6 @@ int main(int argc, char *argv[])
   std::thread terminal_thr;
   std::thread overlay_thr;
   std::thread itemglow_thr;
-  // std::thread control_thr;
 
   if (apex_mem.open_os() != 0)
   {

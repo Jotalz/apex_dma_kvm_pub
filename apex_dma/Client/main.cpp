@@ -23,16 +23,14 @@ uint32_t check = 0xABCD;
 extern bool active; // sync
 bool ready = false;
 extern uint64_t g_Base; // write sync
-
 // tdm check
 extern int EntTeam; // sync
 extern int LocTeam; // sync
 
 extern std::vector<TreasureClue> treasure_clues;
-
+float veltest = 1.00;     // sync
 extern float bulletspeed; // sync
 extern float bulletgrav;  // sync
-float veltest = 1.00;     // sync
 
 // Full Map Radar
 extern bool mainradartoggle; // Toggle for Main Map radar
