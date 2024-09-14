@@ -245,7 +245,6 @@ typedef struct {
 extern "C" {
 void print_run_as_root();
 //int32_t add(int32_t lhs, int32_t rhs);
-bool kbd_backlight_blink(int32_t count);
 
 global_state_t __get_global_states();
 void __update_global_states(global_state_t state);

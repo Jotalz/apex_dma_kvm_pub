@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
-#include <cstdlib> // For the system() function
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -20,7 +20,7 @@
 #include <sys/types.h>
 #include <thread>
 #include <unistd.h>
-#include <unordered_map> // Include the unordered_map header
+#include <unordered_map>
 #include <vector>
 #include <fstream>
 // this is a test, with seconds
@@ -30,11 +30,10 @@ Memory apex_mem;
 bool active = true;
 aimbot_state_t aimbot;
 int LocalTeamID = 0;
-const int toRead = 100;
-bool trigger_ready = false;
-bool quick_glow = true;
+const int ToRead = 100;
+bool TriggerReady = false;
+bool QuickGlow = true;
 extern Vector aim_target; // for esp
-int map_testing_local_team = 0;
 
 // float triggerdist = 50.0f;
 bool actions_t = false;
@@ -49,8 +48,6 @@ bool isdone = false; // Prevent frequent writes during the superGrpple
 uint64_t g_Base;
 bool next2 = false;
 bool valid = false;
-extern float bulletspeed;
-extern float bulletgrav;
 Vector esp_local_pos;
 int local_held_id = 2147483647;
 uint32_t local_weapon_id = 2147483647;
@@ -58,8 +55,8 @@ int itementcount = 10000;
 int map = 0;
 std::vector<TreasureClue> treasure_clues;
 std::map<uint64_t, uint64_t> centity_to_index; // Map centity to entity index
-float lastvis_esp[toRead];
-float lastvis_aim[toRead];
+float lastvis_esp[ToRead];
+float lastvis_aim[ToRead];
 std::vector<Entity> spectators, allied_spectators;
 std::mutex spectatorsMtx;
 
@@ -493,11 +490,11 @@ void ClientActions()
       {
         if (isPressed(g_settings.trigger_bot_hot_key))
         {
-          trigger_ready = true;
+          TriggerReady = true;
         }
         else
         {
-          trigger_ready = false;
+          TriggerReady = false;
         }
       }
       if (zoom_state > 0)
@@ -514,7 +511,7 @@ void ClientActions()
         auto now_ms = std::chrono::steady_clock::now();
         if (now_ms >= lastPressTime + std::chrono::milliseconds(200))
         {
-          quick_glow = !quick_glow;
+          QuickGlow = !QuickGlow;
           lastPressTime = now_ms;
         }
       }
@@ -529,24 +526,6 @@ void ClientActions()
     }
   }
   cactions_t = false;
-}
-
-void ControlLoop()
-{ // 根据观战人数闪烁键盘背光
-  control_t = true;
-  while (control_t)
-  {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    spectatorsMtx.lock();
-    int spec_count = spectators.size();
-    spectatorsMtx.unlock();
-    if (spec_count > 0)
-    {
-      kbd_backlight_blink(spec_count);
-      std::this_thread::sleep_for(std::chrono::milliseconds(10 * 1000 - 100));
-    }
-  }
-  control_t = false;
 }
 
 // 位于ProcessPlayer
@@ -632,12 +611,12 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
   }
 
   // enable glow
-  if (g_settings.player_glow && quick_glow)
+  if (g_settings.player_glow && QuickGlow)
   { // 如果设置里开了发光，就执行发光
     Target.enableGlow(setting_index, g_settings.player_glow_inside_value,
                       g_settings.player_glow_outline_size, highlight_parameter, g_settings.glow_dist);
   }
-  if (!g_settings.player_glow || !quick_glow)
+  if (!g_settings.player_glow || !QuickGlow)
   { // 如果设置里关闭了发光，并且玩家仍在发光，就将发光效果取消掉
     Target.enableGlow(setting_index, 0, 0, highlight_parameter, g_settings.glow_dist);
   }
@@ -652,12 +631,17 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
   int entity_team = target.getTeamId();
   int local_team = LPlayer.getTeamId();
 
-  if (!target.isAlive() || !LPlayer.isAlive())
+  if (!target.isAlive())
   {
-    if (target.ptr != LPlayer.ptr && target.isSpec(LPlayer.ptr))
+    if (target.isSpec(LPlayer.ptr))
     {
       tmp_specs.insert(target.ptr);
     }
+    return;
+  }
+  if (!LPlayer.isAlive()){
+    SetPlayerGlow(LPlayer, target, index, frame_number);
+    lastvis_aim[index] = target.lastVisTime();
     return;
   }
 
@@ -671,8 +655,6 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
       LocTeam = 1;
     else
       LocTeam = 2;
-
-    // printf("Target Team: %i\nLocal Team: %i\n", EntTeam, LocTeam);
     if (EntTeam == LocTeam)
       return;
   }
@@ -742,9 +724,15 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
       // apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
       Entity Target = getEntity(aimbot.aimentity);
       // Entity LPlayer = getEntity(LocalPlayer);
-      if (trigger_ready && IsInCrossHair(Target))
+      if (TriggerReady && IsInCrossHair(Target))
       {
-        TriggerBotRun();
+        static std::chrono::time_point<std::chrono::steady_clock> last_trigger_time;
+        auto now_ms = std::chrono::steady_clock::now();
+        if (now_ms >= last_trigger_time + std::chrono::milliseconds(250))
+        {
+          TriggerBotRun();
+          last_trigger_time = now_ms;
+        }
       }
     }
   }
@@ -765,7 +753,7 @@ void DoActions()
       std::this_thread::sleep_for(std::chrono::milliseconds(30)); // don't change xD
 
       uint64_t LocalPlayer = 0;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer); // 读取本地玩家的所在地址,即是当前视角的玩家，自己或者你死亡后观战的人
+      apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
       if (LocalPlayer == 0)
         continue;
       const auto g_settings = global_settings();
@@ -832,7 +820,6 @@ void DoActions()
       aimbot.target_score_max = (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; // 初始化分数
       aimbot.tmp_aimentity = 0;
       centity_to_index.clear();
-      // tmp_specs.clear();
       if (g_settings.firing_range)
       {
         int c = 0;
@@ -853,19 +840,11 @@ void DoActions()
             ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
             c++;
           }
-          /*
-          if (!Target.isDummy() && !g_settings.onevone)
-          {
-            continue;
-          }
-          ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
-          c++;
-          */
         }
       }
       else
       {
-        for (int i = 0; i < toRead; i++)
+        for (int i = 0; i < ToRead; i++)
         {
           uint64_t entityAddr = 0;
           apex_mem.Read<uint64_t>(entityListPtr + ((uint64_t)i << 5), entityAddr);
@@ -968,7 +947,7 @@ void DoActions()
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<player> players(toRead);
+std::vector<player> players(ToRead);
 Matrix view_matrix_data = {};
 
 // ESP loop.. this helps right?
@@ -1028,7 +1007,7 @@ static void EspLoop()
           QAngle localviewangle = LPlayer.GetViewAngles();
 
           // Ammount of ents to loop, dont edit.
-          for (int i = 0; i < toRead; i++)
+          for (int i = 0; i < ToRead; i++)
           {
             // Read entity pointer
             uint64_t centity = 0;
@@ -1189,7 +1168,7 @@ static void AimbotLoop()
 
       // Read HeldID
       int HeldID;
-      apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID); // 0x1a1c
+      apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID);
       local_held_id = HeldID;                                      // 读取本地玩家手持物品id赋值给local_held_id
 
       // Read WeaponID
@@ -1200,7 +1179,7 @@ static void AimbotLoop()
       uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
       apex_mem.Read<uint64_t>(entityListPtr + (ehWeaponHandle * 0x20), pWeapon);
       uint32_t weaponID;
-      apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_NAME, weaponID);
+      apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_ID, weaponID);
       local_weapon_id = weaponID;
       // printf("%d\n", weaponID);
 
@@ -1237,16 +1216,6 @@ static void AimbotLoop()
         {
           cancel_targeting();
           continue;
-        }
-
-        /* Fine-tuning for each weapon */
-        // bow
-        if (weaponID == 2)
-        {
-          // Ctx.BulletSpeed = BulletSpeed - (BulletSpeed*0.08);
-          // Ctx.BulletGravity = BulletGrav + (BulletGrav*0.05);
-          bulletspeed = 10.08;
-          bulletgrav = 10.05;
         }
 
         if (HeldID == -251)
@@ -2074,7 +2043,6 @@ int main(int argc, char *argv[])
         terminal_t = false;
         overlay_t = false;
         item_t = false;
-        // control_t = false;
         g_Base = 0;
         quit_tui_menu();
 
@@ -2086,7 +2054,6 @@ int main(int argc, char *argv[])
         terminal_thr.~thread();
         overlay_thr.~thread();
         itemglow_thr.~thread();
-        // control_thr.~thread();
       }
 
       std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -2106,7 +2073,6 @@ int main(int argc, char *argv[])
         cactions_thr = std::thread(ClientActions);
         TriggerBotRun_thr = std::thread(TriggerBotRun);
         itemglow_thr = std::thread(item_glow_t);
-        // control_thr = std::thread(ControlLoop);
 
         aimbot_thr.detach();
         esp_thr.detach();
@@ -2114,7 +2080,6 @@ int main(int argc, char *argv[])
         cactions_thr.detach();
         TriggerBotRun_thr.detach();
         itemglow_thr.detach();
-        // control_thr.detach();
       }
     }
     else
