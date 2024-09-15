@@ -590,7 +590,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!(" 10 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
+                format!("10 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
                 settings.loot_filled_toggle,
             ),
             |_| {
@@ -600,10 +600,74 @@ fn build_main_menu(
                 None
             },
         )
+        .add_input_item(
+            item_text(format!("11 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
+            &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
+            |val| {
+                if let Some(new_val) = val.parse::<u16>().ok() {
+                    if new_val >= 10 && new_val <= 500 {
+                        let settings = &mut lock_config!().settings;
+                        settings.glow_dist = (new_val * 40).into(); //[10, 500]
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidDistance).to_string())
+            },
+        );
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("12 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
+                Span::from(format!("{}", settings.ads_fov)),
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptAdsFov),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 1.0 && new_val <= 50.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.ads_fov = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidAdsFov).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("13 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
+                Span::from(format!("{}", settings.non_ads_fov)),
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptNonAdsFov),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 1.0 && new_val <= 50.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.non_ads_fov = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidNonAdsFov).to_string())
+            },
+        );
+    menu = menu
+        .add_item(
+            item_text(format!(
+                "14 - {}",
+                i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
+            )),
+            |handle: &mut TerminalMenu| {
+                handle.nav_menu(MenuLevel::ItemFilterMenu);
+                None
+            },
+        )
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("11 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
+                format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
                 settings.player_filled_toggle,
             ),
             |_| {
@@ -616,7 +680,7 @@ fn build_main_menu(
         )
         .add_input_item(
             item_text(format!(
-                "12 - {}",
+                "16 - {}",
                 i18n_msg!(i18n_bundle, MenuItemPlayerOutlineSize)
             )),
             &i18n_msg!(i18n_bundle, InputPromptPlayerOutlines),
@@ -636,67 +700,11 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "13 - {}",
+                "17 - {}",
                 i18n_msg!(i18n_bundle, MenuItemUpdateGlowColors)
             )),
             |handle: &mut TerminalMenu| {
                 handle.nav_menu(MenuLevel::GlowColorMenu);
-                None
-            },
-        )
-        .add_input_item(
-            format_item(
-                &i18n_bundle,
-                format!("14 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
-                Span::from(format!("{}", settings.ads_fov)),
-            ),
-            &i18n_msg!(i18n_bundle, InputPromptAdsFov),
-            |val| {
-                if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= 1.0 && new_val <= 50.0 {
-                        let settings = &mut lock_config!().settings;
-                        settings.ads_fov = new_val;
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidAdsFov).to_string())
-            },
-        )
-        .add_input_item(
-            format_item(
-                &i18n_bundle,
-                format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
-                Span::from(format!("{}", settings.non_ads_fov)),
-            ),
-            &i18n_msg!(i18n_bundle, InputPromptNonAdsFov),
-            |val| {
-                if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= 1.0 && new_val <= 50.0 {
-                        let settings = &mut lock_config!().settings;
-                        settings.non_ads_fov = new_val;
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidNonAdsFov).to_string())
-            },
-        );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("16 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
-        settings.super_glide,
-        super_glide
-    );
-    menu = menu
-        .add_item(
-            item_text(format!(
-                "17 - {}",
-                i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
-            )),
-            |handle: &mut TerminalMenu| {
-                handle.nav_menu(MenuLevel::ItemFilterMenu);
                 None
             },
         )
@@ -731,37 +739,40 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("21 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
-        settings.deathbox,
-        deathbox
+        format!(
+            "21 - {}",
+            i18n_msg!(i18n_bundle, MenuItemPlayerArmorGlowColor)
+        ),
+        settings.player_glow_armor_color,
+        player_glow_armor_color
     );
-    menu = menu
-        .add_item(
-            item_enabled(
-                &i18n_bundle,
-                format!("22 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
-                settings.keyboard,
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.keyboard = !settings.keyboard;
-                settings.gamepad = !settings.keyboard;
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(
+            "22 - {}",
+            i18n_msg!(i18n_bundle, MenuItemFavoritePlayerGlow)
+        ),
+        settings.player_glow_love_user,
+        player_glow_love_user
+    );
+    menu = menu.add_item(
+        item_enabled(
+            &i18n_bundle,
+            format!("23 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
+            settings.weapon_model_glow,
+        ),
+        |_handle: &mut TerminalMenu| {
+            let settings = &mut lock_config!().settings;
+            settings.weapon_model_glow = !settings.weapon_model_glow;
+            if settings.weapon_model_glow {
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoWeaponModelGlow).to_string())
+            } else {
                 None
-            },
-        )
-        .add_item(
-            item_enabled(
-                &i18n_bundle,
-                format!("23 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
-                settings.gamepad,
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.gamepad = !settings.gamepad;
-                settings.keyboard = !settings.gamepad;
-                None
-            },
-        );
+            }
+        },
+    );
     menu = menu
         .add_dummy_item()
         .add_item(
@@ -866,40 +877,37 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(
-            "31 - {}",
-            i18n_msg!(i18n_bundle, MenuItemPlayerArmorGlowColor)
-        ),
-        settings.player_glow_armor_color,
-        player_glow_armor_color
+        format!("31 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
+        settings.deathbox,
+        deathbox
     );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!(
-            "32 - {}",
-            i18n_msg!(i18n_bundle, MenuItemFavoritePlayerGlow)
-        ),
-        settings.player_glow_love_user,
-        player_glow_love_user
-    );
-    menu = menu.add_item(
-        item_enabled(
-            &i18n_bundle,
-            format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
-            settings.weapon_model_glow,
-        ),
-        |_handle: &mut TerminalMenu| {
-            let settings = &mut lock_config!().settings;
-            settings.weapon_model_glow = !settings.weapon_model_glow;
-            if settings.weapon_model_glow {
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoWeaponModelGlow).to_string())
-            } else {
+    menu = menu
+        .add_item(
+            item_enabled(
+                &i18n_bundle,
+                format!("32 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
+                settings.keyboard,
+            ),
+            |_| {
+                let settings = &mut lock_config!().settings;
+                settings.keyboard = !settings.keyboard;
+                settings.gamepad = !settings.keyboard;
                 None
-            }
-        },
-    );
+            },
+        )
+        .add_item(
+            item_enabled(
+                &i18n_bundle,
+                format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
+                settings.gamepad,
+            ),
+            |_| {
+                let settings = &mut lock_config!().settings;
+                settings.gamepad = !settings.gamepad;
+                settings.keyboard = !settings.gamepad;
+                None
+            },
+        );
     menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
@@ -917,26 +925,11 @@ fn build_main_menu(
             None
         },
         )
-        .add_input_item(
-            item_text(format!("35 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
-            &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
-            |val| {
-                if let Some(new_val) = val.parse::<u16>().ok() {
-                    if new_val >= 10 && new_val <= 500 {
-                        let settings = &mut lock_config!().settings;
-                        settings.glow_dist = (new_val * 40).into(); //[10, 500]
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidDistance).to_string())
-            },
-    );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
         format!(
-            "36 - {}",
+            "35 - {}",
             i18n_msg!(i18n_bundle, MenuItemSuperGrpple)
         ),
         settings.super_grpple,
@@ -946,11 +939,18 @@ fn build_main_menu(
         menu,
         &i18n_bundle,
         format!(
-            "37 - {}",
+            "36 - {}",
             i18n_msg!(i18n_bundle, MenuItemAutoTapstrafe)
         ),
         settings.auto_tapstrafe,
         auto_tapstrafe
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!("37 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
+        settings.super_glide,
+        super_glide
     );
     menu.add_dummy_item()
         .add_item(

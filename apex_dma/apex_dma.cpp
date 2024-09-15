@@ -790,6 +790,18 @@ void DoActions()
       {
         map = -1;
       }
+      static std::chrono::time_point<std::chrono::steady_clock> checkpoint_time;
+      auto now_ms = std::chrono::steady_clock::now();
+      if (now_ms >= checkpoint_time + std::chrono::milliseconds(10000)) {
+        auto settings_state = g_settings;
+        if (map == 1) {
+          settings_state.firing_range = true;
+        } else {
+          settings_state.firing_range = false;
+        }
+        update_settings(settings_state);
+        checkpoint_time = now_ms;
+      }
       if (g_settings.deathbox)
       { // 如果开了死亡之箱高亮则需要更多物品循环
         itementcount = 15000;
