@@ -434,13 +434,15 @@ fn build_main_menu(
     settings: config::Settings,
 ) -> MenuState<'static> {
     let mut menu = MenuBuilder::new().title(i18n_msg!(i18n_bundle, MainMenuTitle));
-    menu = add_toggle_item!(
+    /* menu = add_toggle_item!(
         menu,
         &i18n_bundle,
         format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemFiringRange)),
         settings.firing_range,
         firing_range
-    );
+    ); */
+    menu.add_dummy_item();
+    menu.next_id();
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,

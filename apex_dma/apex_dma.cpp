@@ -726,9 +726,51 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
       // Entity LPlayer = getEntity(LocalPlayer);
       if (TriggerReady && IsInCrossHair(Target))
       {
+        float delay = 100;
+        switch (local_weapon_id)
+      {
+      case idweapon_eva8:
+        delay = 250;
+        break;
+      case idweapon_mastiff:
+        delay = 300;
+        break;
+      case idweapon_mozambique:
+        delay = 200;
+        break;
+      case idweapon_peacekeeper:
+        delay = 400;
+        break;
+      case idweapon_sentinel:
+        delay = 700;
+        break;
+      case idweapon_longbow:
+        delay = 600;
+        break;
+      case idweapon_g7_scout:
+        delay = 600;
+        break;
+      case idweapon_kraber:
+        delay = 1200;
+        break;
+      case idweapon_p2020:
+        delay = 200;
+        break;
+      case idweapon_triple_take:
+        delay = 1200;
+        break;
+      case idweapon_3030_repeater:
+        delay = 1200;
+        break;
+      case idweapon_wingman:
+        delay = 500;
+        break;
+      default:
+        delay = 50;
+      }
         static std::chrono::time_point<std::chrono::steady_clock> last_trigger_time;
         auto now_ms = std::chrono::steady_clock::now();
-        if (now_ms >= last_trigger_time + std::chrono::milliseconds(300))
+        if (now_ms >= last_trigger_time + std::chrono::milliseconds(delay))
         {
           TriggerBotRun();
           last_trigger_time = now_ms;
