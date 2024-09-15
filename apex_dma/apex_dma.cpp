@@ -758,8 +758,7 @@ void DoActions()
         continue;
       const auto g_settings = global_settings();
       char level_name[128] = {0};
-      uint64_t LevelName_ptr;
-      apex_mem.Read<uint64_t>(g_Base + OFFSET_LEVELNAME, LevelName_ptr); // 根据偏移读取当前地图名
+      uint64_t LevelName_ptr = g_Base + OFFSET_LEVELNAME;
       apex_mem.ReadArray<char>(LevelName_ptr, level_name, 128);
       // printf("%s\n", level_name);
       if (strcmp(level_name, "mp_lobby") == 0)
