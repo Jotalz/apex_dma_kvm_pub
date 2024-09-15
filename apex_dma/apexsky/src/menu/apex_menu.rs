@@ -614,7 +614,7 @@ fn build_main_menu(
                 let i18n_bundle = get_fluent_bundle();
                 Some(i18n_msg!(i18n_bundle, InfoInvalidDistance).to_string())
             },
-        );
+        )
         .add_input_item(
             format_item(
                 &i18n_bundle,
@@ -924,7 +924,7 @@ fn build_main_menu(
             }
             None
         },
-        )
+        );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
