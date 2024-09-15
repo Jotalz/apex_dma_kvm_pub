@@ -726,7 +726,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
       // Entity LPlayer = getEntity(LocalPlayer);
       if (TriggerReady && IsInCrossHair(Target))
       {
-        float delay = 100;
+        int delay = 100;
         switch (local_weapon_id)
       {
       case idweapon_eva8:

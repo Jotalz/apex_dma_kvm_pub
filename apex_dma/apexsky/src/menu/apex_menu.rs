@@ -441,7 +441,7 @@ fn build_main_menu(
         settings.firing_range,
         firing_range
     ); */
-    menu.add_dummy_item();
+    menu = menu.add_dummy_item();
     menu.next_id();
     menu = add_toggle_item!(
         menu,
