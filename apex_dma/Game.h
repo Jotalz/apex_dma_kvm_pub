@@ -32,6 +32,7 @@ public:
   uint8_t buffer[0x3FF0];
   Vector getPosition();
   bool isDummy();
+  bool isDummy2();
   bool isPlayer();
   bool isKnocked();
   bool isAlive();
@@ -42,7 +43,6 @@ public:
   int getShield();
   int getArmortype();
   int getMaxshield();
-  bool isGlowing();
   bool isZooming();
   Vector getViewOffset();
   Vector getAbsVelocity();
@@ -50,15 +50,12 @@ public:
   QAngle GetViewAngles();
   Vector GetCamPos();
   QAngle GetRecoil();
-  Vector GetViewAnglesV();
   float GetYaw();
-  void enableGlow(int setting_index, uint8_t inside_value, uint8_t outline_size,
+  void enableGlow(int setting_index, uint8_t insidetype, uint8_t outline_size,
                   std::array<float, 3> highlight_parameter, float glow_dist);
   float lastCrossHairTime();
-  void SetViewAngles(SVector angles);
   void SetViewAngles(QAngle &angles);
   Vector getBonePositionByHitbox(int id);
-  bool Observing(uint64_t entitylist);
   void get_name(uint64_t g_Base, uint64_t index, char *name);
   void glow_weapon_model(uint64_t g_Base, bool enable_glow,
                          std::array<float, 3> highlight_colors);
@@ -74,11 +71,8 @@ public:
   bool isItem();
   bool isBox();
   bool isTrap();
-  //bool isGlowing();
   void enableGlow(int setting_index, uint8_t outline_size, std::array<float, 3> highlight_parameter);
   static void setItemGlow();
-  //void disableGlow();
-  //void BlueGlow();
 };
 
 class WeaponXEntity {
@@ -150,7 +144,7 @@ Item getItem(uintptr_t ptr);
 bool WorldToScreen(Vector from, float *m_vMatrix, int targetWidth,
                    int targetHeight, Vector &to);
 float CalculateFov(Entity &from, Entity &target);
-QAngle CalculateBestBoneAim(Entity &from, Entity &target, float max_fov, float smooth);
+QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon, float max_fov, float smooth);
 void get_class_name(uint64_t entity_ptr, char *out_str);
 
 enum weapon_id : int32_t {
