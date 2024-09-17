@@ -34,6 +34,7 @@ aimbot_state_t aimbot;
 int LocalTeamID = 0;
 const int ToRead = 100;
 bool TriggerReady = false;
+bool FlickReady = false;
 bool QuickGlow = true;
 bool Isdone = false; // Prevent frequent writes during the superGrpple
 
@@ -117,6 +118,7 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     bool light = false;
     bool is_triggerzone = false;
     int boneIndex;
+    int delay = 100;
     float boxWidth, boxDepth, boxHeight;
     Vector targetBonePositionPre;
     Vector screenTargetBonePositionPre;
@@ -125,61 +127,66 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     Matrix view_matrix_data = {};
     apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
 
-    if (TriggerReady)
+    switch (local_weapon_id)
     {
-        int delay = 100;
-        switch (local_weapon_id)
-        {
-        case idweapon_eva8:
-            delay = 300;
-            boneIndex = 2;
-            break;
-        case idweapon_p2020:
-        case idweapon_mozambique:
-            delay = 200;
-            boneIndex = 2;
-            break;
-        case idweapon_mastiff:
-        case idweapon_peacekeeper:
-            delay = 400;
-            boneIndex = 2;
-            break;
-        case idweapon_sentinel:
-            delay = 800;
-            boneIndex = 0;
-            break;
-        case idweapon_longbow:
-            delay = 600;
-            boneIndex = 0;
-            break;
-        case idweapon_g7_scout:
-            delay = 500;
-            boneIndex = 0;
-            break;
-        case idweapon_kraber:
-            delay = 1500;
-            boneIndex = 0;
-            break;
-        case idweapon_triple_take:
-        case idweapon_3030_repeater:
-            delay = 1200;
-            boneIndex = 0;
-            break;
-        case idweapon_wingman:
-            delay = 500;
-            boneIndex = 0;
-            break;
-        default:
-            delay = 50;
-            boneIndex = 2;
-        }
+    case idweapon_eva8:
+        delay = 300;
+        boneIndex = 3;
+        break;
+    case idweapon_p2020:
+    case idweapon_mozambique:
+        delay = 200;
+        boneIndex = 3;
+        break;
+    case idweapon_mastiff:
+    case idweapon_peacekeeper:
+        delay = 400;
+        boneIndex = 3;
+        break;
+    case idweapon_sentinel:
+        delay = 800;
+        boneIndex = 0;
+        break;
+    case idweapon_longbow:
+        delay = 600;
+        boneIndex = 0;
+        break;
+    case idweapon_g7_scout:
+        delay = 500;
+        boneIndex = 0;
+        break;
+    case idweapon_kraber:
+        delay = 1500;
+        boneIndex = 0;
+        break;
+    case idweapon_triple_take:
+    case idweapon_3030_repeater:
+        delay = 1200;
+        boneIndex = 0;
+        break;
+    case idweapon_wingman:
+        delay = 500;
+        boneIndex = 0;
+        break;
+    default:
+        delay = 50;
+        boneIndex = 3;
     }
+    static std::chrono::time_point<std::chrono::steady_clock> last_trigger_time;
+    auto now_ms = std::chrono::steady_clock::now();
+    if (now_ms <= last_trigger_time + std::chrono::milliseconds(delay))
+    {
+        return false;
+    }
+    last_trigger_time = now_ms;
     Vector targetBonePosition = target.getBonePositionByHitbox(boneIndex);
     if (projectile_speed > 1.f)
     {
         float distanceToTarget = (targetBonePosition - localCameraPos).Length();
         float timeToTarget = distanceToTarget / projectile_speed;
         Vector targetPosAhead = targetBonePosition + (target.getAbsVelocity() * timeToTarget);
+        float drop = 0.5f * projectile_scale * timeToTarget * timeToTarget;
+        targetPosAhead.z += drop;
         targetBonePositionPre = targetPosAhead;
     }
     else
@@ -193,13 +200,13 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     }
     if (boneIndex == 0)
     {
-        boxWidth = boxDepth = boxHeight = 5.0;
+        boxWidth = boxDepth = boxHeight = 3.0;
     }
-    else if (boneIndex == 2)
+    else if (boneIndex == 3)
     {
-        boxWidth = 8.0;
-        boxDepth = 8.0;
-        boxHeight = 12.0;
+        boxWidth = 3.0;
+        boxDepth = 3.0;
+        boxHeight = 5.0;
     }
     std::vector<Vector> corners = {
         {targetBonePositionPre.x + boxWidth, targetBonePositionPre.y + boxDepth, targetBonePositionPre.z + boxHeight},
@@ -545,10 +552,10 @@ void ClientActions()
             }
 
             if (local_held_id == -251)
-            {
-                if ((g_settings.no_nade_aim && zoom_state == 0) || // 手雷右键瞄准
+            { // no_nade_aim 为true时，按下瞄准为使用高抛
+                if ((g_settings.no_nade_aim && zoom_state == 0) ||
                     (!g_settings.no_nade_aim && zoom_state > 0))
-                { // 右键取消手雷自瞄
+                {
                     aimbot.gun_safety = true;
                 }
                 else
@@ -610,10 +617,20 @@ void ClientActions()
                 {
                     TriggerReady = true;
                 }
+                else if (isPressed(g_settings.flick_bot_hot_key))
+                {
+                    FlickReady = true;
+                }
                 else
                 {
                     TriggerReady = false;
+                    FlickReady = false;
                 }
+            }
+            else
+            {
+                TriggerReady = false;
+                FlickReady = false;
             }
             if (zoom_state > 0)
             { // 根据是否开镜选择不同的自瞄范围
@@ -833,6 +850,13 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
             else
             {
                 aimbot.gun_safety = false;
+            }
+            if (FlickReady && !aimbot.gun_safety)
+            {
+                Matrix view_matrix_data = {};
+                apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
+                float *m_vMatrix = view_matrix_data.matrix;
+                DoFlick(LPlayer,target,m_vMatrix);
             }
         }
     }
@@ -1308,7 +1332,7 @@ static void AimbotLoop()
                 // show target indicator before aiming
                 aim_target = target.getPosition(); // 获取目标的位置
 
-                if (!aimbot.aiming)
+                if (!aimbot.aiming && HeldID != -251)
                 { // aimbot的元素值由DoAction和ClientAction函数修改
                     cancel_targeting();
                     continue;
@@ -1337,14 +1361,16 @@ static void AimbotLoop()
                         continue;
                     }
                     LPlayer.SetViewAngles(Angles);
-                    if (!TriggerReady)
-                        continue;
-                    bool isInhair = IsInCrossHair(target);
-                    Vector loaclCamPos = LPlayer.GetCamPos();
-                    float screenW = g_settings.screen_width;
-                    float screenH = g_settings.screen_height;
-                    if (IsInTriggerZone(currentWeapon,loaclCamPos,target,isInhair,screenW,screenH)){
-                        TriggerBotRun();
+                    if (TriggerReady)
+                    {
+                        bool isInhair = IsInCrossHair(target);
+                        Vector loaclCamPos = LPlayer.GetCamPos();
+                        float screenW = g_settings.screen_width;
+                        float screenH = g_settings.screen_height;
+                        if (IsInTriggerZone(currentWeapon, loaclCamPos, target, isInhair, screenW, screenH))
+                        {
+                            TriggerBotRun();
+                        }
                     }
                 }
             }

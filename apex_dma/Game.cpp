@@ -24,7 +24,8 @@ extern Vector aim_target;
 extern int local_held_id;
 extern uint32_t local_weapon_id;
 
-Entity getEntity(uintptr_t ptr){
+Entity getEntity(uintptr_t ptr)
+{
     Entity entity = Entity();
     entity.ptr = ptr;
     apex_mem.ReadArray<uint8_t>(ptr, entity.buffer, sizeof(entity.buffer));
@@ -32,7 +33,8 @@ Entity getEntity(uintptr_t ptr){
 }
 
 // https://github.com/CasualX/apexbot/blob/master/src/state.cpp#L104
-void get_class_name(uint64_t entity_ptr, char *out_str){
+void get_class_name(uint64_t entity_ptr, char *out_str)
+{
     uint64_t client_networkable_vtable;
     apex_mem.Read<uint64_t>(entity_ptr + 8 * 3, client_networkable_vtable);
 
@@ -57,7 +59,8 @@ int Entity::getShield() { return *(int *)(buffer + OFFSET_SHIELD); }
 
 int Entity::getMaxshield() { return *(int *)(buffer + OFFSET_MAXSHIELD); }
 
-int Entity::getArmortype(){
+int Entity::getArmortype()
+{
     int armortype;
     apex_mem.Read<int>(ptr + OFFSET_ARMORTYPE, armortype);
     return armortype;
@@ -65,17 +68,20 @@ int Entity::getArmortype(){
 
 bool Entity::isZooming() { return *(int *)(buffer + OFFSET_ZOOMING) == 1; }
 
-Vector Entity::getAbsVelocity(){
+Vector Entity::getAbsVelocity()
+{
     return *(Vector *)(buffer + OFFSET_ABS_VELOCITY);
 }
 
 Vector Entity::getPosition() { return *(Vector *)(buffer + OFFSET_ORIGIN); }
 
-Vector Entity::getViewOffset(){
+Vector Entity::getViewOffset()
+{
     return *(Vector *)(buffer + OFFSET_VIEW_OFFSET);
 }
 
-void Entity::SetViewAngles(QAngle &angles) {
+void Entity::SetViewAngles(QAngle &angles)
+{
     apex_mem.Write<QAngle>(ptr + OFFSET_VIEWANGLES, angles);
 }
 
@@ -83,11 +89,12 @@ Vector Entity::GetCamPos() { return *(Vector *)(buffer + OFFSET_CAMERAPOS); }
 
 QAngle Entity::GetRecoil() { return *(QAngle *)(buffer + OFFSET_AIMPUNCH); }
 
-QAngle Entity::GetSwayAngles(){ return *(QAngle *)(buffer + OFFSET_BREATH_ANGLES); }
+QAngle Entity::GetSwayAngles() { return *(QAngle *)(buffer + OFFSET_BREATH_ANGLES); }
 
-QAngle Entity::GetViewAngles(){ return *(QAngle *)(buffer + OFFSET_VIEWANGLES); }
+QAngle Entity::GetViewAngles() { return *(QAngle *)(buffer + OFFSET_VIEWANGLES); }
 
-float Entity::GetYaw(){
+float Entity::GetYaw()
+{
     float yaw = 0;
     apex_mem.Read<float>(ptr + OFFSET_YAW, yaw);
     if (yaw < 0)
@@ -98,32 +105,35 @@ float Entity::GetYaw(){
     return yaw;
 }
 
-void Entity::get_name(uint64_t g_Base, uint64_t index, char *name){
+void Entity::get_name(uint64_t g_Base, uint64_t index, char *name)
+{
     index *= 0x18;
     uint64_t name_ptr = 0;
     apex_mem.Read<uint64_t>(g_Base + OFFSET_NAME_LIST + index, name_ptr);
     apex_mem.ReadArray<char>(name_ptr, name, 32);
 }
 
-bool Entity::isPlayer(){
+bool Entity::isPlayer()
+{
     return *(uint64_t *)(buffer + OFFSET_NAMECLASS) == 125780153691248;
 }
 // firing range dummys
-bool Entity::isDummy(){
+bool Entity::isDummy()
+{
     char class_name[33] = {};
     get_class_name(ptr, class_name);
     return strncmp(class_name, "CAI_BaseNPC", 11) == 0;
 }
 
-bool Entity::isDummy2(){ return getTeamId() == 97; }
+bool Entity::isDummy2() { return getTeamId() == 97; }
 
-bool Entity::isKnocked(){ return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0; }
+bool Entity::isKnocked() { return *(int *)(buffer + OFFSET_BLEED_OUT_STATE) > 0; }
 
 bool Entity::isAlive() { return *(int *)(buffer + OFFSET_LIFE_STATE) == 0; } //>0 dead
 
 float Entity::lastVisTime() { return *(float *)(buffer + OFFSET_VISIBLE_TIME); }
 
-float Entity::lastCrossHairTime(){ return *(float *)(buffer + OFFSET_CROSSHAIR_LAST); }
+float Entity::lastCrossHairTime() { return *(float *)(buffer + OFFSET_CROSSHAIR_LAST); }
 
 Vector Entity::getBonePositionByHitbox(int id)
 {
@@ -167,8 +177,8 @@ void Entity::enableGlow(int setting_index, uint8_t insidetype, uint8_t outline_s
 {
     const unsigned char outsidetype = 125;
     std::array<unsigned char, 4> highlightFunctionBits = {
-        insidetype, // InsideFunction
-        outsidetype, // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
+        insidetype,   // InsideFunction
+        outsidetype,  // OutlineFunction: HIGHLIGHT_OUTLINE_OBJECTIVE
         outline_size, // OutlineRadius: size * 255 / 8
         64            // (EntityVisible << 6) | State & 0x3F | (AfterPostProcess << 7)
     };
@@ -265,21 +275,24 @@ Item getItem(uintptr_t ptr)
 
 Vector Item::getPosition() { return *(Vector *)(buffer + OFFSET_ORIGIN); }
 
-bool Item::isItem(){
+bool Item::isItem()
+{
     char class_name[33] = {};
     get_class_name(ptr, class_name);
     return strncmp(class_name, "CPropSurvival", 13) == 0;
 }
 
 // Deathboxes
-bool Item::isBox(){
+bool Item::isBox()
+{
     char class_name[33] = {};
     get_class_name(ptr, class_name);
     return strncmp(class_name, "CDeathBoxProp", 13) == 0;
 }
 
 // Traps
-bool Item::isTrap(){
+bool Item::isTrap()
+{
     char class_name[33] = {};
     get_class_name(ptr, class_name);
     return strncmp(class_name, "caustic_trap", 13) == 0;
@@ -327,10 +340,13 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
     QAngle CalculatedAngles = QAngle(0, 0, 0);
     if (BulletSpeed > 1.f)
     {
-        if (weapid == 2){
+        if (weapid == 2)
+        {
             bulletspeed = 10.08;
             bulletgrav = 10.05;
-        }else{
+        }
+        else
+        {
             bulletspeed = 0.08;
             bulletgrav = 0.05;
         }
@@ -497,7 +513,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon,
         int weapon_mod_bitfield = weapon.get_mod_bitfield();
         /*Vector local_origin = from.getPosition();
         Vector view_offset = from.getViewOffset();*/
-        Vector view_origin = from.GetCamPos();//local_origin + view_offset;
+        Vector view_origin = from.GetCamPos(); // local_origin + view_offset;
         Vector target_origin = target.getPosition() + targetVel * deltaTime;
         aim_target = target_origin;
         vector2d_t skynade_angles =
@@ -517,6 +533,107 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon,
         QAngle Delta = TargetAngles - ViewAngles;
         return ViewAngles + Delta / g_settings.skynade_smooth;
     }
+}
+
+void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
+{
+    const auto g_settings = global_settings();
+    int delay = 500;
+    int boneIndex = 0;
+    QAngle aimAngles = QAngle(0, 0, 0);
+    if (g_settings.firing_range)
+    {
+        if (!target.isAlive())
+        {
+            return;
+        }
+    }
+    else
+    {
+        if (!target.isAlive() || target.isKnocked())
+        {
+            return;
+        }
+    }
+    WeaponXEntity weapon = WeaponXEntity();
+    weapon.update(from.ptr);
+    uint32_t weap_id = weapon.get_weap_id();
+    switch (weap_id)
+    {
+    case idweapon_mastiff:
+    case idweapon_peacekeeper:
+        delay = 300;
+        boneIndex = 3;
+        break;
+    case idweapon_sentinel:
+        delay = 800;
+        boneIndex = 0;
+        break;
+    case idweapon_longbow:
+        delay = 600;
+        boneIndex = 0;
+        break;
+    case idweapon_g7_scout:
+        delay = 500;
+        boneIndex = 0;
+        break;
+    case idweapon_kraber:
+        delay = 1500;
+        boneIndex = 0;
+        break;
+    case idweapon_triple_take:
+    case idweapon_3030_repeater:
+        delay = 1200;
+        boneIndex = 0;
+        break;
+    case idweapon_wingman:
+        delay = 400;
+        boneIndex = 0;
+        break;
+    default:
+        delay = 0;
+    }
+    if (delay = 0)
+        return;
+    Vector aimBonePos = target.getBonePositionByHitbox(boneIndex);
+    Vector screenAimBonePos;
+    WorldToScreen(aimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos);
+    auto s2predictpos = (sqrtf(pow(g_settings.screen_width / 2 - screenAimBonePos.x, 2) + pow(g_settings.screen_height / 2 - screenAimBonePos.y, 2)));
+    if (s2predictpos > 10)
+        return;
+    float bulletSpeed = weapon.get_projectile_speed();
+    float bulletGrav = weapon.get_projectile_gravity();
+    Vector LocalCamera = from.GetCamPos();
+    QAngle ViewAngles = from.GetViewAngles();
+    QAngle SwayAngles = from.GetSwayAngles();
+    Vector targetVel = target.getAbsVelocity();
+    float deltaTime = 1.0 / g_settings.game_fps;
+
+    PredictCtx Ctx;
+    Ctx.StartPos = LocalCamera;
+    Ctx.TargetPos = aimBonePos;
+    Ctx.BulletSpeed = bulletSpeed * 0.92;
+    Ctx.BulletGravity = bulletGrav * 1.05;
+    float distanceToTarget = (aimBonePos - LocalCamera).Length();
+    float timeToTarget = distanceToTarget / bulletSpeed;
+    Vector targetPosAhead = aimBonePos + (targetVel * timeToTarget);
+    Ctx.TargetVel = Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime), targetVel.z);
+    Ctx.TargetPos = targetPosAhead;
+
+    if (BulletPredict(Ctx))
+        aimAngles = QAngle{Ctx.AimAngles.x, Ctx.AimAngles.y, 0.f};
+    if (aimAngles == QAngle(0, 0, 0)) return;
+    static std::chrono::time_point<std::chrono::steady_clock> last_flick_time;
+    auto now_ms = std::chrono::steady_clock::now();
+    if (now_ms <= last_flick_time + std::chrono::milliseconds(delay))
+    {
+        return;
+    }
+    from.SetViewAngles(aimAngles);
+    apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
+    std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
+    last_flick_time = now_ms;
 }
 
 bool WorldToScreen(Vector from, float *m_vMatrix, int targetWidth,
@@ -580,7 +697,7 @@ void WeaponXEntity::update(uint64_t LocalPlayer)
 
 float WeaponXEntity::get_projectile_speed() { return projectile_speed; }
 
-float WeaponXEntity::get_projectile_gravity(){ return 750.0f * projectile_scale; }
+float WeaponXEntity::get_projectile_gravity() { return 750.0f * projectile_scale; }
 
 float WeaponXEntity::get_zoom_fov() { return zoom_fov; }
 

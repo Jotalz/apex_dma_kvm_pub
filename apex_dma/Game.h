@@ -145,6 +145,7 @@ bool WorldToScreen(Vector from, float *m_vMatrix, int targetWidth,
                    int targetHeight, Vector &to);
 float CalculateFov(Entity &from, Entity &target);
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon, float max_fov, float smooth);
+void DoFlick(Entity &from, Entity &target, float *m_vMatrix);
 void get_class_name(uint64_t entity_ptr, char *out_str);
 
 enum weapon_id : int32_t {
