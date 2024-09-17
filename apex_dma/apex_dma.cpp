@@ -26,6 +26,7 @@
 // this is a test, with seconds
 Memory apex_mem;
 uint64_t g_Base;
+uint64_t ViewMatrix = 0;
 
 // Just setting things up, dont edit.
 bool active = true;
@@ -99,85 +100,148 @@ void rainbowColor(int frame_number, std::array<float, 3> &colors)
 void TriggerBotRun()
 {
     // 设置随机数生成器
-    std::random_device rd;
+    /*std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(10, 30); // 正常或稍快的反应时间
     // 生成随机时间间隔，防止行为检测
     int randomInterval = dis(gen);
-    std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));
+    std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));*/
     apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
     apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
-    // printf("TriggerBotRun\n");
 }
 
-bool IsTriggerZone(WeaponXEntity &weapon, Vector LocalCameraPosition, Vector TargetBonePosition,
-                   Vector targetVel, bool longSemi, bool isInXHair, float screen_width, float screen_height)
+bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &target,
+                     bool isInXHair, float screen_width, float screen_height)
 {
-    Vector AimBonePredictLocation(0.0f, 0.0f, 0.0f);
-    Vector ScreenAimBonePredictLocation(0.0f, 0.0f, 0.0f);
-    Vector ScreenAimBonePredictLocationFixed(0.0f, 0.0f, 0.0f);
-    float projectile_speed = weapon.get_projectile_speed() * 0.08;
-    uint64_t viewRenderer = 0;
-    apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRenderer);
-    uint64_t viewMatrix = 0;
-    apex_mem.Read<uint64_t>(viewRenderer + OFFSET_MATRIX, viewMatrix);
+    bool light = false;
+    bool is_triggerzone = false;
+    int boneIndex;
+    float boxWidth, boxDepth, boxHeight;
+    Vector targetBonePositionPre;
+    Vector screenTargetBonePositionPre;
+    float projectile_speed = weapon.get_projectile_speed() * 0.92;
+    float projectile_scale = weapon.get_projectile_gravity() * 1.05;
     Matrix view_matrix_data = {};
-    apex_mem.Read<Matrix>(viewMatrix, view_matrix_data);
+    apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
+
+    if (TriggerReady)
+    {
+        int delay = 100;
+        switch (local_weapon_id)
+        {
+        case idweapon_eva8:
+            delay = 300;
+            boneIndex = 2;
+            break;
+        case idweapon_p2020:
+        case idweapon_mozambique:
+            delay = 200;
+            boneIndex = 2;
+            break;
+        case idweapon_mastiff:
+        case idweapon_peacekeeper:
+            delay = 400;
+            boneIndex = 2;
+            break;
+        case idweapon_sentinel:
+            delay = 800;
+            boneIndex = 0;
+            break;
+        case idweapon_longbow:
+            delay = 600;
+            boneIndex = 0;
+            break;
+        case idweapon_g7_scout:
+            delay = 500;
+            boneIndex = 0;
+            break;
+        case idweapon_kraber:
+            delay = 1500;
+            boneIndex = 0;
+            break;
+        case idweapon_triple_take:
+        case idweapon_3030_repeater:
+            delay = 1200;
+            boneIndex = 0;
+            break;
+        case idweapon_wingman:
+            delay = 500;
+            boneIndex = 0;
+            break;
+        default:
+            delay = 50;
+            boneIndex = 2;
+        }
+    }
+    Vector targetBonePosition = target.getBonePositionByHitbox(boneIndex);
     if (projectile_speed > 1.f)
     {
-        float distanceToTarget = (TargetBonePosition - LocalCameraPosition).Length();
+        float distanceToTarget = (targetBonePosition - localCameraPos).Length();
         float timeToTarget = distanceToTarget / projectile_speed;
-        Vector targetPosAhead = TargetBonePosition + (targetVel * timeToTarget);
-        AimBonePredictLocation = targetPosAhead;
+        Vector targetPosAhead = targetBonePosition + (target.getAbsVelocity() * timeToTarget);
+        targetBonePositionPre = targetPosAhead;
     }
     else
     {
-        AimBonePredictLocation = TargetBonePosition;
+        targetBonePositionPre = targetBonePosition;
+        light = true;
     }
-    WorldToScreen(AimBonePredictLocation, view_matrix_data.matrix, screen_width,
-                  screen_height, ScreenAimBonePredictLocation);
-    if (longSemi)
+    if (light)
     {
-        AimBonePredictLocation.z += 2;
+        return isInXHair;
     }
-    WorldToScreen(AimBonePredictLocation, view_matrix_data.matrix, screen_width,
-                  screen_height, ScreenAimBonePredictLocationFixed);
-    float triggerzone = (sqrtf(pow(ScreenAimBonePredictLocation.x - ScreenAimBonePredictLocationFixed.x, 2) + pow(ScreenAimBonePredictLocation.y - ScreenAimBonePredictLocationFixed.y, 2)));
-    float s2predictpos = (sqrtf(pow(screen_width / 2 - ScreenAimBonePredictLocation.x, 2) + pow(screen_height / 2 - ScreenAimBonePredictLocation.y, 2)));
-    bool is_triggerzone = false;
-    if (longSemi)
+    if (boneIndex == 0)
     {
-        is_triggerzone = s2predictpos < triggerzone;
+        boxWidth = boxDepth = boxHeight = 5.0;
     }
-    else
+    else if (boneIndex == 2)
     {
-        is_triggerzone = isInXHair;
+        boxWidth = 8.0;
+        boxDepth = 8.0;
+        boxHeight = 12.0;
+    }
+    std::vector<Vector> corners = {
+        {targetBonePositionPre.x + boxWidth, targetBonePositionPre.y + boxDepth, targetBonePositionPre.z + boxHeight},
+        {targetBonePositionPre.x - boxWidth, targetBonePositionPre.y - boxDepth, targetBonePositionPre.z - boxHeight},
+        {targetBonePositionPre.x + boxWidth, targetBonePositionPre.y - boxDepth, targetBonePositionPre.z + boxHeight},
+        {targetBonePositionPre.x - boxWidth, targetBonePositionPre.y + boxDepth, targetBonePositionPre.z - boxHeight},
+    };
+    float minX = FLT_MAX, maxX = -FLT_MAX, minY = FLT_MAX, maxY = -FLT_MAX;
+    for (const auto &corner : corners)
+    {
+        Vector screenPos;
+        if (WorldToScreen(corner, view_matrix_data.matrix, screen_width, screen_height, screenPos))
+        {
+            minX = (std::min)(minX, screenPos.x);
+            maxX = (std::max)(maxX, screenPos.x);
+            minY = (std::min)(minY, screenPos.y);
+            maxY = (std::max)(maxY, screenPos.y);
+        }
+    }
+    Vector2D Center(screen_width / 2, screen_height / 2);
+    if ((Center.x >= (minX - 1)) && (Center.x <= (maxX + 1)) &&
+        (Center.y >= (minY - 1.5)) && (Center.y <= (maxY + 1.5)))
+    {
+        is_triggerzone = true;
     }
     return is_triggerzone;
 }
 
-bool IsInCrossHair(Entity & target)
+bool IsInCrossHair(Entity &target)
 {
-        static uintptr_t last_t = 0;
-        static float last_crosshair_target_time = -1.f;
-        float now_crosshair_target_time = target.lastCrossHairTime();
-        bool is_trigger = false;
-        if (last_t == target.ptr)
+    static uint64_t last_t = 0;
+    static float last_crosshair_target_time = -1.f;
+    float now_crosshair_target_time = target.lastCrossHairTime();
+    bool is_trigger = false;
+    if (last_t == target.ptr)
+    {
+        if (last_crosshair_target_time != -1.f)
         {
-            if (last_crosshair_target_time != -1.f)
+            if (now_crosshair_target_time > last_crosshair_target_time)
             {
-                if (now_crosshair_target_time > last_crosshair_target_time)
-                {
-                    is_trigger = true;
-                    // printf("Trigger\n");
-                    last_crosshair_target_time = -1.f;
-                }
-                else
-                {
-                    is_trigger = false;
-                    last_crosshair_target_time = now_crosshair_target_time;
-                }
+                is_trigger = true;
+                last_crosshair_target_time = -1.f;
             }
             else
             {
@@ -187,12 +251,17 @@ bool IsInCrossHair(Entity & target)
         }
         else
         {
-            last_t = target.ptr;
-            last_crosshair_target_time = -1.f;
+            is_trigger = false;
+            last_crosshair_target_time = now_crosshair_target_time;
         }
-        return is_trigger;
     }
-
+    else
+    {
+        last_t = target.ptr;
+        last_crosshair_target_time = -1.f;
+    }
+    return is_trigger;
+}
 
 void MapRadarTesting(uint64_t localptr)
 {
@@ -229,8 +298,10 @@ void ClientActions()
 
             // read player ptr
             uint64_t local_player_ptr = 0;
+            uint64_t viewRender_ptr = 0;
             apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, local_player_ptr);
-
+            apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRender_ptr);
+            apex_mem.Read<uint64_t>(viewRender_ptr + OFFSET_MATRIX, ViewMatrix);
             // read game states
             apex_mem.Read<typeof(button_state)>(g_Base + OFFSET_INPUT_SYSTEM + 0xb0, button_state);
             int attack_state = 0, zoom_state = 0, jump_state = 0, backWardState = 0, curFrameNumber = 0, skyDriveState = 0,
@@ -764,98 +835,6 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
                 aimbot.gun_safety = false;
             }
         }
-
-        if (aimbot.aimentity != 0)
-        {
-            Entity Target = getEntity(aimbot.aimentity);
-            bool isXhair = IsInCrossHair(Target);
-            bool longSemi = false;
-            float screen_width = g_settings.screen_width;
-            float screen_height = g_settings.screen_height;
-            Vector LocalCameraPosition = LPlayer.GetCamPos();
-            Vector targetVel = Target.getAbsVelocity();
-            WeaponXEntity currentWeapon = WeaponXEntity();
-            currentWeapon.update(LPlayer.ptr);
-            Vector TargetBonePosition;
-            if (TriggerReady)
-            {
-                int delay = 100;
-                switch (local_weapon_id)
-                {
-                case idweapon_eva8:
-                    delay = 250;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(1);
-                    break;
-                case idweapon_mastiff:
-                    delay = 300;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(1);
-                    break;
-                case idweapon_mozambique:
-                    delay = 200;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(1);
-                    break;
-                case idweapon_peacekeeper:
-                    delay = 400;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(1);
-                    break;
-                case idweapon_sentinel:
-                    delay = 700;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(0);
-                    break;
-                case idweapon_longbow:
-                    delay = 600;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(0);
-                    break;
-                case idweapon_g7_scout:
-                    delay = 600;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(0);
-                    break;
-                case idweapon_kraber:
-                    delay = 1200;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(0);
-                    break;
-                case idweapon_p2020:
-                    delay = 200;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(1);
-                    break;
-                case idweapon_triple_take:
-                case idweapon_3030_repeater:
-                    delay = 1200;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(0);
-                    break;
-                case idweapon_wingman:
-                    delay = 500;
-                    longSemi = true;
-                    TargetBonePosition = Target.getBonePositionByHitbox(0);
-                    break;
-                default:
-                    delay = 50;
-                    longSemi = false;
-                    TargetBonePosition = Target.getBonePositionByHitbox(1);
-                }
-                bool isInZone = IsTriggerZone(currentWeapon, LocalCameraPosition, TargetBonePosition,
-                           targetVel, longSemi, isXhair, screen_width, screen_height);
-                static std::chrono::time_point<std::chrono::steady_clock> last_trigger_time;
-                auto now_ms = std::chrono::steady_clock::now();
-                if (isInZone){
-                    if (now_ms >= last_trigger_time + std::chrono::milliseconds(delay))
-                    {
-                        TriggerBotRun();
-                        last_trigger_time = now_ms;
-                    }
-                }
-            }
-        }
     }
     SetPlayerGlow(LPlayer, target, index, frame_number);
     lastvis_aim[index] = target.lastVisTime();
@@ -1029,7 +1008,7 @@ void DoActions()
                 aimbot.aimentity = aimbot.tmp_aimentity;
             }
             // disable aimbot safety if vis check is turned off
-            if (g_settings.aim == 1 && local_held_id != -251)
+            if (g_settings.aim == 1)
             {
                 aimbot.gun_safety = false;
             }
@@ -1126,13 +1105,7 @@ static void EspLoop()
                 }
                 Vector LocalPlayerPosition = LPlayer.getPosition();
                 esp_local_pos = LocalPlayerPosition;
-
-                uint64_t viewRenderer = 0;
-                apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRenderer); // displays ESp, heath dist names etc
-                uint64_t viewMatrix = 0;
-                apex_mem.Read<uint64_t>(viewRenderer + OFFSET_MATRIX, viewMatrix);
-
-                apex_mem.Read<Matrix>(viewMatrix, view_matrix_data);
+                apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
 
                 uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
 
@@ -1301,7 +1274,16 @@ static void AimbotLoop()
             // Read LocalPlayer
             uint64_t LocalPlayer = 0;
             apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
-
+            if (LocalPlayer == 0)
+            {
+                continue;
+            }
+            Entity LPlayer = getEntity(LocalPlayer);
+            if (LPlayer.isKnocked() || !LPlayer.isAlive())
+            {
+                cancel_targeting();
+                continue;
+            }
             // Read HeldID
             int HeldID;
             apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID);
@@ -1310,14 +1292,6 @@ static void AimbotLoop()
             // Read WeaponID
             WeaponXEntity currentWeapon = WeaponXEntity();
             currentWeapon.update(LocalPlayer);
-            /*uint64_t ehWeaponHandle;
-            apex_mem.Read<uint64_t>(LocalPlayer + OFFSET_ACTIVE_WEAPON, ehWeaponHandle);
-            ehWeaponHandle &= 0xFFFF; // eHandle
-            uint64_t pWeapon;
-            uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
-            apex_mem.Read<uint64_t>(entityListPtr + (ehWeaponHandle * 0x20), pWeapon);
-            uint32_t weaponID;
-            apex_mem.Read<uint32_t>(pWeapon + OFFSET_WEAPON_ID, weaponID);*/
             uint32_t weaponID = currentWeapon.get_weap_id();
             local_weapon_id = weaponID;
             // printf("%d\n", weaponID);
@@ -1339,21 +1313,9 @@ static void AimbotLoop()
                     cancel_targeting();
                     continue;
                 }
-
                 lock_target(aimbot.aimentity);
                 if (aimbot.gun_safety)
                 { // gun_safety用于可见性检查
-                    continue;
-                }
-
-                Entity LPlayer = getEntity(LocalPlayer);
-                if (LocalPlayer == 0)
-                {
-                    continue;
-                }
-                if (LPlayer.isKnocked())
-                {
-                    cancel_targeting();
                     continue;
                 }
                 if (HeldID == -251)
@@ -1375,6 +1337,15 @@ static void AimbotLoop()
                         continue;
                     }
                     LPlayer.SetViewAngles(Angles);
+                    if (!TriggerReady)
+                        continue;
+                    bool isInhair = IsInCrossHair(target);
+                    Vector loaclCamPos = LPlayer.GetCamPos();
+                    float screenW = g_settings.screen_width;
+                    float screenH = g_settings.screen_height;
+                    if (IsInTriggerZone(currentWeapon,loaclCamPos,target,isInhair,screenW,screenH)){
+                        TriggerBotRun();
+                    }
                 }
             }
         }
