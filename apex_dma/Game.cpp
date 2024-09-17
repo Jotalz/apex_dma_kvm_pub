@@ -629,7 +629,11 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     {
         return;
     }
-    from.SetViewAngles(aimAngles);
+    Math::NormalizeAngles(aimAngles);
+    QAngle currentViewAngel = from.GetViewAngles();
+    QAngle delta =  aimAngles - currentViewAngel;
+    QAngle smooth_aimAngles = currentViewAngel + delta / 90;
+    from.SetViewAngles(smooth_aimAngles);
     apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
     apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
