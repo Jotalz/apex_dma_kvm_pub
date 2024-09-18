@@ -213,6 +213,7 @@ typedef struct {
   int32_t bone;
   bool bone_nearest;
   bool bone_auto;
+  bool flick_nearest;
   float headshot_dist;
   float skynade_dist;
   float smooth;

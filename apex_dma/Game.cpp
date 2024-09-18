@@ -540,6 +540,8 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     const auto g_settings = global_settings();
     int delay = 0;
     int boneIndex = 0;
+    float s2predictpos = 100;
+    Vector aimBonePos;
     QAngle aimAngles = QAngle(0, 0, 0);
     if (g_settings.firing_range)
     {
@@ -563,7 +565,7 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     case idweapon_mastiff:
     case idweapon_peacekeeper:
         delay = 300;
-        boneIndex = 3;
+        boneIndex = 2;
         break;
     case idweapon_sentinel:
         delay = 800;
@@ -595,11 +597,35 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     }
     if (delay == 0)
         return;
-    Vector aimBonePos = target.getBonePositionByHitbox(boneIndex);
-    Vector screenAimBonePos;
-    WorldToScreen(aimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos);
-    auto s2predictpos = (sqrtf(pow(g_settings.screen_width / 2 - screenAimBonePos.x, 2) + pow(g_settings.screen_height / 2 - screenAimBonePos.y, 2)));
-    //printf("s2predictpos:%d\n",s2predictpos);
+    int screenCenterW = g_settings.screen_width / 2;
+    int screenCenterH = g_settings.screen_height / 2;
+    if (g_settings.flick_nearest)
+    {
+        float bestPos = 4096.0;
+        for (int bone = 0; bone < 6; ++bone)
+        {
+            aimBonePos = target.getBonePositionByHitbox(bone);
+            Vector screenAimBonePos;
+            if (WorldToScreen(aimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos))
+            {
+                float distSquared = pow(screenCenterW - screenAimBonePos.x, 2) + pow(screenCenterH - screenAimBonePos.y, 2);
+                if (distSquared < bestPos)
+                {
+                    s2predictpos = sqrtf(distSquared);
+                    bestPos = distSquared;
+                    boneIndex = bone;
+                }
+            }
+        }
+    }
+    else
+    {
+        aimBonePos = target.getBonePositionByHitbox(boneIndex);
+        Vector screenAimBonePos;
+        WorldToScreen(aimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos);
+        s2predictpos = (sqrtf(pow(screenCenterW - screenAimBonePos.x, 2) + pow(screenCenterH - screenAimBonePos.y, 2)));
+    }
+    // printf("s2predictpos:%d\n",s2predictpos);
     if (s2predictpos > g_settings.flick_fov)
         return;
     float bulletSpeed = weapon.get_projectile_speed();
@@ -623,7 +649,8 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
 
     if (BulletPredict(Ctx))
         aimAngles = QAngle{Ctx.AimAngles.x, Ctx.AimAngles.y, 0.f};
-    if (aimAngles == QAngle(0, 0, 0)) return;
+    if (aimAngles == QAngle(0, 0, 0))
+        return;
     static std::chrono::time_point<std::chrono::steady_clock> last_flick_time;
     auto now_ms = std::chrono::steady_clock::now();
     if (now_ms <= last_flick_time + std::chrono::milliseconds(delay))

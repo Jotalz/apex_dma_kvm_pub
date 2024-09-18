@@ -216,6 +216,7 @@ pub struct Settings {
     pub bone: i32,
     pub bone_nearest: bool,
     pub bone_auto: bool,
+    pub flick_nearest: bool,
     pub headshot_dist: f32,
     pub skynade_dist: f32,
     pub smooth: f32,
@@ -452,6 +453,7 @@ impl Default for Settings {
             bone: 2, // bone 0 head, 1 neck, 2 chest, 3 dick shot
             bone_nearest: false,
             bone_auto: true,
+            flick_nearest: false,
             headshot_dist: 200.0 * 40.0,
             skynade_dist: 120.0 * 40.0,
             glow_dist: 200.0 * 40.0,

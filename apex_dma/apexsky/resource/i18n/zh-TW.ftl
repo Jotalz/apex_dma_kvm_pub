@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = 啓用
 menu-value-disabled = 停用
-main-menu-title = 主選單 GameVersion-v3.0.79.51
+main-menu-title = 主選單 GameVersion-v3.0.80.16
 menu-item-firing-range = 射擊場模式
 menu-item-tdm-toggle = 團隊模式
 menu-item-keyboard = 鍵盤滑鼠模式
@@ -59,6 +59,7 @@ input-prompt-flick-fov = 設置 "瞬擊自瞄FOV" 值:
     (5~50)
 info-invalid-flick-fov = 輸入無效。
     "瞬擊自瞄FOV" 必須介於 5.0 到 50.0 之間。
+menu-item-flick-nearest = 瞬擊最近部位
 menu-item-super-glide = 自動SuperGlide
 menu-item-item-filter-settings = 物品透視設置
 menu-item-hotkey-settings = 熱鍵設置

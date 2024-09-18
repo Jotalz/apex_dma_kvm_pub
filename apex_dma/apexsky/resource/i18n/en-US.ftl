@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = Enabled
 menu-value-disabled = Disabled
-main-menu-title = Main Menu GameVersion-v3.0.79.51
+main-menu-title = Main Menu GameVersion-v3.0.80.16
 menu-item-firing-range = Firing Range
 menu-item-tdm-toggle = TDMToggle
 menu-item-keyboard = Keyboard
@@ -59,6 +59,7 @@ input-prompt-flick-fov = Set "Flick Bot FOV" Value:
     (5~50)
 info-invalid-flick-fov = Invalid value。
     "Flick Bot FOV" value must be between 5.0 and 50.
+menu-item-flick-nearest = Flick Nearest
 menu-item-super-glide = Super Glide
 menu-item-item-filter-settings = Item Filter Settings
 menu-item-hotkey-settings = Hot Key Setting

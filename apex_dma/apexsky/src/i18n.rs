@@ -55,6 +55,7 @@ pub enum MessageId {
     MenuItemChangeFlickFov,
     InputPromptFlickFov,
     InfoInvalidFlickFov,
+    MenuItemFlickNearest,
     MenuItemSuperGlide,
     MenuItemItemFilterSettings,
     MenuItemHotkeySettings,
