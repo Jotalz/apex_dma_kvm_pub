@@ -55,6 +55,11 @@ input-prompt-non-ads-fov = 设置 "腰射自瞄FOV" 值:
     (1~50)
 info-invalid-non-ads-fov = 输入无效。
     "腰射自瞄FOV" 只能介于 1.0 到 50.0 之间。
+menu-item-change-flick-fov = 瞬击FOV
+input-prompt-flick-fov = 设置 "瞬击自瞄FOV" 值: 
+    (5~50)
+info-invalid-flick-fov = 输入无效。
+    "瞬击自瞄FOV" 只能介于 5.0 到 50.0 之间。
 menu-item-super-glide = 自动SG
 menu-item-item-filter-settings = 物品透视设置
 menu-item-hotkey-settings = 热键设置
@@ -109,7 +114,8 @@ input-prompt-keycode =
 hotkey-menu-title = 热键菜单
 hotkey-item-aimbot1 = 自动瞄准热键1
 hotkey-item-aimbot2 = 自瞄热键2
-hotkey-item-trigger-bot = 自动扳机热键
+hotkey-item-trigger-bot = 自动扳机热键(绑定热键2)
+hotkey-item-flick-bot = 瞬击热键
 hotkey-item-quick-glow = 临时开关热能热键
 menu-item-key-codes = 键码表
 item-filter-menu-title = 物品选择菜单

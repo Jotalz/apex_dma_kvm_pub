@@ -200,13 +200,13 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     }
     if (boneIndex == 0)
     {
-        boxWidth = boxDepth = boxHeight = 3.0;
+        boxWidth = boxDepth = boxHeight = 5.0;
     }
     else if (boneIndex == 3)
     {
-        boxWidth = 3.0;
-        boxDepth = 3.0;
-        boxHeight = 5.0;
+        boxWidth = 5.0;
+        boxDepth = 5.0;
+        boxHeight = 8.0;
     }
     std::vector<Vector> corners = {
         {targetBonePositionPre.x + boxWidth, targetBonePositionPre.y + boxDepth, targetBonePositionPre.z + boxHeight},
@@ -2154,7 +2154,7 @@ int main(int argc, char *argv[])
     std::thread esp_thr;
     std::thread actions_thr;
     std::thread cactions_thr;
-    std::thread TriggerBotRun_thr;
+    //std::thread TriggerBotRun_thr;
     std::thread terminal_thr;
     std::thread overlay_thr;
     std::thread itemglow_thr;
@@ -2184,7 +2184,7 @@ int main(int argc, char *argv[])
                 esp_thr.~thread();
                 actions_thr.~thread();
                 cactions_thr.~thread();
-                TriggerBotRun_thr.~thread();
+                //TriggerBotRun_thr.~thread();
                 terminal_thr.~thread();
                 overlay_thr.~thread();
                 itemglow_thr.~thread();
@@ -2205,14 +2205,14 @@ int main(int argc, char *argv[])
                 esp_thr = std::thread(EspLoop);
                 actions_thr = std::thread(DoActions);
                 cactions_thr = std::thread(ClientActions);
-                TriggerBotRun_thr = std::thread(TriggerBotRun);
+                //TriggerBotRun_thr = std::thread(TriggerBotRun);
                 itemglow_thr = std::thread(item_glow_t);
 
                 aimbot_thr.detach();
                 esp_thr.detach();
                 actions_thr.detach();
                 cactions_thr.detach();
-                TriggerBotRun_thr.detach();
+                //TriggerBotRun_thr.detach();
                 itemglow_thr.detach();
             }
         }

@@ -193,6 +193,7 @@ pub struct Settings {
     pub aim_no_recoil: bool,
     pub ads_fov: f32,
     pub non_ads_fov: f32,
+    pub flick_fov: f32,
     pub aim: i32,
     pub esp: bool,
     pub esp_visuals: EspVisuals,
@@ -428,6 +429,7 @@ impl Default for Settings {
             aim_no_recoil: false,
             ads_fov: 7.0, // Fov you want to use while aiming
             non_ads_fov: 16.0,
+            flick_fov: 30.0,
             aim: 2, // 0 no aim, 1 aim with no vis check, 2 aim with vis check
             esp: false,
             esp_visuals: EspVisuals::default(),

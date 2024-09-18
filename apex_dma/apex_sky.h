@@ -190,6 +190,7 @@ typedef struct {
   bool aim_no_recoil;
   float ads_fov;
   float non_ads_fov;
+  float flick_fov;
   int32_t aim;
   bool esp;
   visuals esp_visuals;

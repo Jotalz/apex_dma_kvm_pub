@@ -54,6 +54,11 @@ input-prompt-non-ads-fov = New value for 'Non-ADS FOV':
     (1 to 50)
 info-invalid-non-ads-fov = Invalid value.
     'Non-ADS FOV' value must be between 1.0 and 50.
+menu-item-change-flick-fov = Flick FOV
+input-prompt-flick-fov = Set "Flick Bot FOV" Value: 
+    (5~50)
+info-invalid-flick-fov = Invalid value。
+    "Flick Bot FOV" value must be between 5.0 and 50.
 menu-item-super-glide = Super Glide
 menu-item-item-filter-settings = Item Filter Settings
 menu-item-hotkey-settings = Hot Key Setting
@@ -79,9 +84,10 @@ menu-item-big-map-feat = Toggle F8 Map Radar
 menu-item-player-armor-glow-color = Toggle Player Armor Glow Color
 menu-item-weapon-model-glow = Weapon Model Glow
 info-weapon-model-glow = 
-    Normal => colorful
+    Normal => No Glow
     Being watched by teammates => green
-    Being watched by others => red
+    Being watched by others => Blue->Orange->Red->Colorful
+                                <3     <5    <7    7+
 menu-item-toggle-overlay = Toggle Overlay
 menu-value-no-overlay = no-overlay
 menu-value-external-overlay = external-overlay
@@ -107,7 +113,8 @@ input-prompt-keycode =
 hotkey-menu-title = Hotkey Menu
 hotkey-item-aimbot1 = Aimbot Hot Key 1
 hotkey-item-aimbot2 = Aimbot Hot Key 2
-hotkey-item-trigger-bot = Trigger Bot Hot Key
+hotkey-item-trigger-bot = Trigger Bot Hot Key(Bind HotKey2)
+hotkey-item-flick-bot = Flick Bot Hot Key
 hotkey-item-quick-glow = Temporary Glow Switch hotkey
 menu-item-key-codes = Key Codes
 item-filter-menu-title = Item Filter Menu

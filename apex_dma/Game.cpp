@@ -538,7 +538,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon,
 void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
 {
     const auto g_settings = global_settings();
-    int delay = 500;
+    int delay = 0;
     int boneIndex = 0;
     QAngle aimAngles = QAngle(0, 0, 0);
     if (g_settings.firing_range)
@@ -593,13 +593,14 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     default:
         delay = 0;
     }
-    if (delay = 0)
+    if (delay == 0)
         return;
     Vector aimBonePos = target.getBonePositionByHitbox(boneIndex);
     Vector screenAimBonePos;
     WorldToScreen(aimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos);
     auto s2predictpos = (sqrtf(pow(g_settings.screen_width / 2 - screenAimBonePos.x, 2) + pow(g_settings.screen_height / 2 - screenAimBonePos.y, 2)));
-    if (s2predictpos > 10)
+    //printf("s2predictpos:%d\n",s2predictpos);
+    if (s2predictpos > g_settings.flick_fov)
         return;
     float bulletSpeed = weapon.get_projectile_speed();
     float bulletGrav = weapon.get_projectile_gravity();
@@ -630,10 +631,7 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
         return;
     }
     Math::NormalizeAngles(aimAngles);
-    QAngle currentViewAngel = from.GetViewAngles();
-    QAngle delta =  aimAngles - currentViewAngel;
-    QAngle smooth_aimAngles = currentViewAngel + delta / 90;
-    from.SetViewAngles(smooth_aimAngles);
+    from.SetViewAngles(aimAngles);
     apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
     std::this_thread::sleep_for(std::chrono::milliseconds(20));
     apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);

@@ -54,6 +54,11 @@ input-prompt-non-ads-fov = 設置 "腰射自瞄FOV" 值:
     (1~50)
 info-invalid-non-ads-fov = 輸入無效。
     「腰射自瞄FOV」 必須介於 1.0 到 50.0 之間。
+menu-item-change-flick-fov = 瞬擊FOV
+input-prompt-flick-fov = 設置 "瞬擊自瞄FOV" 值: 
+    (5~50)
+info-invalid-flick-fov = 輸入無效。
+    "瞬擊自瞄FOV" 必須介於 5.0 到 50.0 之間。
 menu-item-super-glide = 自動SuperGlide
 menu-item-item-filter-settings = 物品透視設置
 menu-item-hotkey-settings = 熱鍵設置
@@ -79,9 +84,10 @@ menu-item-big-map-feat = F8地圖雷達功能
 menu-item-player-armor-glow-color = 護盾顏色發光
 menu-item-weapon-model-glow = 武器模型發光
 info-weapon-model-glow = 
-    通常 => 彩色
-    被隊友觀看時 => 綠色
-    被別人觀看時 => 紅色
+    通常 => 不發光
+    被隊友觀戰時 => 綠色
+    被他人觀戰時 => 藍色->橙色->紅色->彩色
+                     <3    <5    <7    7+
 menu-item-toggle-overlay = 繪製層
 menu-value-no-overlay = 無覆蓋層
 menu-value-external-overlay = 外部繪製層
@@ -107,7 +113,8 @@ input-prompt-keycode =
 hotkey-menu-title = 熱鍵選單
 hotkey-item-aimbot1 = Aimbot熱鍵1
 hotkey-item-aimbot2 = Aimbot熱鍵2
-hotkey-item-trigger-bot = 自動扳機熱鍵
+hotkey-item-trigger-bot = 自動扳機熱鍵(綁定熱鍵2)
+hotkey-item-flick-bot = 瞬擊熱鍵
 hotkey-item-quick-glow = 臨時開關熱能熱鍵
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
