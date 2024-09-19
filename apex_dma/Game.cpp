@@ -378,20 +378,8 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
 QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon, float max_fov, float smooth)
 {
     const auto g_settings = global_settings();
-    if (g_settings.firing_range)
-    {
-        if (!target.isAlive())
-        {
-            return QAngle(0, 0, 0);
-        }
-    }
-    else
-    {
-        if (!target.isAlive() || target.isKnocked())
-        {
-            return QAngle(0, 0, 0);
-        }
-    }
+    if (!target.isAlive() || (!g_settings.firing_range && target.isKnocked()))
+        return QAngle(0, 0, 0);
     uint32_t weap_id = weapon.get_weap_id();
     if (!g_settings.bow_charge_rifle_aim && (weap_id == weapon_id::idweapon_bow || weap_id == weapon_id::idweapon_charge_rifle))
     {
@@ -542,21 +530,10 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     int boneIndex = 0;
     float s2predictpos = 100;
     Vector aimBonePos;
+    Vector bestAimBonePos;
     QAngle aimAngles = QAngle(0, 0, 0);
-    if (g_settings.firing_range)
-    {
-        if (!target.isAlive())
-        {
-            return;
-        }
-    }
-    else
-    {
-        if (!target.isAlive() || target.isKnocked())
-        {
-            return;
-        }
-    }
+    if (!target.isAlive() || (!g_settings.firing_range && target.isKnocked()))
+        return;
     WeaponXEntity weapon = WeaponXEntity();
     weapon.update(from.ptr);
     uint32_t weap_id = weapon.get_weap_id();
@@ -593,10 +570,8 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
         boneIndex = 0;
         break;
     default:
-        delay = 0;
-    }
-    if (delay == 0)
         return;
+    }
     int screenCenterW = g_settings.screen_width / 2;
     int screenCenterH = g_settings.screen_height / 2;
     if (g_settings.flick_nearest)
@@ -613,16 +588,16 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
                 {
                     s2predictpos = sqrtf(distSquared);
                     bestPos = distSquared;
-                    boneIndex = bone;
+                    bestAimBonePos = aimBonePos;
                 }
             }
         }
     }
     else
     {
-        aimBonePos = target.getBonePositionByHitbox(boneIndex);
+        bestAimBonePos = target.getBonePositionByHitbox(boneIndex);
         Vector screenAimBonePos;
-        WorldToScreen(aimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos);
+        WorldToScreen(bestAimBonePos, m_vMatrix, g_settings.screen_width, g_settings.screen_height, screenAimBonePos);
         s2predictpos = (sqrtf(pow(screenCenterW - screenAimBonePos.x, 2) + pow(screenCenterH - screenAimBonePos.y, 2)));
     }
     // printf("s2predictpos:%d\n",s2predictpos);
@@ -638,12 +613,12 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
 
     PredictCtx Ctx;
     Ctx.StartPos = LocalCamera;
-    Ctx.TargetPos = aimBonePos;
+    Ctx.TargetPos = bestAimBonePos;
     Ctx.BulletSpeed = bulletSpeed * 0.92;
     Ctx.BulletGravity = bulletGrav * 1.05;
-    float distanceToTarget = (aimBonePos - LocalCamera).Length();
+    float distanceToTarget = (bestAimBonePos - LocalCamera).Length();
     float timeToTarget = distanceToTarget / bulletSpeed;
-    Vector targetPosAhead = aimBonePos + (targetVel * timeToTarget);
+    Vector targetPosAhead = bestAimBonePos + (targetVel * timeToTarget);
     Ctx.TargetVel = Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime), targetVel.z);
     Ctx.TargetPos = targetPosAhead;
 
