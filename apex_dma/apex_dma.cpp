@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "apex_sky.h"
 #include "vector.h"
+#include "items.h"
 #include <array>
 #include <cassert>
 #include <cfloat>
@@ -23,6 +24,8 @@
 #include <unordered_map>
 #include <vector>
 #include <fstream>
+
+#define UPDATEITEM 1
 // this is a test, with seconds
 Memory apex_mem;
 uint64_t g_Base;
@@ -1383,6 +1386,14 @@ static void AimbotLoop()
 
 static void item_glow_t()
 {
+    #if UPDATEITEM
+        std::ofstream outFile("item_ids.txt", std::ios::out);
+        if (!outFile.is_open()) {
+            std::cerr << "Unable to open file for writing!" << std::endl;
+            return;
+        }
+        std::unordered_set<uint64_t> writtenItemIDs;
+    #endif
     item_t = true;
     while (item_t)
     {
@@ -1425,50 +1436,55 @@ static void item_glow_t()
                 // printf("%ld\n", ItemID);
                 // }
                 // Search model name or id and if true sets glow, must be a better way to do
-                if (g_settings.loot.lightbackpack && ItemID == 223)
+                #if UPDATEITEM
+                if (writtenItemIDs.find(ItemID) == writtenItemIDs.end()) {
+                    auto it = itemNameToEnum.find(glowName);
+                    if (it != itemNameToEnum.end()) {
+                        std::string enumName = getEnumName(it->second);
+                        outFile << enumName << " = " << ItemID << "," << std::endl;
+                        writtenItemIDs.insert(ItemID);
+                    }
+                }
+                #endif
+                if (g_settings.loot.lightbackpack && ItemID == static_cast<uint64_t>(ItemList::lightbackpack))
                 {                                                        // 白包
                     std::array<float, 3> highlightParameter = {1, 1, 1}; // 高亮颜色，111是白色，因为lightbackpack是白包
                     int settingIndex = 30;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.medbackpack && ItemID == 224)
+                else if (g_settings.loot.medbackpack && ItemID == static_cast<uint64_t>(ItemList::medbackpack))
                 { // 蓝包
                     std::array<float, 3> highlightParameter = {0, 0, 1};
                     int settingIndex = 31;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.heavybackpack && ItemID == 225)
+                else if (g_settings.loot.heavybackpack && ItemID == static_cast<uint64_t>(ItemList::heavybackpack))
                 {                                                                  // 紫包
                     std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098}; // #4B0082
                     int settingIndex = 32;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
-                else if (g_settings.loot.goldbackpack && ItemID == 226)
+                else if (g_settings.loot.goldbackpack && ItemID == static_cast<uint64_t>(ItemList::goldbackpack))
                 { // 金包
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgrade1 &&
-                         (ItemID == 214 || ItemID == 14073963583897798))
+                else if (g_settings.loot.shieldupgrade1 && ItemID == static_cast<uint64_t>(ItemList::shieldupgrade1))
                 { // 白甲
                     std::array<float, 3> highlightParameter = {1, 1, 1};
                     int settingIndex = 30;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgrade2 &&
-                         (ItemID == 215 || ItemID == 21110945375846599))
+                else if (g_settings.loot.shieldupgrade2 && ItemID == static_cast<uint64_t>(ItemList::shieldupgrade2))
                 { // 蓝甲
                     std::array<float, 3> highlightParameter = {0, 0, 1};
-
                     int settingIndex = 31;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgrade3 &&
-                         (ItemID == 216 || ItemID == 72776987629977800))
+                else if (g_settings.loot.shieldupgrade3 && ItemID == static_cast<uint64_t>(ItemList::shieldupgrade3))
                 { // 紫甲
                     std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-
                     int settingIndex = 32;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
@@ -1481,38 +1497,34 @@ static void item_glow_t()
                 else if (g_settings.loot.shieldupgrade5 && ItemID == 217)
                 { // 红甲
                     std::array<float, 3> highlightParameter = {1, 0, 0};
-
                     int settingIndex = 34;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgradehead1 && ItemID == 199)
+                else if (g_settings.loot.shieldupgradehead1 && ItemID == static_cast<uint64_t>(ItemList::shieldupgradehead1))
                 { // 白头
                     std::array<float, 3> highlightParameter = {1, 1, 1};
-
                     int settingIndex = 30;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgradehead2 && ItemID == 200)
+                else if (g_settings.loot.shieldupgradehead2 && ItemID == static_cast<uint64_t>(ItemList::shieldupgradehead2))
                 { // 蓝头
-
                     std::array<float, 3> highlightParameter = {0, 0, 1};
                     int settingIndex = 31;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgradehead3 && ItemID == 201)
+                else if (g_settings.loot.shieldupgradehead3 && ItemID == static_cast<uint64_t>(ItemList::shieldupgradehead3))
                 { // 紫头
                     std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
-
                     int settingIndex = 32;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.shieldupgradehead4 && ItemID == 202)
+                else if (g_settings.loot.shieldupgradehead4 && ItemID == static_cast<uint64_t>(ItemList::shieldupgradehead4))
                 { // 金头
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
-                else if (g_settings.loot.accelerant && ItemID == 193)
+                else if (g_settings.loot.accelerant && ItemID == static_cast<uint64_t>(ItemList::accelerant))
                 { // 绝招加速剂
                     std::array<float, 3> highlightParameter = {0, 0, 1};
                     int settingIndex = 31;
@@ -2125,6 +2137,9 @@ static void item_glow_t()
         } // while(item_glow) loop end
     } // while(item_t) loop end
     item_t = false;
+    #if UPDATEITEM
+        outFile.close();
+    #endif
 }
 
 extern void start_overlay();
@@ -2150,7 +2165,7 @@ int main(int argc, char *argv[])
     }
 
     const char *ap_proc = "r5apex.exe";
-
+    const char *ap_proc_dx12 = "r5apex_dx12.exe";
     std::thread aimbot_thr;
     std::thread esp_thr;
     std::thread actions_thr;
@@ -2195,7 +2210,8 @@ int main(int argc, char *argv[])
             printf("Searching for apex process...\n");
 
             apex_mem.open_proc(ap_proc);
-
+            if (apex_mem.get_proc_status() != process_status::FOUND_READY)
+                apex_mem.open_proc(ap_proc_dx12);
             if (apex_mem.get_proc_status() == process_status::FOUND_READY)
             {
                 g_Base = apex_mem.get_proc_baseaddr();
