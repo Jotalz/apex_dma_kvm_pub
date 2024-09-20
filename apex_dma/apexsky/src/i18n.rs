@@ -234,7 +234,7 @@ pub enum MessageId {
     MenuItemFavoritePlayerGlow,
     MenuItemKbdBacklightCtrl,
     MenuItemBowChargeRifleAim,
-    MenuItemShotgunAutoShot,
+    MenuItemTriggerAutoShot,
     MenuItemSuperGrpple,
     MenuItemAutoTapstrafe,
     MenuItemPlayerGlowDist,

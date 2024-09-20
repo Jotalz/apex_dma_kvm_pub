@@ -188,7 +188,7 @@ pub struct Settings {
     pub weapon_model_glow: bool,
     pub kbd_backlight_control: bool,
     pub bow_charge_rifle_aim: bool,
-    pub shotgun_auto_shot: bool,
+    pub trigger_bot_shot: bool,
     pub deathbox: bool,
     pub aim_no_recoil: bool,
     pub ads_fov: f32,
@@ -409,7 +409,7 @@ impl Default for Settings {
             trigger_bot_hot_key: 81,
             flick_bot_hot_key: 111,
             quickglow_hot_key: 93,
-            shotgun_auto_shot: true,
+            trigger_bot_shot: true,
             // Terminal Stuff
             loot_filled_toggle: false,
             player_filled_toggle: false,

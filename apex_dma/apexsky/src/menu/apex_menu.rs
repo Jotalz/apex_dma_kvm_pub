@@ -474,9 +474,9 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( " 6 - {}", i18n_msg!(i18n_bundle, MenuItemShotgunAutoShot)),
-        settings.shotgun_auto_shot,
-        shotgun_auto_shot
+        format!( " 6 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
+        settings.trigger_bot_shot,
+        trigger_bot_shot
     );
     menu = add_toggle_item!(
         menu,

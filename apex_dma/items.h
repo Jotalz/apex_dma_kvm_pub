@@ -62,12 +62,12 @@ enum class ItemList : uint64_t
     goldbackpack = 226,
     grenade_thermite = 228,
     grenade_frag = 229,
-    grenade_arc_star = 230,
+    grenade_arc_star = 230, 
     optic1xhcog = 231,
     optic2xhcog = 232,
     opticholo1x = 233,
     opticholo1x2x = 234,
-    opticthreat = 235,
+    // opticthreat = 235,
     optic3xhcog = 236,
     optic2x4x = 237,
     opticsniper6x = 238,
@@ -105,11 +105,12 @@ enum class ItemList : uint64_t
     stocksniper1 = 271,
     stocksniper2 = 272,
     stocksniper3 = 273,
-    turbo_charger = 274,
-    skull_piecer = 276,
+    //turbo_charger = 274,
+    //skull_piecer = 276,
     hammer_point = 280,
-    disruptor_rounds = 281,
+    //disruptor_rounds = 281,
     boosted_loader = 288,
+    evac_tower = 300,
 };
 
 std::unordered_map<std::string, ItemList, FnvHash> itemNameToEnum = {
@@ -153,25 +154,37 @@ std::unordered_map<std::string, ItemList, FnvHash> itemNameToEnum = {
     {"mdl/weapons_r5/loot/w_loot_wep_iso_health_main_small.rmdl",ItemList::healthsmall},
     {"mdl/weapons_r5/loot/w_loot_wep_iso_shield_battery_large.rmdl",ItemList::shieldbattlarge},
     {"mdl/weapons_r5/loot/w_loot_wep_iso_shield_battery_small.rmdl",ItemList::shieldbattsmall},
-    {"mdl/weapons_r5/loot/_master/w_loot_cha_shield_upgrade_head.rmdl",ItemList::shieldupgradehead1},
-    { "mdl/weapons_r5/loot/_master/w_loot_cha_shield_upgrade_head.rmdl",ItemList::shieldupgradehead2},
     {"mdl/humans_r5/loot/w_loot_char_backpack_light.rmdl", ItemList::lightbackpack},
     {"mdl/humans_r5/loot/w_loot_char_backpack_medium.rmdl", ItemList::medbackpack},
     {"mdl/humans_r5/loot/w_loot_char_backpack_heavy.rmdl", ItemList::heavybackpack},
-    {"mdl/humans_r5/loot/w_loot_char_backpack_heavy.rmdl", ItemList::goldbackpack},
+    // {"mdl/humans_r5/loot/w_loot_char_backpack_heavy.rmdl", ItemList::goldbackpack},
     {"mdl/props/loot_wep_iso_armor/w_loot_wep_iso_armor_core_01.rmdl", ItemList::shieldupgrade1},
-    {"mdl/props/loot_wep_iso_armor/w_loot_wep_iso_armor_core_01.rmdl", ItemList::shieldupgrade2},
-    {"mdl/props/loot_wep_iso_armor/w_loot_wep_iso_armor_core_01.rmdl", ItemList::shieldupgrade3},
     {"mdl/weapons_r5/loot/_master/w_loot_cha_shield_upgrade_head.rmdl", ItemList::shieldupgradehead1},
-    {"mdl/weapons_r5/loot/_master/w_loot_cha_shield_upgrade_head.rmdl", ItemList::shieldupgradehead2},
-    {"mdl/weapons_r5/loot/_master/w_loot_cha_shield_upgrade_head.rmdl", ItemList::shieldupgradehead3},
-    {"mdl/weapons_r5/loot/_master/w_loot_cha_shield_upgrade_head.rmdl", ItemList::shieldupgradehead4},
-    {"mdl/weapons_r5/loot/w_loot_wep_iso_ultimate_accelerant.rmdl", ItemList::accelerant},
-    {"mdl/weapons_r5/loot/w_loot_wep_iso_phoenix_kit_v1.rmdl", ItemList::phoenix},
-    {"mdl/weapons_r5/loot/w_loot_wep_iso_health_main_large.rmdl", ItemList::healthlarge},
-    {"mdl/weapons_r5/loot/w_loot_wep_iso_health_main_small.rmdl", ItemList::healthsmall},
-    {"mdl/weapons_r5/loot/w_loot_wep_iso_shield_battery_large.rmdl", ItemList::shieldbattlarge},
-    {"mdl/weapons_r5/loot/w_loot_wep_iso_shield_battery_small.rmdl", ItemList::shieldbattsmall},
+    {"mdl/weapons_r5/loot/w_loot_wep_iso_shield_down_v1.rmdl", ItemList::shielddown1},
+    {"mdl/weapons/grenades/w_thermite_grenade.rmdl", ItemList::grenade_thermite},
+    {"mdl/weapons/grenades/w_loot_m20_f_grenade_projectile.rmdl", ItemList::grenade_frag},
+    {"mdl/weapons_r5/loot/w_loot_wep_iso_shuriken.rmdl", ItemList::grenade_arc_star},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_cq_hcog_r1.rmdl", ItemList::optic1xhcog},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_cq_hcog_r2.rmdl", ItemList::optic2xhcog},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_cq_holo_var.rmdl", ItemList::opticholo1x},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_cq_holo_var_2x.rmdl", ItemList::opticholo1x2x},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_rng_hcog_acgs.rmdl", ItemList::optic3xhcog},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_rng_aog_var_r1.rmdl", ItemList::optic2x4x},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_sni_dcom.rmdl", ItemList::opticsniper6x},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_sni_var_talon.rmdl", ItemList::opticsniper4x8x},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_optic_sni_threat_wyeon.rmdl", ItemList::opticsniperthreat},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_suppr_v2b.rmdl", ItemList::suppressor1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_lasersight_v1.rmdl", ItemList::lasersight1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_mag_v1b.rmdl", ItemList::lightammomag1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_mag_v2b.rmdl", ItemList::heavyammomag1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_mag_energy_v1.rmdl", ItemList::energyammomag1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_mag_sniper_v1.rmdl", ItemList::sniperammomag1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_mag_v3b.rmdl", ItemList::shotgunbolt1},
+    {"mdl/weapons_r5/loot/w_loot_wep_iso_stock_folded_regular.rmdl", ItemList::stockregular1},
+    {"mdl/weapons_r5/loot/w_loot_wep_iso_stock_folded_sniper.rmdl", ItemList::stocksniper1},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl", ItemList::hammer_point},
+    {"mdl/weapons_r5/loot/_master/w_loot_wep_mods_chip.rmdl", ItemList::boosted_loader},
+    {"mdl/props/evac_tower_loot/evac_tower_loot.rmdl", ItemList::evac_tower},
 };
 
 std::string getEnumName(ItemList itemEnum) {
@@ -227,6 +240,57 @@ std::string getEnumName(ItemList itemEnum) {
         case ItemList::sniperammo: return "sniperammo";
         case ItemList::weapon_rampage: return "weapon_rampage";
         case ItemList::weapon_car_smg: return "weapon_car_smg";
+        case ItemList::shielddown1: return "shielddown1";
+        case ItemList::shielddown2: return "shielddown2";
+        case ItemList::shielddown3: return "shielddown3";
+        case ItemList::shielddown4: return "shielddown4";
+        case ItemList::grenade_thermite: return "grenade_thermite";
+        case ItemList::grenade_frag: return "grenade_frag";
+        case ItemList::grenade_arc_star: return "grenade_arc_star";
+        case ItemList::optic1xhcog: return "optic1xhcog";
+        case ItemList::optic2xhcog: return "optic2xhcog";
+        case ItemList::opticholo1x: return "opticholo1x";
+        case ItemList::opticholo1x2x: return "opticholo1x2x";
+        case ItemList::optic3xhcog: return "optic3xhcog";
+        case ItemList::optic2x4x: return "optic2x4x";
+        case ItemList::opticsniper6x: return "opticsniper6x";
+        case ItemList::opticsniper4x8x: return "opticsniper4x8x";
+        case ItemList::opticsniperthreat: return "opticsniperthreat";
+        case ItemList::suppressor1: return "suppressor1";
+        case ItemList::suppressor2: return "suppressor2";
+        case ItemList::suppressor3: return "suppressor3";
+        case ItemList::lasersight1: return "lasersight1";
+        case ItemList::lasersight2: return "lasersight2";
+        case ItemList::lasersight3: return "lasersight3";
+        case ItemList::lightammomag1: return "lightammomag1";
+        case ItemList::lightammomag2: return "lightammomag2";
+        case ItemList::lightammomag3: return "lightammomag3";
+        case ItemList::lightammomag4: return "lightammomag4";
+        case ItemList::heavyammomag1: return "heavyammomag1";
+        case ItemList::heavyammomag2: return "heavyammomag2";
+        case ItemList::heavyammomag3: return "heavyammomag3";
+        case ItemList::heavyammomag4: return "heavyammomag4";
+        case ItemList::energyammomag1: return "energyammomag1";
+        case ItemList::energyammomag2: return "energyammomag2";
+        case ItemList::energyammomag3: return "energyammomag3";
+        case ItemList::energyammomag4: return "energyammomag4";
+        case ItemList::sniperammomag1: return "sniperammomag1";
+        case ItemList::sniperammomag2: return "sniperammomag2";
+        case ItemList::sniperammomag3: return "sniperammomag3";
+        case ItemList::sniperammomag4: return "sniperammomag4";
+        case ItemList::shotgunbolt1: return "shotgunbolt1";
+        case ItemList::shotgunbolt2: return "shotgunbolt2";
+        case ItemList::shotgunbolt3: return "shotgunbolt3";
+        case ItemList::shotgunbolt4: return "shotgunbolt4";
+        case ItemList::stockregular1: return "stockregular1";
+        case ItemList::stockregular2: return "stockregular2";
+        case ItemList::stockregular3: return "stockregular3";
+        case ItemList::stocksniper1: return "stocksniper1";
+        case ItemList::stocksniper2: return "stocksniper2";
+        case ItemList::stocksniper3: return "stocksniper3";
+        case ItemList::hammer_point: return "hammer_point";
+        case ItemList::boosted_loader: return "boosted_loader";
+        case ItemList::evac_tower: return "evac_tower";
         default: return "unknown";
     }
 }

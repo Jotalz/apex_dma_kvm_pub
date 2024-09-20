@@ -615,9 +615,9 @@ void ClientActions()
             default:
                 triggerbot_clickgun = false;
             }
-            if (g_settings.shotgun_auto_shot && triggerbot_clickgun)
+            if (triggerbot_clickgun)
             {
-                if (isPressed(g_settings.trigger_bot_hot_key))
+                if (g_settings.trigger_bot_shot && isPressed(g_settings.trigger_bot_hot_key))
                 {
                     TriggerReady = true;
                 }
@@ -1387,12 +1387,12 @@ static void AimbotLoop()
 static void item_glow_t()
 {
     #if UPDATEITEM
-        std::ofstream outFile("item_ids.txt", std::ios::out);
-        if (!outFile.is_open()) {
-            std::cerr << "Unable to open file for writing!" << std::endl;
-            return;
-        }
-        std::unordered_set<uint64_t> writtenItemIDs;
+    std::ofstream outFile("item_ids.txt", std::ios::out);
+    if (!outFile.is_open()) {
+        std::cerr << "Unable to open file for writing!" << std::endl;
+        return;
+    }
+    std::unordered_set<uint64_t> writtenItemIDs;
     #endif
     item_t = true;
     while (item_t)
@@ -1536,13 +1536,13 @@ static void item_glow_t()
                     int settingIndex = 32;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.skull &&
+                /*else if (g_settings.loot.skull &&
                          strstr(glowName, "mdl/Weapons/skull_grenade/skull_grenade_base_v.rmdl"))
                 {
                     std::array<float, 3> highlightParameter = {1, 0, 0};
                     int settingIndex = 34;
                     item.enableGlow(settingIndex, 32, highlightParameter);
-                }
+                }*/
                 else if (g_settings.deathbox && item.isBox())
                 { // 添加死亡之箱的开关判断
                     std::array<float, 3> highlightParameter = {1, 0, 0};
@@ -1815,7 +1815,7 @@ static void item_glow_t()
                     int settingIndex = 31;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.opticthreat && ItemID == static_cast<uint64_t>(ItemList::opticthreat))
+                else if (g_settings.loot.opticthreat && ItemID == 235 )
                 { // 金1倍
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
@@ -1869,13 +1869,13 @@ static void item_glow_t()
                     int settingIndex = 32;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.turbo_charger && ItemID == static_cast<uint64_t>(ItemList::turbo_charger))
+                else if (g_settings.loot.turbo_charger && ItemID == 274)
                 { // 涡轮增压器
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
                     item.enableGlow(settingIndex, 48, highlightParameter);
                 }
-                else if (g_settings.loot.skull_piecer && ItemID == static_cast<uint64_t>(ItemList::skull_piecer))
+                else if (g_settings.loot.skull_piecer && ItemID == 276)
                 { // 穿颅器
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
@@ -1887,7 +1887,7 @@ static void item_glow_t()
                     int settingIndex = 33;
                     item.enableGlow(settingIndex, 48, highlightParameter);
                 }
-                else if (g_settings.loot.disruptor_rounds && ItemID == static_cast<uint64_t>(ItemList::disruptor_rounds))
+                else if (g_settings.loot.disruptor_rounds && ItemID == 281)
                 { // 干扰器
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
@@ -2118,13 +2118,13 @@ static void item_glow_t()
                     int settingIndex = 38;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (ItemID == 299)
-                { // 保险库钥匙？
+                else if (ItemID == static_cast<uint64_t>(ItemList::evac_tower))
+                { // 跳伞塔
                     std::array<float, 3> highlightParameter = {1, 0, 0};
                     int settingIndex = 34;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
-                else if (g_settings.loot.mobile_respawn && ItemID == 296)
+                else if (g_settings.loot.mobile_respawn && ItemID == 301)
                 { // 重生信标
                     std::array<float, 3> highlightParameter = {0, 0, 1};
                     int settingIndex = 31;

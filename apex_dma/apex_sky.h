@@ -123,7 +123,6 @@ typedef struct {
   // Supply Drop Weapons
   bool weapon_kraber;
   bool weapon_bow;
-  bool weapon_prowler;
   // Shotguns
   bool weapon_mastiff;
   bool weapon_eva8;
@@ -142,6 +141,7 @@ typedef struct {
   bool weapon_3030_repeater;
   bool weapon_rampage;
   bool weapon_car_smg;
+  bool weapon_prowler;
   // Light weapons
   bool weapon_p2020;
   bool weapon_re45;
@@ -185,7 +185,7 @@ typedef struct {
   bool weapon_model_glow;
   bool kbd_backlight_control;
   bool bow_charge_rifle_aim;
-  bool shotgun_auto_shot;
+  bool trigger_bot_shot;
   bool deathbox;
   bool aim_no_recoil;
   float ads_fov;

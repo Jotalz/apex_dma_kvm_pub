@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = 啓用
 menu-value-disabled = 停用
-main-menu-title = 主選單 GameVersion-v3.0.80.16
+main-menu-title = 主選單 GameVersion-v3.0.80.27
 menu-item-firing-range = 射擊場模式
 menu-item-tdm-toggle = 團隊模式
 menu-item-keyboard = 鍵盤滑鼠模式
@@ -251,6 +251,6 @@ loot-level5-name = 五級
 menu-item-favorite-player-glow = 突顯喜愛玩家
 menu-item-kbd-backlight-ctrl = 鍵盤背光控制
 menu-item-bow-charge-rifle-aim = 蓄能武器自瞄
-menu-item-shotgun-auto-shot = 霰彈槍扳機
+menu-item-trigger-auto-shot = 扳機
 menu-item-super-grpple = 超级抓钩
 menu-item-auto-tapstrafe = 自動tapstrafe
