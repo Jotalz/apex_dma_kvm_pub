@@ -81,7 +81,6 @@ input-prompt-fps-predict =
     「瞄準預測的遊戲FPS」的新值:
         (0~500)
         0 => 自動計算FPS
-menu-item-big-map-feat = F8地圖雷達功能
 menu-item-player-armor-glow-color = 護盾顏色發光
 menu-item-weapon-model-glow = 武器模型發光
 info-weapon-model-glow = 
@@ -117,6 +116,7 @@ hotkey-item-aimbot2 = Aimbot熱鍵2
 hotkey-item-trigger-bot = 自動扳機熱鍵(綁定熱鍵2)
 hotkey-item-flick-bot = 瞬擊熱鍵
 hotkey-item-quick-glow = 臨時開關熱能熱鍵
+hotkey-item-Algs-radar = ALGS雷達熱鍵
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
 info-invalid-keycode = 無效值。「{$item_label}」值必須介於 0 和 255 之間。

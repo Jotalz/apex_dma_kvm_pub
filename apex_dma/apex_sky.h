@@ -204,7 +204,7 @@ typedef struct {
   float aim_dist;
   float max_dist;
   float glow_dist;
-  bool map_radar_testing;
+  int map_radar_hotkey;
   bool show_aim_target;
   float game_fps;
   bool calc_game_fps;

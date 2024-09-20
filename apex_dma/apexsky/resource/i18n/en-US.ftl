@@ -81,7 +81,6 @@ input-prompt-fps-predict =
     New value for 'Game FPS for Aim Predict':
         (0 to 500) 
         0 => calc game fps
-menu-item-big-map-feat = Toggle F8 Map Radar
 menu-item-player-armor-glow-color = Toggle Player Armor Glow Color
 menu-item-weapon-model-glow = Weapon Model Glow
 info-weapon-model-glow = 
@@ -117,6 +116,7 @@ hotkey-item-aimbot2 = Aimbot Hot Key 2
 hotkey-item-trigger-bot = Trigger Bot Hot Key(Bind HotKey2)
 hotkey-item-flick-bot = Flick Bot Hot Key
 hotkey-item-quick-glow = Temporary Glow Switch hotkey
+hotkey-item-Algs-radar = ALGS Radar Hotkey
 menu-item-key-codes = Key Codes
 item-filter-menu-title = Item Filter Menu
 info-invalid-keycode = Invalid value. "{$item_label}" value must be between 0 and 255.

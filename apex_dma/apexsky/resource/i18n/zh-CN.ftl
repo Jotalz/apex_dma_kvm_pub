@@ -82,7 +82,6 @@ input-prompt-fps-predict =
     设置 "预测FPS" 值:
         (0~500)
         0 => 自适应FPS
-menu-item-big-map-feat = F8大地图功能
 menu-item-player-armor-glow-color = 护甲热能颜色
 menu-item-weapon-model-glow = 被观战武器发光
 info-weapon-model-glow = 
@@ -118,6 +117,7 @@ hotkey-item-aimbot2 = 自瞄热键2
 hotkey-item-trigger-bot = 自动扳机热键(绑定热键2)
 hotkey-item-flick-bot = 瞬击热键
 hotkey-item-quick-glow = 临时开关热能热键
+hotkey-item-Algs-radar = ALGS雷达热键
 menu-item-key-codes = 键码表
 item-filter-menu-title = 物品选择菜单
 info-invalid-keycode = 值无效。"{$item_label}"值必须介于 0 和 255 之间。

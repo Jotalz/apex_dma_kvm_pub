@@ -441,8 +441,7 @@ fn build_main_menu(
         settings.firing_range,
         firing_range
     ); */
-    menu = menu.add_dummy_item();
-    menu.next_id();
+    //menu = menu.add_text_item(i18n_msg!(i18n_bundle, MainSetting));
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
@@ -910,13 +909,6 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("32 - {}", i18n_msg!(i18n_bundle, MenuItemBigMapFeat)),
-        settings.map_radar_testing,
-        map_radar_testing
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
         format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
         settings.deathbox,
         deathbox
@@ -948,7 +940,7 @@ fn build_main_menu(
                 None
             },
         );
-    menu = menu.add_item(
+    /* menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
             format!("36 - {}", i18n_msg!(i18n_bundle, MenuItemKbdBacklightCtrl)),
@@ -964,7 +956,7 @@ fn build_main_menu(
             }
             None
         },
-        );
+        ); */
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
@@ -1303,9 +1295,25 @@ fn build_hotkey_menu(
                 Some(text_invalid_keycode!(i18n_bundle, HotkeyItemQuickGlow))
             },
         )
+        .add_input_item(
+            menu_item_keycode(
+                format!("6 - {}", i18n_msg!(i18n_bundle, HotkeyItemAlgsRadar)),
+                settings.map_radar_hotkey,
+            ),
+            &prompt_text_keycode!(i18n_bundle, HotkeyItemAlgsRadar),
+            |val| {
+                if let Some(keycode) = val.parse::<u8>().ok() {
+                    let settings = &mut lock_config!().settings;
+                    settings.map_radar_hotkey = keycode as i32;
+                    return None;
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(text_invalid_keycode!(i18n_bundle, HotkeyItemAlgsRadar))
+            },
+        )
         .add_dummy_item()
         .add_item(
-            item_text(format!("6 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
+            item_text(format!("7 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
             |handler: &mut TerminalMenu| {
                 handler.nav_menu(MenuLevel::KeyCodesMenu);
                 None
@@ -1314,7 +1322,7 @@ fn build_hotkey_menu(
         .add_dummy_item()
         .add_item(
             item_text(format!(
-                "7 - {}",
+                "8 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {

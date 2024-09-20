@@ -207,7 +207,7 @@ pub struct Settings {
     pub aim_dist: f32,
     pub max_dist: f32,
     pub glow_dist: f32,
-    pub map_radar_testing: bool,
+    pub map_radar_hotkey: i32,
     pub show_aim_target: bool,
     pub game_fps: f32,
     pub calc_game_fps: bool,
@@ -443,7 +443,7 @@ impl Default for Settings {
             main_map_radar_dot_size2: 5,
             aim_dist: 200.0 * 40.0,
             max_dist: 3800.0 * 40.0, // Max Distance of ESP 3800 is full map
-            map_radar_testing: false,
+            map_radar_hotkey: 99,
             show_aim_target: true,
             game_fps: 143.0,       // Game FPS for aim prediction
             calc_game_fps: false, // Automatic calculation of game fps

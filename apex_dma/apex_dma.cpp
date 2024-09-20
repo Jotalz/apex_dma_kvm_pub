@@ -657,7 +657,7 @@ void ClientActions()
             // Trigger ring check on F8 key press for over 0.5 seconds
             // static std::chrono::steady_clock::time_point tduckStartTime;
             // static bool mapRadarTestingEnabled = false;
-            if (isPressed(99) && g_settings.map_radar_testing)
+            if (isPressed(g_settings.map_radar_hotkey))
             { // KEY_F8
                 MapRadarTesting(local_player_ptr);
             }
