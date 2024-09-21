@@ -1018,7 +1018,7 @@ fn build_main_menu(
                 settings.no_overlay = !settings.no_overlay;
                 None
             },
-        ).into()
+        );
     /* menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
