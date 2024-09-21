@@ -942,7 +942,7 @@ fn build_main_menu(
                 }
             },
         ); */
-    menu = menu
+    menu
         .add_item(
             ListItem::new(Line::from(
                 i18n_msg!(i18n_bundle, TitleOtherSetting).to_string().light_yellow()
@@ -1018,7 +1018,8 @@ fn build_main_menu(
                 settings.no_overlay = !settings.no_overlay;
                 None
             },
-        );
+        )
+        .into()
     /* menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
