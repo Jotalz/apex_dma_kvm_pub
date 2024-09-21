@@ -331,11 +331,6 @@ impl<'a> MenuBuilder<'a> {
         self
     }
 
-    fn add_text_item2(mut self, label: Span) -> MenuBuilder<'a> {
-        self.list_items.push(item_text(label));
-        self
-    }
-
     fn add_dummy_item(mut self) -> MenuBuilder<'a> {
         self.list_items.push(item_dummy());
         self
@@ -441,29 +436,29 @@ fn build_main_menu(
     let mut menu = MenuBuilder::new().title(i18n_msg!(i18n_bundle, MainMenuTitle));
     menu = menu
         .add_item(
-            ListItem::new(Line::from(vec![
+            ListItem::new(Line::from(
                 Span::from(i18n_msg!(i18n_bundle, TitleMainSetting).to_string()).light_yellow()
-            ])),
+            )),
             |_| None,
         )
         .no_id();
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemTdmToggle)),
+        format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemTdmToggle)),
         settings.tdm_toggle,
         tdm_toggle
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 2 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
+        format!("      2 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
         settings.onevone,
         onevone
     );
     menu = menu.add_item(
         item_text(format!(
-            " 3 - {}",
+            "      3 - {}",
             i18n_msg!(i18n_bundle, MenuItemHotkeySettings)
         )),
         |handle: &mut TerminalMenu| {
@@ -473,7 +468,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                " 4 - {}",
+                "      4 - {}",
                 i18n_msg!(i18n_bundle, MenuItemSaveSettings)
             )),
             |_| {
@@ -490,7 +485,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                " 5 - {}",
+                "      5 - {}",
                 i18n_msg!(i18n_bundle, MenuItemLoadSettings)
             )),
             |_| {
@@ -516,14 +511,14 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemItemGlow)),
+        format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemItemGlow)),
         settings.item_glow,
         item_glow
     );
     menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
-            format!(" 2 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
+            format!("      2 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
             settings.loot_filled_toggle,
         ),
         |_| {
@@ -535,8 +530,7 @@ fn build_main_menu(
     )
     .add_item(
         item_text(format!(
-            " 3 - {}",
-            i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
+            "      3 - {}", i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
         )),
         |handle: &mut TerminalMenu| {
             handle.nav_menu(MenuLevel::ItemFilterMenu);
@@ -546,44 +540,114 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
+        format!("      4 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
         settings.deathbox,
         deathbox
     );
-    menu.add_text_item2(Span::from(i18n_msg!(i18n_bundle, TitlePlayerSetting).to_string()).light_yellow());
+    menu = menu
+        .add_item(
+        ListItem::new(Line::from(
+            i18n_msg!(i18n_bundle, TitlePlayerSetting).to_string().light_yellow()
+        )),
+        |_| None,
+    )
+    .no_id();
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlow)),
+        format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlow)),
         settings.player_glow,
         player_glow
     );
+    menu = menu.add_item(
+        item_enabled(
+            &i18n_bundle,
+            format!("      2 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
+            settings.player_filled_toggle,
+        ),
+        |_| {
+            let settings = &mut lock_config!().settings;
+            settings.player_filled_toggle = !settings.player_filled_toggle;
+            settings.player_glow_inside_value =
+                if settings.player_filled_toggle { 14 } else { 0 };
+            None
+        },
+        )
+        .add_input_item(
+            item_text(format!(
+            "      3 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerOutlineSize)
+        )),
+        &i18n_msg!(i18n_bundle, InputPromptPlayerOutlines),
+        |val| {
+            let i18n_bundle = get_fluent_bundle();
+            if let Some(new_val) = val.parse::<u8>().ok() {
+                let settings = &mut lock_config!().settings;
+                settings.player_glow_outline_size = new_val; //[0, 255]
+                return Some({
+                    let mut args = FluentArgs::new();
+                    args.set("value", settings.player_glow_outline_size);
+                    i18n_msg_format!(i18n_bundle, InfoPlayerOutlineUpdated, args).to_string()
+                });
+            }
+            Some(i18n_msg!(i18n_bundle, InfoInvalidOutlineSize).to_string())
+            },
+        )
+        .add_item(
+            item_text(format!(
+                "      4 - {}",
+                i18n_msg!(i18n_bundle, MenuItemUpdateGlowColors)
+            )),
+            |handle: &mut TerminalMenu| {
+                handle.nav_menu(MenuLevel::GlowColorMenu);
+                None
+            },
+        )
+        .add_input_item(
+            item_text(format!("      5 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
+            &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
+            |val| {
+                if let Some(new_val) = val.parse::<u16>().ok() {
+                    if new_val >= 10 && new_val <= 500 {
+                        let settings = &mut lock_config!().settings;
+                        settings.glow_dist = (new_val * 40).into(); //[10, 500]
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidDistance).to_string())
+            },
+        );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( " 5 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
-        settings.bow_charge_rifle_aim,
-        bow_charge_rifle_aim
+        format!( 
+            "      6 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerArmorGlowColor)
+            ),
+            settings.player_glow_armor_color,
+            player_glow_armor_color
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( " 6 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
-        settings.trigger_bot_shot,
-        trigger_bot_shot
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!( " 7 - {}", i18n_msg!(i18n_bundle, MenuItemFlickNearest)),
-        settings.flick_nearest,
-        flick_nearest
+        format!(
+            "      7 - {}",
+            i18n_msg!(i18n_bundle, MenuItemFavoritePlayerGlow)
+            ),
+            settings.player_glow_love_user,
+            player_glow_love_user
     );
     menu = menu
+        .add_item(
+        ListItem::new(Line::from(
+            i18n_msg!(i18n_bundle, TitleAimSetting).to_string().light_yellow()
+        )),
+        |_| None,
+        )
+        .no_id()
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!(" 8 - {}", i18n_msg!(i18n_bundle, MenuItemSmoothValue)),
+                format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemSmoothValue)),
                 if settings.smooth < 90.0 {
                     Span::styled(
                         format!("{}", settings.smooth),
@@ -615,7 +679,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!(" 9 - {}", i18n_msg!(i18n_bundle, MenuItemSmoothSubValue)),
+                format!("      2 - {}", i18n_msg!(i18n_bundle, MenuItemSmoothSubValue)),
                 if settings.smooth_sub < 90.0 {
                     Span::styled(
                         format!("{}", settings.smooth_sub),
@@ -646,7 +710,76 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("10 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
+                format!("      3 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
+                Span::from(format!("{}", settings.ads_fov)),
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptAdsFov),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 1.0 && new_val <= 50.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.ads_fov = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidAdsFov).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("      4 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
+                Span::from(format!("{}", settings.non_ads_fov)),
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptNonAdsFov),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 1.0 && new_val <= 50.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.non_ads_fov = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidNonAdsFov).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("      5 - {}", i18n_msg!(i18n_bundle, MenuItemChangeFlickFov)),
+                if settings.flick_fov > 40.0 {
+                    Span::styled(
+                        format!("{}", settings.flick_fov),
+                        Style::default().fg(Color::Red),
+                    )
+                } else if settings.flick_fov <= 30.0 {
+                    Span::styled(
+                        format!("{}", settings.flick_fov),
+                        Style::default().fg(Color::Green),
+                    )
+                } else {
+                    Span::from(format!("{}", settings.flick_fov))
+                },
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptFlickFov),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 5.0 && new_val <= 50.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.flick_fov = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidFlickFov).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("      6 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
                 Span::from(
                     if settings.bone_nearest {
                         i18n_msg!(i18n_bundle, MenuValueBoneNearest)
@@ -689,136 +822,109 @@ fn build_main_menu(
                 }
                 Some(i18n_msg!(i18n_bundle, InfoInvalidValue).to_string())
             },
-        )
-        .add_input_item(
-            item_text(format!("12 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
-            &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
-            |val| {
-                if let Some(new_val) = val.parse::<u16>().ok() {
-                    if new_val >= 10 && new_val <= 500 {
-                        let settings = &mut lock_config!().settings;
-                        settings.glow_dist = (new_val * 40).into(); //[10, 500]
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidDistance).to_string())
-            },
-        )
-        .add_input_item(
-            format_item(
-                &i18n_bundle,
-                format!("13 - {}", i18n_msg!(i18n_bundle, MenuItemChangeAdsFov)),
-                Span::from(format!("{}", settings.ads_fov)),
-            ),
-            &i18n_msg!(i18n_bundle, InputPromptAdsFov),
-            |val| {
-                if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= 1.0 && new_val <= 50.0 {
-                        let settings = &mut lock_config!().settings;
-                        settings.ads_fov = new_val;
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidAdsFov).to_string())
-            },
-        )
-        .add_input_item(
-            format_item(
-                &i18n_bundle,
-                format!("14 - {}", i18n_msg!(i18n_bundle, MenuItemChangeNonAdsFov)),
-                Span::from(format!("{}", settings.non_ads_fov)),
-            ),
-            &i18n_msg!(i18n_bundle, InputPromptNonAdsFov),
-            |val| {
-                if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= 1.0 && new_val <= 50.0 {
-                        let settings = &mut lock_config!().settings;
-                        settings.non_ads_fov = new_val;
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidNonAdsFov).to_string())
-            },
-        )
-        .add_input_item(
-            format_item(
-                &i18n_bundle,
-                format!("15 - {}", i18n_msg!(i18n_bundle, MenuItemChangeFlickFov)),
-                if settings.flick_fov > 40.0 {
-                    Span::styled(
-                        format!("{}", settings.flick_fov),
-                        Style::default().fg(Color::Red),
-                    )
-                } else if settings.flick_fov <= 30.0 {
-                    Span::styled(
-                        format!("{}", settings.flick_fov),
-                        Style::default().fg(Color::Green),
-                    )
-                } else {
-                    Span::from(format!("{}", settings.flick_fov))
-                },
-            ),
-            &i18n_msg!(i18n_bundle, InputPromptFlickFov),
-            |val| {
-                if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= 5.0 && new_val <= 50.0 {
-                        let settings = &mut lock_config!().settings;
-                        settings.flick_fov = new_val;
-                        return None;
-                    }
-                }
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoInvalidFlickFov).to_string())
-            },
         );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!( "      7 - {}", i18n_msg!(i18n_bundle, MenuItemFlickNearest)),
+        settings.flick_nearest,
+        flick_nearest
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!( "      8 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
+        settings.bow_charge_rifle_aim,
+        bow_charge_rifle_aim
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!( "      9 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
+        settings.trigger_bot_shot,
+        trigger_bot_shot
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!("     10 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
+        settings.aim_no_recoil,
+        aim_no_recoil
+    );
     menu = menu
-        .add_item(
-            item_enabled(
-                &i18n_bundle,
-                format!("17 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
-                settings.player_filled_toggle,
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.player_filled_toggle = !settings.player_filled_toggle;
-                settings.player_glow_inside_value =
-                    if settings.player_filled_toggle { 14 } else { 0 };
-                None
-            },
-        )
-        .add_input_item(
-            item_text(format!(
-                "18 - {}",
-                i18n_msg!(i18n_bundle, MenuItemPlayerOutlineSize)
-            )),
-            &i18n_msg!(i18n_bundle, InputPromptPlayerOutlines),
-            |val| {
-                let i18n_bundle = get_fluent_bundle();
-                if let Some(new_val) = val.parse::<u8>().ok() {
-                    let settings = &mut lock_config!().settings;
-                    settings.player_glow_outline_size = new_val; //[0, 255]
-                    return Some({
-                        let mut args = FluentArgs::new();
-                        args.set("value", settings.player_glow_outline_size);
-                        i18n_msg_format!(i18n_bundle, InfoPlayerOutlineUpdated, args).to_string()
-                    });
+    .add_item(
+        ListItem::new(Line::from(
+            i18n_msg!(i18n_bundle, TitleExtraSkill).to_string().light_yellow()
+        )),
+        |_| None,
+    )
+    .no_id();
+    menu = menu
+    .add_item(
+        format_item(
+            &i18n_bundle,
+            format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
+            Span::from(
+                if settings.no_nade_aim {
+                    i18n_msg!(i18n_bundle, MenuValueNoNadeAim)
+                } else {
+                    i18n_msg!(i18n_bundle, MenuValueNadeAimOn)
                 }
-                Some(i18n_msg!(i18n_bundle, InfoInvalidOutlineSize).to_string())
-            },
-        )
-        .add_item(
-            item_text(format!(
-                "19 - {}",
-                i18n_msg!(i18n_bundle, MenuItemUpdateGlowColors)
-            )),
-            |handle: &mut TerminalMenu| {
-                handle.nav_menu(MenuLevel::GlowColorMenu);
+                .to_string(),
+            ),
+        ),
+        |_| {
+            let settings = &mut lock_config!().settings;
+            settings.no_nade_aim = !settings.no_nade_aim;
+            None
+        },
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(
+            "      2 - {}",
+            i18n_msg!(i18n_bundle, MenuItemSuperGrpple)
+        ),
+        settings.super_grpple,
+        super_grpple
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(
+            "      3 - {}",
+            i18n_msg!(i18n_bundle, MenuItemAutoTapstrafe)
+        ),
+        settings.auto_tapstrafe,
+        auto_tapstrafe
+    );
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!("      4 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
+        settings.super_glide,
+        super_glide
+    );
+    menu = menu.add_item(
+        item_enabled(
+            &i18n_bundle,
+            format!("      5 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
+            settings.weapon_model_glow,
+        ),
+        |_handle: &mut TerminalMenu| {
+            let settings = &mut lock_config!().settings;
+            settings.weapon_model_glow = !settings.weapon_model_glow;
+            if settings.weapon_model_glow {
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoWeaponModelGlow).to_string())
+            } else {
                 None
-            },
-        )
+            }
+        },
+    );
+    /* 
+    menu = menu
         .add_item(
             if settings.load_settings {
                 item_dummy()
@@ -835,102 +941,19 @@ fn build_main_menu(
                     Some(i18n_msg!(i18n_bundle, HelloWorld).to_string())
                 }
             },
-        );
-    menu.next_id();
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!(
-            "23 - {}",
-            i18n_msg!(i18n_bundle, MenuItemPlayerArmorGlowColor)
-        ),
-        settings.player_glow_armor_color,
-        player_glow_armor_color
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!(
-            "24 - {}",
-            i18n_msg!(i18n_bundle, MenuItemFavoritePlayerGlow)
-        ),
-        settings.player_glow_love_user,
-        player_glow_love_user
-    );
-    menu = menu.add_item(
-        item_enabled(
-            &i18n_bundle,
-            format!("25 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponModelGlow)),
-            settings.weapon_model_glow,
-        ),
-        |_handle: &mut TerminalMenu| {
-            let settings = &mut lock_config!().settings;
-            settings.weapon_model_glow = !settings.weapon_model_glow;
-            if settings.weapon_model_glow {
-                let i18n_bundle = get_fluent_bundle();
-                Some(i18n_msg!(i18n_bundle, InfoWeaponModelGlow).to_string())
-            } else {
-                None
-            }
-        },
-    );
+        ); */
     menu = menu
-        .add_dummy_item()
         .add_item(
-            format_item(
-                &i18n_bundle,
-                format!("28 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
-                Span::from(
-                    if settings.no_nade_aim {
-                        i18n_msg!(i18n_bundle, MenuValueNoNadeAim)
-                    } else {
-                        i18n_msg!(i18n_bundle, MenuValueNadeAimOn)
-                    }
-                    .to_string(),
-                ),
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.no_nade_aim = !settings.no_nade_aim;
-                None
-            },
-        );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("30 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
-        settings.aim_no_recoil,
-        aim_no_recoil
-    );
-    menu = menu.add_input_item(
-        format_item(
-            &i18n_bundle,
-            format!("31 - {}", i18n_msg!(i18n_bundle, MenuItemSetFpsPredict)),
-            Span::from(if settings.calc_game_fps {
-                i18n_msg!(i18n_bundle, MenuValueCalcFps).to_string()
-            } else {
-                format!("{:.1}", settings.game_fps)
-            }),
-        ),
-        &i18n_msg!(i18n_bundle, InputPromptFpsPredict),
-        |val| {
-            if let Some(new_val) = val.parse::<u16>().ok() {
-                let settings = &mut lock_config!().settings;
-                if new_val == 0 {
-                    settings.calc_game_fps = true;
-                } else if new_val > 0 && new_val <= 500 {
-                    settings.calc_game_fps = false;
-                    settings.game_fps = new_val.into();
-                }
-            }
-            None
-        },
-    );
-    menu = menu
+            ListItem::new(Line::from(
+                i18n_msg!(i18n_bundle, TitleOtherSetting).to_string().light_yellow()
+            )),
+            |_| None,
+        )
+        .no_id()
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("34 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
+                format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemKeyboard)),
                 settings.keyboard,
             ),
             |_| {
@@ -943,7 +966,7 @@ fn build_main_menu(
         .add_item(
             item_enabled(
                 &i18n_bundle,
-                format!("35 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
+                format!("      2 - {}", i18n_msg!(i18n_bundle, MenuItemGamepad)),
                 settings.gamepad,
             ),
             |_| {
@@ -952,7 +975,50 @@ fn build_main_menu(
                 settings.keyboard = !settings.gamepad;
                 None
             },
-        );
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("      3 - {}", i18n_msg!(i18n_bundle, MenuItemSetFpsPredict)),
+                Span::from(if settings.calc_game_fps {
+                    i18n_msg!(i18n_bundle, MenuValueCalcFps).to_string()
+                } else {
+                    format!("{:.1}", settings.game_fps)
+                }),
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptFpsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<u16>().ok() {
+                    let settings = &mut lock_config!().settings;
+                    if new_val == 0 {
+                        settings.calc_game_fps = true;
+                    } else if new_val > 0 && new_val <= 500 {
+                        settings.calc_game_fps = false;
+                        settings.game_fps = new_val.into();
+                    }
+                }
+                None
+            },
+        )
+        .add_item(
+            format_item(
+                &i18n_bundle,
+                format!("      4 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
+                if settings.no_overlay {
+                    Span::from(i18n_msg!(i18n_bundle, MenuValueNoOverlay).to_string())
+                } else {
+                    Span::styled(
+                        i18n_msg!(i18n_bundle, MenuValueExternalOverlay).to_string(),
+                        Style::default().green(),
+                    )
+                },
+            ),
+            |_| {
+                let settings = &mut lock_config!().settings;
+                settings.no_overlay = !settings.no_overlay;
+                None
+            },
+        ).into()
     /* menu = menu.add_item(
         item_enabled(
             &i18n_bundle,
@@ -970,54 +1036,6 @@ fn build_main_menu(
             None
         },
         ); */
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!(
-            "37 - {}",
-            i18n_msg!(i18n_bundle, MenuItemSuperGrpple)
-        ),
-        settings.super_grpple,
-        super_grpple
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!(
-            "38 - {}",
-            i18n_msg!(i18n_bundle, MenuItemAutoTapstrafe)
-        ),
-        settings.auto_tapstrafe,
-        auto_tapstrafe
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("39 - {}", i18n_msg!(i18n_bundle, MenuItemSuperGlide)),
-        settings.super_glide,
-        super_glide
-    );
-    menu.add_dummy_item()
-        .add_item(
-            format_item(
-                &i18n_bundle,
-                format!("40 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOverlay)),
-                if settings.no_overlay {
-                    Span::from(i18n_msg!(i18n_bundle, MenuValueNoOverlay).to_string())
-                } else {
-                    Span::styled(
-                        i18n_msg!(i18n_bundle, MenuValueExternalOverlay).to_string(),
-                        Style::default().green(),
-                    )
-                },
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.no_overlay = !settings.no_overlay;
-                None
-            },
-        )
-        .into()
 }
 
 fn build_glow_color_menu(
