@@ -128,8 +128,7 @@ void Overlay::RenderMenu() {
     ImGui::Checkbox(XorStr("Firing Range"), &g_settings.firing_range);
     ImGui::SameLine();
     ImGui::Checkbox(XorStr("TDM Toggle"), &g_settings.tdm_toggle);
-    ImGui::Checkbox(XorStr("Press F8 enable MapRadar"),
-                    &g_settings.map_radar_testing);
+    
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
     ImGui::Text(XorStr("Aiming Distance:"));
     ImGui::SameLine();

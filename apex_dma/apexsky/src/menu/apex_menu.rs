@@ -331,6 +331,11 @@ impl<'a> MenuBuilder<'a> {
         self
     }
 
+    fn add_text_item2(mut self, label: Span) -> MenuBuilder<'a> {
+        self.list_items.push(item_text(label));
+        self
+    }
+
     fn add_dummy_item(mut self) -> MenuBuilder<'a> {
         self.list_items.push(item_dummy());
         self
@@ -434,32 +439,122 @@ fn build_main_menu(
     settings: config::Settings,
 ) -> MenuState<'static> {
     let mut menu = MenuBuilder::new().title(i18n_msg!(i18n_bundle, MainMenuTitle));
-    /* menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemFiringRange)),
-        settings.firing_range,
-        firing_range
-    ); */
-    //menu = menu.add_text_item(i18n_msg!(i18n_bundle, MainSetting));
+    menu = menu
+        .add_item(
+            ListItem::new(Line::from(vec![
+                Span::from(i18n_msg!(i18n_bundle, TitleMainSetting).to_string()).light_yellow()
+            ])),
+            |_| None,
+        )
+        .no_id();
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 2 - {}", i18n_msg!(i18n_bundle, MenuItemTdmToggle)),
+        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemTdmToggle)),
         settings.tdm_toggle,
         tdm_toggle
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 3 - {}", i18n_msg!(i18n_bundle, MenuItemItemGlow)),
+        format!(" 2 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
+        settings.onevone,
+        onevone
+    );
+    menu = menu.add_item(
+        item_text(format!(
+            " 3 - {}",
+            i18n_msg!(i18n_bundle, MenuItemHotkeySettings)
+        )),
+        |handle: &mut TerminalMenu| {
+            handle.nav_menu(MenuLevel::HotkeyMenu);
+            None
+        },
+        )
+        .add_item(
+            item_text(format!(
+                " 4 - {}",
+                i18n_msg!(i18n_bundle, MenuItemSaveSettings)
+            )),
+            |_| {
+                let i18n_bundle = get_fluent_bundle();
+                Some(
+                    if crate::save_settings() {
+                        i18n_msg!(i18n_bundle, InfoSaved)
+                    } else {
+                        i18n_msg!(i18n_bundle, InfoFailed)
+                    }
+                    .to_string(),
+                )
+            },
+        )
+        .add_item(
+            item_text(format!(
+                " 5 - {}",
+                i18n_msg!(i18n_bundle, MenuItemLoadSettings)
+            )),
+            |_| {
+                let i18n_bundle = get_fluent_bundle();
+                let mut result = i18n_msg!(i18n_bundle, InfoLoaded).to_string();
+                let config_state = crate::config::get_configuration().unwrap_or_else(|e| {
+                    let i18n_bundle = get_fluent_bundle();
+                    result = format!("{}\n{}", e, i18n_msg!(i18n_bundle, InfoFallbackConfig));
+                    crate::config::Config::default()
+                });
+                lock_config!() = config_state;
+                Some(result)
+            },
+        );
+    menu = menu
+        .add_item(
+            ListItem::new(Line::from(
+                i18n_msg!(i18n_bundle, TitleLootSetting).to_string().light_yellow()
+            )),
+            |_| None,
+        )
+        .no_id();
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemItemGlow)),
         settings.item_glow,
         item_glow
+    );
+    menu = menu.add_item(
+        item_enabled(
+            &i18n_bundle,
+            format!(" 2 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
+            settings.loot_filled_toggle,
+        ),
+        |_| {
+            let settings = &mut lock_config!().settings;
+            settings.loot_filled_toggle = !settings.loot_filled_toggle;
+            settings.loot_filled = if settings.loot_filled_toggle { 14 } else { 0 };
+            None
+        },
+    )
+    .add_item(
+        item_text(format!(
+            " 3 - {}",
+            i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
+        )),
+        |handle: &mut TerminalMenu| {
+            handle.nav_menu(MenuLevel::ItemFilterMenu);
+            None
+        },
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlow)),
+        format!(" 4 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
+        settings.deathbox,
+        deathbox
+    );
+    menu.add_text_item2(Span::from(i18n_msg!(i18n_bundle, TitlePlayerSetting).to_string()).light_yellow());
+    menu = add_toggle_item!(
+        menu,
+        &i18n_bundle,
+        format!(" 1 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlow)),
         settings.player_glow,
         player_glow
     );
@@ -595,19 +690,6 @@ fn build_main_menu(
                 Some(i18n_msg!(i18n_bundle, InfoInvalidValue).to_string())
             },
         )
-        .add_item(
-            item_enabled(
-                &i18n_bundle,
-                format!("11 - {}", i18n_msg!(i18n_bundle, MenuItemLootGlowFilled)),
-                settings.loot_filled_toggle,
-            ),
-            |_| {
-                let settings = &mut lock_config!().settings;
-                settings.loot_filled_toggle = !settings.loot_filled_toggle;
-                settings.loot_filled = if settings.loot_filled_toggle { 14 } else { 0 };
-                None
-            },
-        )
         .add_input_item(
             item_text(format!("12 - {}",i18n_msg!(i18n_bundle, MenuItemPlayerGlowDist))),
             &i18n_msg!(i18n_bundle, InputPromptPlayerDistance),
@@ -694,16 +776,6 @@ fn build_main_menu(
         );
     menu = menu
         .add_item(
-            item_text(format!(
-                "16 - {}",
-                i18n_msg!(i18n_bundle, MenuItemItemFilterSettings)
-            )),
-            |handle: &mut TerminalMenu| {
-                handle.nav_menu(MenuLevel::ItemFilterMenu);
-                None
-            },
-        )
-        .add_item(
             item_enabled(
                 &i18n_bundle,
                 format!("17 - {}", i18n_msg!(i18n_bundle, MenuItemPlayerGlowFilled)),
@@ -744,16 +816,6 @@ fn build_main_menu(
             )),
             |handle: &mut TerminalMenu| {
                 handle.nav_menu(MenuLevel::GlowColorMenu);
-                None
-            },
-        )
-        .add_item(
-            item_text(format!(
-                "20 - {}",
-                i18n_msg!(i18n_bundle, MenuItemHotkeySettings)
-            )),
-            |handle: &mut TerminalMenu| {
-                handle.nav_menu(MenuLevel::HotkeyMenu);
                 None
             },
         )
@@ -815,41 +877,6 @@ fn build_main_menu(
     menu = menu
         .add_dummy_item()
         .add_item(
-            item_text(format!(
-                "26 - {}",
-                i18n_msg!(i18n_bundle, MenuItemSaveSettings)
-            )),
-            |_| {
-                let i18n_bundle = get_fluent_bundle();
-                Some(
-                    if crate::save_settings() {
-                        i18n_msg!(i18n_bundle, InfoSaved)
-                    } else {
-                        i18n_msg!(i18n_bundle, InfoFailed)
-                    }
-                    .to_string(),
-                )
-            },
-        )
-        .add_item(
-            item_text(format!(
-                "27 - {}",
-                i18n_msg!(i18n_bundle, MenuItemLoadSettings)
-            )),
-            |_| {
-                let i18n_bundle = get_fluent_bundle();
-                let mut result = i18n_msg!(i18n_bundle, InfoLoaded).to_string();
-                let config_state = crate::config::get_configuration().unwrap_or_else(|e| {
-                    let i18n_bundle = get_fluent_bundle();
-                    result = format!("{}\n{}", e, i18n_msg!(i18n_bundle, InfoFallbackConfig));
-                    crate::config::Config::default()
-                });
-                lock_config!() = config_state;
-                Some(result)
-            },
-        )
-        .add_dummy_item()
-        .add_item(
             format_item(
                 &i18n_bundle,
                 format!("28 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNadeAim)),
@@ -868,13 +895,6 @@ fn build_main_menu(
                 None
             },
         );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("29 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
-        settings.onevone,
-        onevone
-    );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
@@ -905,13 +925,6 @@ fn build_main_menu(
             }
             None
         },
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("33 - {}", i18n_msg!(i18n_bundle, MenuItemDeathBoxes)),
-        settings.deathbox,
-        deathbox
     );
     menu = menu
         .add_item(

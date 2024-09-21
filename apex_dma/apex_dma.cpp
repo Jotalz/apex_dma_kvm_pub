@@ -2120,11 +2120,11 @@ static void item_glow_t()
                 }
                 else if (ItemID == static_cast<uint64_t>(ItemList::evac_tower))
                 { // 跳伞塔
-                    std::array<float, 3> highlightParameter = {1, 0, 0};
-                    int settingIndex = 34;
+                    std::array<float, 3> highlightParameter = {0, 0, 1};
+                    int settingIndex = 31;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
-                else if (g_settings.loot.mobile_respawn && ItemID == 301)
+                else if (g_settings.loot.mobile_respawn && ItemID == 299)
                 { // 重生信标
                     std::array<float, 3> highlightParameter = {0, 0, 1};
                     int settingIndex = 31;
