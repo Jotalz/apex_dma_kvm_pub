@@ -69,3 +69,11 @@ jobs:
           README.md
         retention-days: 5
 
+    - name: Upload CMake build log as artifact
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-log
+        path: /home/runner/work/apex_dma_kvm_pub/apex_dma_kvm_pub/build/apexsky-prefix/src/apexsky-stamp/
+        retention-days: 1
+

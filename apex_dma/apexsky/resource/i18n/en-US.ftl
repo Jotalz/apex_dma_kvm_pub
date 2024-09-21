@@ -1,7 +1,13 @@
 hello-world = Hello, world!
 menu-value-enabled = Enabled
 menu-value-disabled = Disabled
-main-menu-title = Main Menu
+main-menu-title = Main Menu GameVersion-v3.0.80.27
+title-main-setting = Main Setting ------ 0
+title-loot-setting = Loot Setting ------ 5
+title-player-setting = Player Glow Setting ------ 9
+title-aim-setting = Aim Setting ------ 16
+title-extra-skill = Extra Power ------ 26
+title-other-setting = Others ------ 30
 menu-item-firing-range = Firing Range
 menu-item-tdm-toggle = TDMToggle
 menu-item-keyboard = Keyboard
@@ -54,6 +60,12 @@ input-prompt-non-ads-fov = New value for 'Non-ADS FOV':
     (1 to 50)
 info-invalid-non-ads-fov = Invalid value.
     'Non-ADS FOV' value must be between 1.0 and 50.
+menu-item-change-flick-fov = Flick FOV
+input-prompt-flick-fov = Set "Flick Bot FOV" Value: 
+    (5~50)
+info-invalid-flick-fov = Invalid value。
+    "Flick Bot FOV" value must be between 5.0 and 50.
+menu-item-flick-nearest = Flick Nearest
 menu-item-super-glide = Super Glide
 menu-item-item-filter-settings = Item Filter Settings
 menu-item-hotkey-settings = Hot Key Setting
@@ -75,13 +87,13 @@ input-prompt-fps-predict =
     New value for 'Game FPS for Aim Predict':
         (0 to 500) 
         0 => calc game fps
-menu-item-big-map-feat = Toggle F8 Map Radar
 menu-item-player-armor-glow-color = Toggle Player Armor Glow Color
 menu-item-weapon-model-glow = Weapon Model Glow
 info-weapon-model-glow = 
-    Normal => colorful
+    Normal => No Glow
     Being watched by teammates => green
-    Being watched by others => red
+    Being watched by others => Blue->Orange->Red->Colorful
+                                <3     <5    <7    7+
 menu-item-toggle-overlay = Toggle Overlay
 menu-value-no-overlay = no-overlay
 menu-value-external-overlay = external-overlay
@@ -106,9 +118,11 @@ input-prompt-keycode =
     (e.g., 108 for Left mouse button)
 hotkey-menu-title = Hotkey Menu
 hotkey-item-aimbot1 = Aimbot Hot Key 1
-hotkey-item-aimbot2 = Aimbot Hot Key 2(Smooth -30 If Hold)
-hotkey-item-trigger-bot = Trigger Bot Hot Key(Cancelled)
+hotkey-item-aimbot2 = Aimbot Hot Key 2
+hotkey-item-trigger-bot = Trigger Bot Hot Key(Bind HotKey2)
+hotkey-item-flick-bot = Flick Bot Hot Key
 hotkey-item-quick-glow = Temporary Glow Switch hotkey
+hotkey-item-algs-radar = ALGS Radar Hotkey
 menu-item-key-codes = Key Codes
 item-filter-menu-title = Item Filter Menu
 info-invalid-keycode = Invalid value. "{$item_label}" value must be between 0 and 255.
@@ -234,8 +248,8 @@ keycode110-mouse3-middle = 110 Middle mouse button (mouse3)
 keycode111-mouse4-side = 111 Side mouse button (mouse4)
 keycode112-mouse5-side = 112 Side mouse button (mouse5)
 menu-item-back-to-hotkey-menu = Back to Hotkey Menu
-menu-value-prefix = {" (Current: "}
-menu-value-suffix = {")"}
+menu-value-prefix = {" [Current: "}
+menu-value-suffix = {"]"}
 loot-level1-name = Common
 loot-level2-name = Rare
 loot-level3-name = Epic
@@ -244,6 +258,6 @@ loot-level5-name = Mythic
 menu-item-favorite-player-glow = Highlight favorite gamers
 menu-item-kbd-backlight-ctrl = Keyboard backlight control
 menu-item-bow-charge-rifle-aim = bow chargeRifle aim
-menu-item-shotgun-auto-shot = shotgun trigger
+menu-item-trigger-auto-shot = trigger
 menu-item-super-grpple = super grpple
 menu-item-auto-tapstrafe = AUTO TS

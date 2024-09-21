@@ -172,6 +172,7 @@ pub struct Settings {
     pub aimbot_hot_key_1: i32,
     pub aimbot_hot_key_2: i32,
     pub trigger_bot_hot_key: i32,
+    pub flick_bot_hot_key: i32,
     pub quickglow_hot_key: i32,
     pub loot_filled_toggle: bool,
     pub player_filled_toggle: bool,
@@ -187,11 +188,12 @@ pub struct Settings {
     pub weapon_model_glow: bool,
     pub kbd_backlight_control: bool,
     pub bow_charge_rifle_aim: bool,
-    pub shotgun_auto_shot: bool,
+    pub trigger_bot_shot: bool,
     pub deathbox: bool,
     pub aim_no_recoil: bool,
     pub ads_fov: f32,
     pub non_ads_fov: f32,
+    pub flick_fov: f32,
     pub aim: i32,
     pub esp: bool,
     pub esp_visuals: EspVisuals,
@@ -205,7 +207,7 @@ pub struct Settings {
     pub aim_dist: f32,
     pub max_dist: f32,
     pub glow_dist: f32,
-    pub map_radar_testing: bool,
+    pub map_radar_hotkey: i32,
     pub show_aim_target: bool,
     pub game_fps: f32,
     pub calc_game_fps: bool,
@@ -214,6 +216,7 @@ pub struct Settings {
     pub bone: i32,
     pub bone_nearest: bool,
     pub bone_auto: bool,
+    pub flick_nearest: bool,
     pub headshot_dist: f32,
     pub skynade_dist: f32,
     pub smooth: f32,
@@ -404,8 +407,9 @@ impl Default for Settings {
             aimbot_hot_key_2: 79,
             // Done with Gamepad or Keyboard config
             trigger_bot_hot_key: 81,
+            flick_bot_hot_key: 111,
             quickglow_hot_key: 93,
-            shotgun_auto_shot: true,
+            trigger_bot_shot: true,
             // Terminal Stuff
             loot_filled_toggle: false,
             player_filled_toggle: false,
@@ -426,6 +430,7 @@ impl Default for Settings {
             aim_no_recoil: false,
             ads_fov: 7.0, // Fov you want to use while aiming
             non_ads_fov: 16.0,
+            flick_fov: 30.0,
             aim: 2, // 0 no aim, 1 aim with no vis check, 2 aim with vis check
             esp: false,
             esp_visuals: EspVisuals::default(),
@@ -438,7 +443,7 @@ impl Default for Settings {
             main_map_radar_dot_size2: 5,
             aim_dist: 200.0 * 40.0,
             max_dist: 3800.0 * 40.0, // Max Distance of ESP 3800 is full map
-            map_radar_testing: false,
+            map_radar_hotkey: 99,
             show_aim_target: true,
             game_fps: 143.0,       // Game FPS for aim prediction
             calc_game_fps: false, // Automatic calculation of game fps
@@ -448,6 +453,7 @@ impl Default for Settings {
             bone: 2, // bone 0 head, 1 neck, 2 chest, 3 dick shot
             bone_nearest: false,
             bone_auto: true,
+            flick_nearest: false,
             headshot_dist: 200.0 * 40.0,
             skynade_dist: 120.0 * 40.0,
             glow_dist: 200.0 * 40.0,

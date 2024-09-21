@@ -1,4 +1,3 @@
-pub(crate) mod spectators;
 pub(crate) mod utils;
 
 use anyhow::Ok;

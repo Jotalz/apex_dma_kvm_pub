@@ -123,7 +123,6 @@ typedef struct {
   // Supply Drop Weapons
   bool weapon_kraber;
   bool weapon_bow;
-  bool weapon_prowler;
   // Shotguns
   bool weapon_mastiff;
   bool weapon_eva8;
@@ -142,6 +141,7 @@ typedef struct {
   bool weapon_3030_repeater;
   bool weapon_rampage;
   bool weapon_car_smg;
+  bool weapon_prowler;
   // Light weapons
   bool weapon_p2020;
   bool weapon_re45;
@@ -169,6 +169,7 @@ typedef struct {
   int aimbot_hot_key_1;
   int aimbot_hot_key_2;
   int trigger_bot_hot_key;
+  int flick_bot_hot_key;
   int quickglow_hot_key;
   bool loot_filled_toggle;
   bool player_filled_toggle;
@@ -184,11 +185,12 @@ typedef struct {
   bool weapon_model_glow;
   bool kbd_backlight_control;
   bool bow_charge_rifle_aim;
-  bool shotgun_auto_shot;
+  bool trigger_bot_shot;
   bool deathbox;
   bool aim_no_recoil;
   float ads_fov;
   float non_ads_fov;
+  float flick_fov;
   int32_t aim;
   bool esp;
   visuals esp_visuals;
@@ -202,7 +204,7 @@ typedef struct {
   float aim_dist;
   float max_dist;
   float glow_dist;
-  bool map_radar_testing;
+  int map_radar_hotkey;
   bool show_aim_target;
   float game_fps;
   bool calc_game_fps;
@@ -211,6 +213,7 @@ typedef struct {
   int32_t bone;
   bool bone_nearest;
   bool bone_auto;
+  bool flick_nearest;
   float headshot_dist;
   float skynade_dist;
   float smooth;
@@ -244,8 +247,7 @@ typedef struct {
 
 extern "C" {
 void print_run_as_root();
-int32_t add(int32_t lhs, int32_t rhs);
-bool kbd_backlight_blink(int32_t count);
+//int32_t add(int32_t lhs, int32_t rhs);
 
 global_state_t __get_global_states();
 void __update_global_states(global_state_t state);
@@ -256,9 +258,9 @@ void run_tui_menu();
 
 bool check_love_player(uint64_t puid, uint64_t euid, const char *name);
 
-void init_spec_checker(uintptr_t local_player_ptr);
-void tick_yew(uintptr_t target_ptr, float yew);
-bool is_spec(uintptr_t target_ptr);
+//void init_spec_checker(uintptr_t local_player_ptr);
+//void tick_yew(uintptr_t target_ptr, float yew);
+//bool is_spec(uintptr_t target_ptr);
 
 /**
  * https://github.com/CasualX/apexdream

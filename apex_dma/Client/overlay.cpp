@@ -128,8 +128,7 @@ void Overlay::RenderMenu() {
     ImGui::Checkbox(XorStr("Firing Range"), &g_settings.firing_range);
     ImGui::SameLine();
     ImGui::Checkbox(XorStr("TDM Toggle"), &g_settings.tdm_toggle);
-    ImGui::Checkbox(XorStr("Press F8 enable MapRadar"),
-                    &g_settings.map_radar_testing);
+    
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
     ImGui::Text(XorStr("Aiming Distance:"));
     ImGui::SameLine();
@@ -204,7 +203,7 @@ void Overlay::RenderMenu() {
                        35.0f, 180.0f, "##");
 
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
+    
     ImGui::Text(XorStr("Smooth Preditcion Speed:"));
     ImGui::SameLine();
     ImGui::TextColored(GREEN, "%.2f", bulletspeed);
@@ -212,7 +211,7 @@ void Overlay::RenderMenu() {
     ImGui::SameLine();
     ImGui::Text(XorStr("Default is 0.08"));
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
+    
     ImGui::Text(XorStr("Smooth Preditcion Gravity:"));
     ImGui::SameLine();
     ImGui::TextColored(GREEN, "%.2f", bulletgrav);

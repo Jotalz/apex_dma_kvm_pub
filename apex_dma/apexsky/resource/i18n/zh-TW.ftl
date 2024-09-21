@@ -1,7 +1,13 @@
 hello-world = Hello, world!
 menu-value-enabled = 啓用
 menu-value-disabled = 停用
-main-menu-title = 主選單
+main-menu-title = 主選單 GameVersion-v3.0.80.27
+title-main-setting = 主要設置 ------ 0
+title-loot-setting = 物資設置 ------ 5
+title-player-setting = 玩家熱能設置 ------ 9
+title-aim-setting = 瞄準設置 ------ 16
+title-extra-skill = 額外能力 ------ 26
+title-other-setting = 其他設置 ------ 30
 menu-item-firing-range = 射擊場模式
 menu-item-tdm-toggle = 團隊模式
 menu-item-keyboard = 鍵盤滑鼠模式
@@ -54,6 +60,12 @@ input-prompt-non-ads-fov = 設置 "腰射自瞄FOV" 值:
     (1~50)
 info-invalid-non-ads-fov = 輸入無效。
     「腰射自瞄FOV」 必須介於 1.0 到 50.0 之間。
+menu-item-change-flick-fov = 瞬擊FOV
+input-prompt-flick-fov = 設置 "瞬擊自瞄FOV" 值: 
+    (5~50)
+info-invalid-flick-fov = 輸入無效。
+    "瞬擊自瞄FOV" 必須介於 5.0 到 50.0 之間。
+menu-item-flick-nearest = 瞬擊最近部位
 menu-item-super-glide = 自動SuperGlide
 menu-item-item-filter-settings = 物品透視設置
 menu-item-hotkey-settings = 熱鍵設置
@@ -75,13 +87,13 @@ input-prompt-fps-predict =
     「瞄準預測的遊戲FPS」的新值:
         (0~500)
         0 => 自動計算FPS
-menu-item-big-map-feat = F8地圖雷達功能
 menu-item-player-armor-glow-color = 護盾顏色發光
 menu-item-weapon-model-glow = 武器模型發光
 info-weapon-model-glow = 
-    通常 => 彩色
-    被隊友觀看時 => 綠色
-    被別人觀看時 => 紅色
+    通常 => 不發光
+    被隊友觀戰時 => 綠色
+    被他人觀戰時 => 藍色->橙色->紅色->彩色
+                     <3    <5    <7    7+
 menu-item-toggle-overlay = 繪製層
 menu-value-no-overlay = 無覆蓋層
 menu-value-external-overlay = 外部繪製層
@@ -106,9 +118,11 @@ input-prompt-keycode =
     （例如，108 表示滑鼠左鍵）
 hotkey-menu-title = 熱鍵選單
 hotkey-item-aimbot1 = Aimbot熱鍵1
-hotkey-item-aimbot2 = Aimbot熱鍵2(按下平滑-30)
-hotkey-item-trigger-bot = 自動扳機熱鍵（已取消）
+hotkey-item-aimbot2 = Aimbot熱鍵2
+hotkey-item-trigger-bot = 自動扳機熱鍵(綁定熱鍵2)
+hotkey-item-flick-bot = 瞬擊熱鍵
 hotkey-item-quick-glow = 臨時開關熱能熱鍵
+hotkey-item-algs-radar = ALGS雷達熱鍵
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
 info-invalid-keycode = 無效值。「{$item_label}」值必須介於 0 和 255 之間。
@@ -233,8 +247,8 @@ keycode110-mouse3-middle = 110 滑鼠中键 (mouse3)
 keycode111-mouse4-side = 111 滑鼠侧键 (mouse4)
 keycode112-mouse5-side = 112 滑鼠侧键 (mouse5)
 menu-item-back-to-hotkey-menu = 返回熱鍵選單
-menu-value-prefix = {" (Current: "}
-menu-value-suffix = {")"}
+menu-value-prefix = {" [Current: "}
+menu-value-suffix = {"]"}
 loot-level1-name = 一級
 loot-level2-name = 二級
 loot-level3-name = 三級
@@ -242,7 +256,7 @@ loot-level4-name = 四級
 loot-level5-name = 五級
 menu-item-favorite-player-glow = 突顯喜愛玩家
 menu-item-kbd-backlight-ctrl = 鍵盤背光控制
-menu-item-bow-charge-rifle-aim = 博切克自瞄
-menu-item-shotgun-auto-shot = 霰彈槍扳機
+menu-item-bow-charge-rifle-aim = 蓄能武器自瞄
+menu-item-trigger-auto-shot = 扳機
 menu-item-super-grpple = 超级抓钩
 menu-item-auto-tapstrafe = 自動tapstrafe

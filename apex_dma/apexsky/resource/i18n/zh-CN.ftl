@@ -1,7 +1,13 @@
 hello-world = Hello, world!
 menu-value-enabled = 启用
 menu-value-disabled = 禁用
-main-menu-title = 主菜单
+main-menu-title = 主菜单 GameVersion-v3.0.80.27
+title-main-setting = 主题设置 ------ 0
+title-loot-setting = 物资设置 ------ 5
+title-player-setting = 玩家热能设置 ------ 9
+title-aim-setting = 自瞄设置 ------ 16
+title-extra-skill = 额外技能 ------ 26
+title-other-setting = 其他设置 ------ 30
 menu-item-firing-range = 射击场模式
 menu-item-tdm-toggle = 团队模式
 menu-item-keyboard = 键鼠模式
@@ -55,6 +61,12 @@ input-prompt-non-ads-fov = 设置 "腰射自瞄FOV" 值:
     (1~50)
 info-invalid-non-ads-fov = 输入无效。
     "腰射自瞄FOV" 只能介于 1.0 到 50.0 之间。
+menu-item-change-flick-fov = 瞬击FOV
+input-prompt-flick-fov = 设置 "瞬击自瞄FOV" 值: 
+    (5~50)
+info-invalid-flick-fov = 输入无效。
+    "瞬击自瞄FOV" 只能介于 5.0 到 50.0 之间。
+menu-item-flick-nearest = 瞬击最近位置
 menu-item-super-glide = 自动SG
 menu-item-item-filter-settings = 物品透视设置
 menu-item-hotkey-settings = 热键设置
@@ -76,7 +88,6 @@ input-prompt-fps-predict =
     设置 "预测FPS" 值:
         (0~500)
         0 => 自适应FPS
-menu-item-big-map-feat = F8大地图功能
 menu-item-player-armor-glow-color = 护甲热能颜色
 menu-item-weapon-model-glow = 被观战武器发光
 info-weapon-model-glow = 
@@ -108,9 +119,11 @@ input-prompt-keycode =
     （例如，108 表示鼠标左键）
 hotkey-menu-title = 热键菜单
 hotkey-item-aimbot1 = 自动瞄准热键1
-hotkey-item-aimbot2 = 自瞄热键2（按下平滑-30）
-hotkey-item-trigger-bot = 自动扳机热键(已取消）
+hotkey-item-aimbot2 = 自瞄热键2
+hotkey-item-trigger-bot = 自动扳机热键(绑定热键2)
+hotkey-item-flick-bot = 瞬击热键
 hotkey-item-quick-glow = 临时开关热能热键
+hotkey-item-algs-radar = ALGS雷达热键
 menu-item-key-codes = 键码表
 item-filter-menu-title = 物品选择菜单
 info-invalid-keycode = 值无效。"{$item_label}"值必须介于 0 和 255 之间。
@@ -236,8 +249,8 @@ keycode110-mouse3-middle = 110 鼠标中键 (mouse3)
 keycode111-mouse4-side = 111 鼠标侧键 (mouse4)
 keycode112-mouse5-side = 112 鼠标侧键 (mouse5)
 menu-item-back-to-hotkey-menu = 返回热键菜单
-menu-value-prefix = {" (当前: "}
-menu-value-suffix = {")"}
+menu-value-prefix = {" [当前: "}
+menu-value-suffix = {"]"}
 loot-level1-name = 等级1
 loot-level2-name = 等级2
 loot-level3-name = 等级3
@@ -245,7 +258,7 @@ loot-level4-name = 等级4
 loot-level5-name = 等级5
 menu-item-favorite-player-glow = 突出显示最爱的玩家
 menu-item-kbd-backlight-ctrl = 键盘背光控制
-menu-item-bow-charge-rifle-aim = 波赛克自瞄
-menu-item-shotgun-auto-shot = 霰弹枪扳机
+menu-item-bow-charge-rifle-aim = 蓄能武器自瞄
+menu-item-trigger-auto-shot = 扳机
 menu-item-super-grpple = 超级钩
 menu-item-auto-tapstrafe = 自动TS
