@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include <vector>
 #include <fstream>
+#include <atomic>
 
 #define UPDATEITEM 0
 // this is a test, with seconds
@@ -32,14 +33,14 @@ uint64_t g_Base;
 uint64_t ViewMatrix = 0;
 
 // Just setting things up, dont edit.
-bool active = true;
 aimbot_state_t aimbot;
 int LocalTeamID = 0;
 const int ToRead = 100;
-bool TriggerReady = false;
-bool FlickReady = false;
-bool QuickGlow = true;
-bool Isdone = false; // Prevent frequent writes during the superGrpple
+std::atomic<bool> TriggerReady = false;
+std::atomic<bool> FlickReady = false;
+std::atomic<bool> QuickGlow = true;
+std::atomic<bool> Isdone = false; // Prevent frequent writes during the superGrpple
+std::atomic<int> local_held_id = 2147483647;
 
 bool actions_t = false;
 bool cactions_t = false;
@@ -55,7 +56,7 @@ extern float bulletgrav;
 bool next2 = false;
 bool valid = false;
 Vector esp_local_pos;
-int local_held_id = 2147483647;
+
 uint32_t local_weapon_id = 2147483647;
 int itementcount = 10000;
 int map = 0;
@@ -101,20 +102,6 @@ void rainbowColor(int frame_number, std::array<float, 3> &colors)
     colors[2] = fmax(0, fmin(1, b));
 }
 
-void TriggerBotRun()
-{
-    // 设置随机数生成器
-    /*std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(10, 30); // 正常或稍快的反应时间
-    // 生成随机时间间隔，防止行为检测
-    int randomInterval = dis(gen);
-    std::this_thread::sleep_for(std::chrono::milliseconds(randomInterval));*/
-    apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
-    std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
-}
-
 bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &target,
                      bool isInXHair, float screen_width, float screen_height)
 {
@@ -125,8 +112,8 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     float boxWidth, boxDepth, boxHeight;
     Vector targetBonePositionPre;
     Vector screenTargetBonePositionPre;
-    float projectile_speed = weapon.get_projectile_speed() * 0.92;
-    float projectile_scale = weapon.get_projectile_gravity() * 1.05;
+    float projectile_speed = weapon.get_projectile_speed();
+    float projectile_scale = weapon.get_projectile_gravity();
     Matrix view_matrix_data = {};
     apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
 
@@ -134,17 +121,17 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     {
     case idweapon_eva8:
         delay = 300;
-        boneIndex = 3;
+        boneIndex = 2;
         break;
     case idweapon_p2020:
     case idweapon_mozambique:
         delay = 200;
-        boneIndex = 3;
+        boneIndex = 2;
         break;
     case idweapon_mastiff:
     case idweapon_peacekeeper:
         delay = 400;
-        boneIndex = 3;
+        boneIndex = 2;
         break;
     case idweapon_sentinel:
         delay = 800;
@@ -173,7 +160,7 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
         break;
     default:
         delay = 50;
-        boneIndex = 3;
+        boneIndex = 2;
     }
     static std::chrono::time_point<std::chrono::steady_clock> last_trigger_time;
     auto now_ms = std::chrono::steady_clock::now();
@@ -205,7 +192,7 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     {
         boxWidth = boxDepth = boxHeight = 5.0;
     }
-    else if (boneIndex == 3)
+    else if (boneIndex == 2)
     {
         boxWidth = 5.0;
         boxDepth = 5.0;
@@ -310,6 +297,8 @@ void ClientActions()
             uint64_t local_player_ptr = 0;
             uint64_t viewRender_ptr = 0;
             apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, local_player_ptr);
+            if (local_player_ptr == 0)
+                continue;
             apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRender_ptr);
             apex_mem.Read<uint64_t>(viewRender_ptr + OFFSET_MATRIX, ViewMatrix);
             // read game states
@@ -654,9 +643,17 @@ void ClientActions()
                     lastPressTime = now_ms;
                 }
             }
-            // Trigger ring check on F8 key press for over 0.5 seconds
-            // static std::chrono::steady_clock::time_point tduckStartTime;
-            // static bool mapRadarTestingEnabled = false;
+            if (isPressed(g_settings.quickaim_hot_key))
+            { // F3
+                static std::chrono::time_point<std::chrono::steady_clock> lastPressTime;
+                auto now_ms = std::chrono::steady_clock::now();
+                if (now_ms >= lastPressTime + std::chrono::milliseconds(200))
+                {
+                    auto settings_state = g_settings;
+                    settings_state.quickaim_hot_key = !settings_state.quickaim_hot_key;
+                    update_settings(settings_state);
+                }
+            }
             if (isPressed(g_settings.map_radar_hotkey))
             { // KEY_F8
                 MapRadarTesting(local_player_ptr);
@@ -787,16 +784,10 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
 
     if (g_settings.tdm_toggle)
     {
-        if (entity_team % 2)
-            EntTeam = 1;
-        else
-            EntTeam = 2;
-        if (local_team % 2)
-            LocTeam = 1;
-        else
-            LocTeam = 2;
-        if (EntTeam == LocTeam)
+        if ((entity_team % 2) == (local_team % 2))
+        {
             return;
+        }
     }
 
     // Firing range stuff
@@ -804,10 +795,6 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     {
         if (entity_team < 0 || entity_team > 50 ||
             (entity_team == LocalTeamID && !g_settings.onevone))
-        {
-            return;
-        }
-        if (local_team != 0 && entity_team == local_team)
         {
             return;
         }
@@ -820,7 +807,11 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     // aim distance check
     if ((local_held_id == -251 && dist > g_settings.skynade_dist) ||
         dist > g_settings.aim_dist)
-        return;
+    {
+        SetPlayerGlow(LPlayer, target, index, frame_number);
+        lastvis_aim[index] = target.lastVisTime();
+        return; // need setglow though it's out of aimdist
+    }
 
     // Targeting
     const float vis_weights = 12.5f;
@@ -860,7 +851,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
                 Matrix view_matrix_data = {};
                 apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
                 float *m_vMatrix = view_matrix_data.matrix;
-                DoFlick(LPlayer,target,m_vMatrix);
+                DoFlick(LPlayer, target, m_vMatrix);
             }
         }
     }
@@ -909,14 +900,28 @@ void DoActions()
             {
                 map = 4;
             }
-            else if (strcmp(level_name, "mp_rr_divided_moon_mu1") == 0)
+            else if (strcmp(level_name, "mp_rr_district") == 0)
             {
                 map = 5;
+            }
+            else if (strcmp(level_name, "mp_rr_divided_moon_mu1") == 0)
+            {
+                map = 6;
+            }
+            else if (strcmp(level_name, "mp_rr_canyonlands_hu") == 0)
+            {
+                map = 7;
+            }
+            else if (strcmp(level_name, "mp_rr_tropic_island_mu1") == 0)
+            {
+                map = 8;
             }
             else
             {
                 map = -1;
             }
+            if (map < 1)
+                continue;
             static std::chrono::time_point<std::chrono::steady_clock> checkpoint_time;
             auto now_ms = std::chrono::steady_clock::now();
             if (now_ms >= checkpoint_time + std::chrono::milliseconds(10000))
@@ -963,7 +968,7 @@ void DoActions()
             aimbot.target_score_max = (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; // 初始化分数
             aimbot.tmp_aimentity = 0;
             centity_to_index.clear();
-            if (g_settings.firing_range)
+            if (map == 1)
             {
                 int c = 0;
                 for (int i = 0; i < 15000; i++)
@@ -978,7 +983,7 @@ void DoActions()
                         continue;
                     }
                     Entity Target = getEntity(entityAddr);
-                    if (Target.isDummy() || (Target.isPlayer() && g_settings.onevone))
+                    if (Target.isDummy2() || (Target.isPlayer() && g_settings.onevone))
                     {
                         ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
                         c++;
@@ -1316,7 +1321,25 @@ static void AimbotLoop()
             int HeldID;
             apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID);
             local_held_id = HeldID; // 读取本地玩家手持物品id赋值给local_held_id
-
+            if (g_settings.aim_no_recoil)
+            {
+                int in_attack;
+                apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, in_attack);
+                if (in_attack > 0)
+                {
+                    QAngle NewAngle;
+                    static QAngle PreviousAngle = LPlayer.GetViewAngles();
+                    QAngle viewAngles = LPlayer.GetViewAngles();
+                    QAngle punchAngles = LPlayer.GetRecoil();
+                    NewAngle.x = viewAngles.x - ((PreviousAngle.x - punchAngles.x) * (g_settings.recoil_pitch / 100.f));
+                    NewAngle.y = viewAngles.y - ((PreviousAngle.y - punchAngles.y) * (g_settings.recoil_yaw / 100.f));
+                    Math::NormalizeAngles(NewAngle);
+                    if (NewAngle.x != viewAngles.x || NewAngle.y != viewAngles.y)
+                        LPlayer.SetViewAngles(NewAngle);
+                    PreviousAngle = NewAngle;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(4));
+            }
             // Read WeaponID
             WeaponXEntity currentWeapon = WeaponXEntity();
             currentWeapon.update(LocalPlayer);
@@ -1373,7 +1396,9 @@ static void AimbotLoop()
                         float screenH = g_settings.screen_height;
                         if (IsInTriggerZone(currentWeapon, loaclCamPos, target, isInhair, screenW, screenH))
                         {
-                            TriggerBotRun();
+                            apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
+                            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                            apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
                         }
                     }
                 }
@@ -1386,14 +1411,15 @@ static void AimbotLoop()
 
 static void item_glow_t()
 {
-    #if UPDATEITEM
+#if UPDATEITEM
     std::ofstream outFile("item_ids.txt", std::ios::out);
-    if (!outFile.is_open()) {
+    if (!outFile.is_open())
+    {
         std::cerr << "Unable to open file for writing!" << std::endl;
         return;
     }
     std::unordered_set<uint64_t> writtenItemIDs;
-    #endif
+#endif
     item_t = true;
     while (item_t)
     {
@@ -1428,24 +1454,26 @@ static void item_glow_t()
                 // item ids?
                 uint64_t ItemID;
                 apex_mem.Read<uint64_t>(entityAddr + OFFSET_ITEM_ID, ItemID);
-                // printf("Model Name: %s, Item ID: %lu\n", glowName, ItemID);
+// printf("Model Name: %s, Item ID: %lu\n", glowName, ItemID);
 
-                // Prints stuff you want to console
-                // if (strstr(glowName, "mdl/"))
-                //{
-                // printf("%ld\n", ItemID);
-                // }
-                // Search model name or id and if true sets glow, must be a better way to do
-                #if UPDATEITEM
-                if (writtenItemIDs.find(ItemID) == writtenItemIDs.end()) {
+// Prints stuff you want to console
+// if (strstr(glowName, "mdl/"))
+//{
+// printf("%ld\n", ItemID);
+// }
+// Search model name or id and if true sets glow, must be a better way to do
+#if UPDATEITEM
+                if (writtenItemIDs.find(ItemID) == writtenItemIDs.end())
+                {
                     auto it = itemNameToEnum.find(glowName);
-                    if (it != itemNameToEnum.end()) {
+                    if (it != itemNameToEnum.end())
+                    {
                         std::string enumName = getEnumName(it->second);
                         outFile << enumName << " = " << ItemID << "," << std::endl;
                         writtenItemIDs.insert(ItemID);
                     }
                 }
-                #endif
+#endif
                 if (g_settings.loot.lightbackpack && ItemID == static_cast<uint64_t>(ItemList::lightbackpack))
                 {                                                        // 白包
                     std::array<float, 3> highlightParameter = {1, 1, 1}; // 高亮颜色，111是白色，因为lightbackpack是白包
@@ -1815,7 +1843,7 @@ static void item_glow_t()
                     int settingIndex = 31;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
-                else if (g_settings.loot.opticthreat && ItemID == 235 )
+                else if (g_settings.loot.opticthreat && ItemID == 235)
                 { // 金1倍
                     std::array<float, 3> highlightParameter = {1, 0.8431, 0};
                     int settingIndex = 33;
@@ -2137,9 +2165,9 @@ static void item_glow_t()
         } // while(item_glow) loop end
     } // while(item_t) loop end
     item_t = false;
-    #if UPDATEITEM
-        outFile.close();
-    #endif
+#if UPDATEITEM
+    outFile.close();
+#endif
 }
 
 extern void start_overlay();
@@ -2170,7 +2198,7 @@ int main(int argc, char *argv[])
     std::thread esp_thr;
     std::thread actions_thr;
     std::thread cactions_thr;
-    //std::thread TriggerBotRun_thr;
+    // std::thread TriggerBotRun_thr;
     std::thread terminal_thr;
     std::thread overlay_thr;
     std::thread itemglow_thr;
@@ -2180,7 +2208,7 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    while (active)
+    while (1)
     {
         if (apex_mem.get_proc_status() != process_status::FOUND_READY)
         {
@@ -2200,7 +2228,7 @@ int main(int argc, char *argv[])
                 esp_thr.~thread();
                 actions_thr.~thread();
                 cactions_thr.~thread();
-                //TriggerBotRun_thr.~thread();
+                // TriggerBotRun_thr.~thread();
                 terminal_thr.~thread();
                 overlay_thr.~thread();
                 itemglow_thr.~thread();
@@ -2222,14 +2250,14 @@ int main(int argc, char *argv[])
                 esp_thr = std::thread(EspLoop);
                 actions_thr = std::thread(DoActions);
                 cactions_thr = std::thread(ClientActions);
-                //TriggerBotRun_thr = std::thread(TriggerBotRun);
+                // TriggerBotRun_thr = std::thread(TriggerBotRun);
                 itemglow_thr = std::thread(item_glow_t);
 
                 aimbot_thr.detach();
                 esp_thr.detach();
                 actions_thr.detach();
                 cactions_thr.detach();
-                //TriggerBotRun_thr.detach();
+                // TriggerBotRun_thr.detach();
                 itemglow_thr.detach();
             }
         }

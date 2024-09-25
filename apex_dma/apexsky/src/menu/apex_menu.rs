@@ -1,6 +1,6 @@
 use super::{alert, prompt};
 use crate::{
-    config, global_state::G_CONTEXT, i18n::get_fluent_bundle, i18n_msg, i18n_msg_format,
+    config, i18n::get_fluent_bundle, i18n_msg, i18n_msg_format,
     lock_config,
 };
 use chrono::Datelike;
@@ -350,6 +350,7 @@ macro_rules! add_toggle_item {
         )
     }};
 }
+
 
 enum LootLevel {
     White,
@@ -779,7 +780,45 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("      6 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
+                format!("      6 - {}", i18n_msg!(i18n_bundle, MenuItemChangeRecoilPitch)),
+                Span::from(format!("{}", settings.recoil_pitch))
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptRecoilPitch),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 0.0 && new_val <= 90.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.recoil_pitch = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidRecoil).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("      7 - {}", i18n_msg!(i18n_bundle, MenuItemChangeRecoilYaw)),
+                Span::from(format!("{}", settings.recoil_yaw))
+            ),
+            &i18n_msg!(i18n_bundle, InputPromptRecoilYaw),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= 0.0 && new_val <= 90.0 {
+                        let settings = &mut lock_config!().settings;
+                        settings.recoil_yaw = new_val;
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidRecoil).to_string())
+            },
+        )
+        .add_input_item(
+            format_item(
+                &i18n_bundle,
+                format!("      8 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
                 Span::from(
                     if settings.bone_nearest {
                         i18n_msg!(i18n_bundle, MenuValueBoneNearest)
@@ -826,30 +865,44 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "      7 - {}", i18n_msg!(i18n_bundle, MenuItemFlickNearest)),
+        format!( "      9 - {}", i18n_msg!(i18n_bundle, MenuItemFlickNearest)),
         settings.flick_nearest,
         flick_nearest
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "      8 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
+        format!( "     10 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
         settings.bow_charge_rifle_aim,
         bow_charge_rifle_aim
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "      9 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
+        format!( "     11 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
         settings.trigger_bot_shot,
         trigger_bot_shot
     );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("     10 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
-        settings.aim_no_recoil,
-        aim_no_recoil
+    menu = menu
+    .add_item(
+        format_item(
+            &i18n_bundle,
+            format!("     12 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
+            Span::from(
+                if settings.aim_no_recoil {
+                    i18n_msg!(i18n_bundle, MenuValueEnabled)
+                } else {
+                    i18n_msg!(i18n_bundle, MenuValueDisabled)
+                }
+                .to_string(),
+            ),
+        ),
+        |_| {
+            let settings = &mut lock_config!().settings;
+            settings.aim_no_recoil = !settings.aim_no_recoil;
+            settings.aim = if settings.aim_no_recoil { 0 } else { 2 };
+            None
+        },
     );
     menu = menu
     .add_item(
@@ -1329,7 +1382,23 @@ fn build_hotkey_menu(
         )
         .add_input_item(
             menu_item_keycode(
-                format!("6 - {}", i18n_msg!(i18n_bundle, HotkeyItemAlgsRadar)),
+                format!("6 - {}", i18n_msg!(i18n_bundle, HotkeyItemQuickAim)),
+                settings.quickaim_hot_key,
+            ),
+            &prompt_text_keycode!(i18n_bundle, HotkeyItemQuickAim),
+            |val| {
+                if let Some(keycode) = val.parse::<u8>().ok() {
+                    let settings = &mut lock_config!().settings;
+                    settings.quickaim_hot_key = keycode as i32;
+                    return None;
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(text_invalid_keycode!(i18n_bundle, HotkeyItemQuickAim))
+            },
+        )
+        .add_input_item(
+            menu_item_keycode(
+                format!("7 - {}", i18n_msg!(i18n_bundle, HotkeyItemAlgsRadar)),
                 settings.map_radar_hotkey,
             ),
             &prompt_text_keycode!(i18n_bundle, HotkeyItemAlgsRadar),
@@ -1345,7 +1414,7 @@ fn build_hotkey_menu(
         )
         .add_dummy_item()
         .add_item(
-            item_text(format!("7 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
+            item_text(format!("8 - {}", i18n_msg!(i18n_bundle, MenuItemKeyCodes))),
             |handler: &mut TerminalMenu| {
                 handler.nav_menu(MenuLevel::KeyCodesMenu);
                 None
@@ -1354,7 +1423,7 @@ fn build_hotkey_menu(
         .add_dummy_item()
         .add_item(
             item_text(format!(
-                "8 - {}",
+                "9 - {}",
                 i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
             )),
             |handle: &mut TerminalMenu| {

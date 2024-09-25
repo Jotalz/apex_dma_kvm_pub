@@ -171,6 +171,7 @@ typedef struct {
   int trigger_bot_hot_key;
   int flick_bot_hot_key;
   int quickglow_hot_key;
+  int quickaim_hot_key;
   bool loot_filled_toggle;
   bool player_filled_toggle;
   bool super_glide;
@@ -188,6 +189,8 @@ typedef struct {
   bool trigger_bot_shot;
   bool deathbox;
   bool aim_no_recoil;
+  float recoil_pitch;
+  float recoil_yaw;
   float ads_fov;
   float non_ads_fov;
   float flick_fov;

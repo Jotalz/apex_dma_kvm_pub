@@ -80,7 +80,19 @@ menu-item-toggle-nade-aim = Toggle NoNadeAim
 menu-value-no-nade-aim = Active on ADS
 menu-value-nade-aim-on = Disable on ADS
 menu-item-toggle-onevone = Toggle 1v1
-menu-item-toggle-no-recoil = Toggle No Recoil
+menu-item-toggle-no-recoil = Recoil reduction
+menu-item-change-recoil-pitch = Vertical Recoil
+menu-item-change-recoil-yaw = Horizontal Recoil
+input-prompt-recoil-pitch = 
+    New value for 'Vertical Recoil reduction ratio':
+        (0 to 90) 
+        0 => Full recoil
+input-prompt-recoil-yaw = 
+    New value for 'Horizontal Recoil reduction ratio':
+        (0 to 90) 
+        0 => Full recoil
+info-invalid-recoil = Invalid value.
+    The recoil coefficient must be between 0-90
 menu-item-set-fps-predict = Set Game FPS for Aim Prediction
 menu-value-calc-fps = calc game fps
 input-prompt-fps-predict = 
@@ -122,6 +134,7 @@ hotkey-item-aimbot2 = Aimbot Hot Key 2
 hotkey-item-trigger-bot = Trigger Bot Hot Key(Bind HotKey2)
 hotkey-item-flick-bot = Flick Bot Hot Key
 hotkey-item-quick-glow = Temporary Glow Switch hotkey
+hotkey-item-quick-aim = Temporary Aim Switch hotkey
 hotkey-item-algs-radar = ALGS Radar Hotkey
 menu-item-key-codes = Key Codes
 item-filter-menu-title = Item Filter Menu

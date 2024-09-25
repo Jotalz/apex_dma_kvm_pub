@@ -1,5 +1,4 @@
 #include "Math.h"
-#include "glowmode.h"
 #include "memory.hpp"
 #include "offsets.h"
 #include "vector.h"
@@ -8,27 +7,6 @@
 
 #define NUM_ENT_ENTRIES (1 << 12)
 #define ENT_ENTRY_MASK (NUM_ENT_ENTRIES - 1)
-
-typedef struct Bone
-{
-  uint8_t pad1[0xCC];
-  float x;
-  uint8_t pad2[0xC];
-  float y;
-  uint8_t pad3[0xC];
-  float z;
-} Bone;
-
-struct GColor
-{
-  float r, g, b;
-};
-
-struct Fade
-{
-  int a, b;
-  float c, d, e, f;
-};
 
 class Entity
 {

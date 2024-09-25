@@ -227,12 +227,9 @@ void DrawRadarPointMiniMap(D3DXVECTOR3 EneamyPos, D3DXVECTOR3 LocalPos,
                                    siz.y, LocalPlayerY, 0.3f, &ck);
   if (eneamyDist >= 0.f && eneamyDist < RadarSettings::distance_Radar)
   {
-    for (int i = 1; i <= 30; i++)
-    {
       TeamMiniMap(single.x, single.y,
                   global_settings().mini_map_radar_dot_size1, team_id,
                   targetyaw);
-    }
   }
 }
 
@@ -469,7 +466,11 @@ world StormPoint(ImVec2(34453.894531, 34695.917969), ImVec2(1264, 172),
                  ImVec2(636,
                         677)); // mp_rr_tropic_island_mu1_storm updated - is
                                // within a few pixels of accuracy 7/16/2023
+world WorldEnd(ImVec2(20400.7, 664.792), ImVec2(1190, 497),
+	ImVec2(5135.7, 23819.8), ImVec2(1018, 235));
 
+world District(ImVec2(20400.7, 664.792), ImVec2(1190, 497),
+	ImVec2(5135.7, 23819.8), ImVec2(1018, 235)); // mp_rr_district
 // DONE get map auto
 void worldToScreenMap(D3DXVECTOR3 origin, int team_id)
 {
@@ -486,14 +487,21 @@ void worldToScreenMap(D3DXVECTOR3 origin, int team_id)
     w1 = StormPoint.w1;
     s1 = StormPoint.s1;
   }
-  else if (map == 1)
+  else if (map == 7)
   { // KingsCanyon
     ratioX = KingsCanyon.ratioX;
     ratioY = KingsCanyon.ratioY;
     w1 = KingsCanyon.w1;
     s1 = KingsCanyon.s1;
   }
-  else if (map == 3)
+  else if (map == 5)
+  { // District
+    ratioX = District.ratioX;
+    ratioY = District.ratioY;
+    w1 = District.w1;
+    s1 = District.s1;
+  }
+  else if (map == 8)
   { // WorldsEdge
     ratioX = WorldsEdge.ratioX;
     ratioY = WorldsEdge.ratioY;
@@ -507,12 +515,19 @@ void worldToScreenMap(D3DXVECTOR3 origin, int team_id)
     w1 = Olympus.w1;
     s1 = Olympus.s1;
   }
-  else if (map == 5)
+  else if (map == 6)
   { // BrokenMoon
     ratioX = BrokenMoon.ratioX;
     ratioY = BrokenMoon.ratioY;
     w1 = BrokenMoon.w1;
     s1 = BrokenMoon.s1;
+  }
+  else if (map == 3)
+  { // WorldEnd
+    ratioX = WorldEnd.ratioX;
+    ratioY = WorldEnd.ratioY;
+    w1 = WorldEnd.w1;
+    s1 = WorldEnd.s1;
   }
   else
   {

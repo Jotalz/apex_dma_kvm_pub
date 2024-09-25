@@ -475,11 +475,6 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon,
         {
             return QAngle(0, 0, 0);
         }
-        if (g_settings.aim_no_recoil)
-        {
-            CalculatedAnglesMin -= SwayAngles - ViewAngles;
-            CalculatedAnglesMax -= SwayAngles - ViewAngles;
-        }
         Math::NormalizeAngles(CalculatedAnglesMin);
         Math::NormalizeAngles(CalculatedAnglesMax);
         QAngle DeltaMin = CalculatedAnglesMin - ViewAngles;

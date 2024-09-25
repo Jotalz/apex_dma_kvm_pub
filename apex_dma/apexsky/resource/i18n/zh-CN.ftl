@@ -82,6 +82,18 @@ menu-value-no-nade-aim = 开镜瞄准
 menu-value-nade-aim-on = 开镜取消
 menu-item-toggle-onevone = 1v1
 menu-item-toggle-no-recoil = 无后座
+menu-item-change-recoil-pitch = 垂直后坐力
+menu-item-change-recoil-yaw = 水平后坐力
+input-prompt-recoil-pitch = 
+    设置新的垂直后坐力系数:
+        (0 到 90) 
+        0 => 不抵消垂直后坐力
+input-prompt-recoil-yaw = 
+    设置新的水平后坐力系数:
+        (0 到 90) 
+        0 => 不抵消水平后坐力
+info-invalid-recoil = Invalid value.
+    后坐力系数必须在0-90之间
 menu-item-set-fps-predict = 预测FPS
 menu-value-calc-fps = 自适应FPS
 input-prompt-fps-predict = 
@@ -123,6 +135,7 @@ hotkey-item-aimbot2 = 自瞄热键2
 hotkey-item-trigger-bot = 自动扳机热键(绑定热键2)
 hotkey-item-flick-bot = 瞬击热键
 hotkey-item-quick-glow = 临时开关热能热键
+hotkey-item-quick-aim = 临时开关自瞄热键
 hotkey-item-algs-radar = ALGS雷达热键
 menu-item-key-codes = 键码表
 item-filter-menu-title = 物品选择菜单

@@ -206,8 +206,6 @@ int Memory::open_proc(const char *name)
 {
   int ret;
   const char *target_proc = name;
-  const char *target_module = name;
-  constexpr uint16_t MZ_Header = 0x5a4d;
   bool exist_dtb_file = check_exist();
   std::set<size_t> valid_dtbs = load_valid_dtbs();
 

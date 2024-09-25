@@ -12,7 +12,7 @@ use wasmer::{Instance, Module, Store, Value};
 use wasmer_wasix::{
     capabilities::Capabilities,
     default_fs_backing,
-    os::{tty_sys::SysTty, TtyBridge},
+    os::tty_sys::SysTty,
     runtime::task_manager::tokio::TokioTaskManager,
     virtual_fs::{DeviceFile, FileSystem, PassthruFileSystem, RootFileSystemBuilder},
     virtual_net, PluggableRuntime, WasiEnv,

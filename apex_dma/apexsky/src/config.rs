@@ -174,6 +174,7 @@ pub struct Settings {
     pub trigger_bot_hot_key: i32,
     pub flick_bot_hot_key: i32,
     pub quickglow_hot_key: i32,
+    pub quickaim_hot_key: i32,
     pub loot_filled_toggle: bool,
     pub player_filled_toggle: bool,
     pub super_glide: bool,
@@ -191,6 +192,8 @@ pub struct Settings {
     pub trigger_bot_shot: bool,
     pub deathbox: bool,
     pub aim_no_recoil: bool,
+    pub recoil_pitch: f32,
+    pub recoil_yaw: f32,
     pub ads_fov: f32,
     pub non_ads_fov: f32,
     pub flick_fov: f32,
@@ -409,6 +412,7 @@ impl Default for Settings {
             trigger_bot_hot_key: 81,
             flick_bot_hot_key: 111,
             quickglow_hot_key: 93,
+            quickaim_hot_key: 94,
             trigger_bot_shot: true,
             // Terminal Stuff
             loot_filled_toggle: false,
@@ -428,6 +432,8 @@ impl Default for Settings {
             bow_charge_rifle_aim: false,
             deathbox: true,
             aim_no_recoil: false,
+            recoil_pitch: 50.0,
+            recoil_yaw: 30.0,
             ads_fov: 7.0, // Fov you want to use while aiming
             non_ads_fov: 16.0,
             flick_fov: 30.0,
