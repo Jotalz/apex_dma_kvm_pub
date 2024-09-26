@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = Enabled
 menu-value-disabled = Disabled
-main-menu-title = Main Menu GameVersion-v3.0.80.27
+main-menu-title = Main Menu GameVersion-v3.0.81.36
 title-main-setting = Main Setting ------ 0
 title-loot-setting = Loot Setting ------ 5
 title-player-setting = Player Glow Setting ------ 9
@@ -172,7 +172,7 @@ weapon-lasers-section = Laser Sight:
 loot-weapon-lasers = Laser Sight
 weapon-hop-ups-menu-title = Weapon Hop-Ups Menu
 weapon-hop-ups-section = Weapon Hop-Ups:
-loot-turbo-charger = Turbo Charger
+loot-turbo-charger = Turbo Charger(Not added)
 loot-skull-piecer = Skull Piecer
 loot-hammer-points = Hammer Points
 loot-disruptor-rounds = Disruptor Rounds(Not added)

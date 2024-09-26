@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = 启用
 menu-value-disabled = 禁用
-main-menu-title = 主菜单 GameVersion-v3.0.80.27
+main-menu-title = 主菜单 GameVersion-v3.0.81.36
 title-main-setting = 主题设置 ------ 0
 title-loot-setting = 物资设置 ------ 5
 title-player-setting = 玩家热能设置 ------ 9
@@ -173,7 +173,7 @@ weapon-lasers-section = 激光瞄准镜:
 loot-weapon-lasers = 激光瞄准镜
 weapon-hop-ups-menu-title = 特殊配件菜单
 weapon-hop-ups-section = 武器特殊配件:
-loot-turbo-charger = 涡轮增压器
+loot-turbo-charger = 涡轮增压器(未开放)
 loot-skull-piecer = 穿颅器(未开放)
 loot-hammer-points = 锤击点
 loot-disruptor-rounds = 干扰器(未开放)

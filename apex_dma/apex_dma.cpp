@@ -983,7 +983,7 @@ void DoActions()
                         continue;
                     }
                     Entity Target = getEntity(entityAddr);
-                    if (Target.isDummy2() || (Target.isPlayer() && g_settings.onevone))
+                    if (Target.isDummy() || (Target.isPlayer() && g_settings.onevone))
                     {
                         ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
                         c++;
@@ -1326,18 +1326,15 @@ static void AimbotLoop()
                 apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, in_attack);
                 if (in_attack > 0)
                 {
-                    QAngle NewAngle;
-                    static QAngle PreviousAngle = LPlayer.GetViewAngles();
                     QAngle viewAngles = LPlayer.GetViewAngles();
                     QAngle punchAngles = LPlayer.GetRecoil();
-                    NewAngle.x = viewAngles.x - ((PreviousAngle.x - punchAngles.x) * (g_settings.recoil_pitch / 100.f));
-                    NewAngle.y = viewAngles.y - ((PreviousAngle.y - punchAngles.y) * (g_settings.recoil_yaw / 100.f));
-                    Math::NormalizeAngles(NewAngle);
-                    if (NewAngle.x != viewAngles.x || NewAngle.y != viewAngles.y)
-                        LPlayer.SetViewAngles(NewAngle);
-                    PreviousAngle = NewAngle;
+                    viewAngles.x -= punchAngles.x * (g_settings.recoil_pitch / 100.f);
+                    viewAngles.y -= punchAngles.y * (g_settings.recoil_yaw / 100.f);
+                    Math::NormalizeAngles(viewAngles);
+                    if (viewAngles.x != viewAngles.x || viewAngles.y != viewAngles.y)
+                        LPlayer.SetViewAngles(viewAngles);
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
             }
             if (!QuickAim) continue;
             // Read WeaponID
