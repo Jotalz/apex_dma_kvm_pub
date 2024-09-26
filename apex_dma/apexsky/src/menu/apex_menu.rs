@@ -777,10 +777,30 @@ fn build_main_menu(
                 Some(i18n_msg!(i18n_bundle, InfoInvalidFlickFov).to_string())
             },
         )
+        .add_item(
+            format_item(
+                &i18n_bundle,
+                format!("      6 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
+                Span::from(
+                    if settings.aim_no_recoil {
+                        i18n_msg!(i18n_bundle, MenuValueEnabled)
+                    } else {
+                        i18n_msg!(i18n_bundle, MenuValueDisabled)
+                    }
+                    .to_string(),
+                ),
+            ),
+            |_| {
+                let settings = &mut lock_config!().settings;
+                settings.aim_no_recoil = !settings.aim_no_recoil;
+                settings.aim = if settings.aim_no_recoil { 0 } else { 2 };
+                None
+            },
+        )
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("      6 - {}", i18n_msg!(i18n_bundle, MenuItemChangeRecoilPitch)),
+                format!("      7 - {}", i18n_msg!(i18n_bundle, MenuItemChangeRecoilPitch)),
                 Span::from(format!("{}", settings.recoil_pitch))
             ),
             &i18n_msg!(i18n_bundle, InputPromptRecoilPitch),
@@ -799,7 +819,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("      7 - {}", i18n_msg!(i18n_bundle, MenuItemChangeRecoilYaw)),
+                format!("      8 - {}", i18n_msg!(i18n_bundle, MenuItemChangeRecoilYaw)),
                 Span::from(format!("{}", settings.recoil_yaw))
             ),
             &i18n_msg!(i18n_bundle, InputPromptRecoilYaw),
@@ -818,7 +838,7 @@ fn build_main_menu(
         .add_input_item(
             format_item(
                 &i18n_bundle,
-                format!("      8 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
+                format!("      9 - {}", i18n_msg!(i18n_bundle, MenuItemChangeBoneAim)),
                 Span::from(
                     if settings.bone_nearest {
                         i18n_msg!(i18n_bundle, MenuValueBoneNearest)
@@ -865,44 +885,23 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "      9 - {}", i18n_msg!(i18n_bundle, MenuItemFlickNearest)),
+        format!( "     10 - {}", i18n_msg!(i18n_bundle, MenuItemFlickNearest)),
         settings.flick_nearest,
         flick_nearest
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "     10 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
+        format!( "     11 - {}", i18n_msg!(i18n_bundle, MenuItemBowChargeRifleAim)),
         settings.bow_charge_rifle_aim,
         bow_charge_rifle_aim
     );
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!( "     11 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
+        format!( "     12 - {}", i18n_msg!(i18n_bundle, MenuItemTriggerAutoShot)),
         settings.trigger_bot_shot,
         trigger_bot_shot
-    );
-    menu = menu
-    .add_item(
-        format_item(
-            &i18n_bundle,
-            format!("     12 - {}", i18n_msg!(i18n_bundle, MenuItemToggleNoRecoil)),
-            Span::from(
-                if settings.aim_no_recoil {
-                    i18n_msg!(i18n_bundle, MenuValueEnabled)
-                } else {
-                    i18n_msg!(i18n_bundle, MenuValueDisabled)
-                }
-                .to_string(),
-            ),
-        ),
-        |_| {
-            let settings = &mut lock_config!().settings;
-            settings.aim_no_recoil = !settings.aim_no_recoil;
-            settings.aim = if settings.aim_no_recoil { 0 } else { 2 };
-            None
-        },
     );
     menu = menu
     .add_item(

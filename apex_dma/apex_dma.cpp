@@ -39,6 +39,7 @@ const int ToRead = 100;
 std::atomic<bool> TriggerReady = false;
 std::atomic<bool> FlickReady = false;
 std::atomic<bool> QuickGlow = true;
+std::atomic<bool> QuickAim = true;
 std::atomic<bool> Isdone = false; // Prevent frequent writes during the superGrpple
 std::atomic<int> local_held_id = 2147483647;
 
@@ -606,13 +607,13 @@ void ClientActions()
             }
             if (triggerbot_clickgun)
             {
-                if (g_settings.trigger_bot_shot && isPressed(g_settings.trigger_bot_hot_key))
-                {
-                    TriggerReady = true;
-                }
-                else if (isPressed(g_settings.flick_bot_hot_key))
+                if (isPressed(g_settings.flick_bot_hot_key))
                 {
                     FlickReady = true;
+                }
+                else if (g_settings.trigger_bot_shot && isPressed(g_settings.trigger_bot_hot_key))
+                {
+                    TriggerReady = true;
                 }
                 else
                 {
@@ -644,14 +645,13 @@ void ClientActions()
                 }
             }
             if (isPressed(g_settings.quickaim_hot_key))
-            { // F3
-                static std::chrono::time_point<std::chrono::steady_clock> lastPressTime;
+            { // PRESS F3 Temporarily disable aim
+                static std::chrono::time_point<std::chrono::steady_clock> lastPressTime_aim;
                 auto now_ms = std::chrono::steady_clock::now();
-                if (now_ms >= lastPressTime + std::chrono::milliseconds(200))
+                if (now_ms >= lastPressTime_aim + std::chrono::milliseconds(200))
                 {
-                    auto settings_state = g_settings;
-                    settings_state.quickaim_hot_key = !settings_state.quickaim_hot_key;
-                    update_settings(settings_state);
+                    QuickAim = !QuickAim;
+                    lastPressTime_aim = now_ms;
                 }
             }
             if (isPressed(g_settings.map_radar_hotkey))
@@ -1302,8 +1302,6 @@ static void AimbotLoop()
         while (g_Base != 0)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            const auto g_settings = global_settings();
-
             // Read LocalPlayer
             uint64_t LocalPlayer = 0;
             apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
@@ -1318,6 +1316,7 @@ static void AimbotLoop()
                 continue;
             }
             // Read HeldID
+            const auto g_settings = global_settings();
             int HeldID;
             apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID);
             local_held_id = HeldID; // 读取本地玩家手持物品id赋值给local_held_id
@@ -1338,8 +1337,9 @@ static void AimbotLoop()
                         LPlayer.SetViewAngles(NewAngle);
                     PreviousAngle = NewAngle;
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(4));
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             }
+            if (!QuickAim) continue;
             // Read WeaponID
             WeaponXEntity currentWeapon = WeaponXEntity();
             currentWeapon.update(LocalPlayer);

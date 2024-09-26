@@ -852,7 +852,7 @@ std::thread Overlay::Start() {
 
 void Overlay::Clear() {
   running = false;
-  printf("running=%b\n", running);
+  printf("running=%d\n", running);
 }
 
 int Overlay::getWidth() { return width; }
