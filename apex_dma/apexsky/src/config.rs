@@ -181,7 +181,6 @@ pub struct Settings {
     pub super_grpple:bool,
     pub auto_tapstrafe:bool,
     pub onevone: bool,
-    pub tdm_toggle: bool,
     pub item_glow: bool,
     pub player_glow: bool,
     pub player_glow_armor_color: bool,
@@ -422,7 +421,6 @@ impl Default for Settings {
             auto_tapstrafe: true,
             // end Terminal Stuff
             onevone: false,
-            tdm_toggle: false,
             item_glow: true,
             player_glow: true,
             player_glow_armor_color: false,

@@ -20,29 +20,28 @@
 #include <string.h>
 #include <sys/types.h>
 #include <thread>
+#include <atomic>
 #include <unistd.h>
 #include <unordered_map>
 #include <vector>
 #include <fstream>
-#include <atomic>
 
 #define UPDATEITEM 0
-// this is a test, with seconds
+GlobalVar globals;
 Memory apex_mem;
 uint64_t g_Base;
-uint64_t ViewMatrix = 0;
+AimAssist aimbot;
 
-// Just setting things up, dont edit.
-aimbot_state_t aimbot;
-int LocalTeamID = 0;
 const int ToRead = 100;
+int itementcount = 10000;
+std::atomic<bool> Ready = false;
 std::atomic<bool> TriggerReady = false;
 std::atomic<bool> FlickReady = false;
 std::atomic<bool> QuickGlow = true;
 std::atomic<bool> QuickAim = true;
 std::atomic<bool> Isdone = false; // Prevent frequent writes during the superGrpple
-std::atomic<int> local_held_id = 2147483647;
 
+bool global_t = false;
 bool actions_t = false;
 bool cactions_t = false;
 bool terminal_t = false;
@@ -51,25 +50,24 @@ bool esp_t = false;
 bool aim_t = false;
 bool item_t = false;
 
-extern Vector aim_target; // for esp
+// for esp
+extern Vector aim_target;
 extern float bulletspeed;
 extern float bulletgrav;
 bool next2 = false;
 bool valid = false;
 Vector esp_local_pos;
-
-uint32_t local_weapon_id = 2147483647;
-int itementcount = 10000;
-int map = 0;
-std::vector<TreasureClue> treasure_clues;
-std::map<uint64_t, uint64_t> centity_to_index; // Map centity to entity index
 float lastvis_esp[ToRead];
-float lastvis_aim[ToRead];
+std::vector<TreasureClue> treasure_clues;
+std::vector<player> players(ToRead);
+
+
+std::map<uint64_t, uint64_t> centity_to_index; // Map centity to entity index
+std::unordered_map<uint64_t, float> LastVisibleTime;
+std::unordered_map<uint64_t, float> LastTimeAimedAt;
 std::vector<Entity> spectators, allied_spectators;
 std::mutex spectatorsMtx;
 
-int EntTeam;
-int LocTeam;
 //^^ Don't EDIT^^
 
 uint32_t button_state[4];
@@ -113,11 +111,10 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     float boxWidth, boxDepth, boxHeight;
     Vector targetBonePositionPre;
     Vector screenTargetBonePositionPre;
-    float projectile_speed = weapon.get_projectile_speed();
-    float projectile_scale = weapon.get_projectile_gravity();
-    Matrix view_matrix_data = {};
-    apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
-
+    float projectile_speed = weapon.get_projectile_speed() * 0.92;
+    float projectile_scale = weapon.get_projectile_gravity() * 1.05;
+    Matrix viewMatrix = std::get<Matrix>(globals.Get("ViewMatrix"));
+    uint32_t local_weapon_id = std::get<uint32_t>(globals.Get("WeaponID"));
     switch (local_weapon_id)
     {
     case idweapon_eva8:
@@ -209,7 +206,7 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
     for (const auto &corner : corners)
     {
         Vector screenPos;
-        if (WorldToScreen(corner, view_matrix_data.matrix, screen_width, screen_height, screenPos))
+        if (WorldToScreen(corner, viewMatrix.matrix, screen_width, screen_height, screenPos))
         {
             minX = (std::min)(minX, screenPos.x);
             maxX = (std::max)(maxX, screenPos.x);
@@ -283,68 +280,179 @@ void MapRadarTesting(uint64_t localptr)
     }
 }
 
+void UpdateGlobalVar()
+{
+    global_t = true;
+    while (global_t)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        while (g_Base != 0)
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            uint64_t LocalPlayerPtr = 0;
+            apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayerPtr);
+            globals.Set("LocalPlayerPtr", LocalPlayerPtr);
+
+            char level_name[128] = {0};
+            uint64_t LevelName_ptr = g_Base + OFFSET_LEVELNAME;
+            apex_mem.ReadArray<char>(LevelName_ptr, level_name, 128);
+            // printf("%s\n", level_name);
+            int8_t Map = 0;
+            if (strcmp(level_name, "mp_lobby") == 0)
+            {
+                Map = 0;
+            }
+            else if (strcmp(level_name, "mp_rr_canyonlands_staging_mu1") == 0)
+            {
+                Map = 1;
+            }
+            else if (strcmp(level_name, "mp_rr_tropic_island_mu2") == 0)
+            {
+                Map = 2;
+            }
+            else if (strcmp(level_name, "mp_rr_desertlands_hu") == 0)
+            {
+                Map = 3;
+            }
+            else if (strcmp(level_name, "mp_rr_olympus_mu2") == 0)
+            {
+                Map = 4;
+            }
+            else if (strcmp(level_name, "mp_rr_district") == 0)
+            {
+                Map = 5;
+            }
+            else if (strcmp(level_name, "mp_rr_divided_moon_mu1") == 0)
+            {
+                Map = 6;
+            }
+            else if (strcmp(level_name, "mp_rr_canyonlands_hu") == 0)
+            {
+                Map = 7;
+            }
+            else if (strcmp(level_name, "mp_rr_tropic_island_mu1") == 0)
+            {
+                Map = 8;
+            }
+            else
+            {
+                Map = -1;
+            }
+            globals.Set("Map", Map);
+
+            int FrameNumber = 0;
+            apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, FrameNumber);
+            globals.Set("FrameNumber", FrameNumber);
+
+            if (Map < 1 || IsInValid(LocalPlayerPtr))
+            {
+                Ready = false;
+                continue;
+            }
+            uint64_t gameMode_ptr = 0;
+            char gameMode[32] = {0};
+            bool TMM = false;
+            apex_mem.Read<uint64_t>(g_Base + OFF_GAMEMODE, gameMode_ptr);
+            apex_mem.ReadArray<char>(gameMode_ptr, gameMode, 32);
+            TMM = globals.mixtape[gameMode];
+            globals.Set("TMM", TMM);
+
+            // bool Dead = true;
+            Vector LocalPosition;
+            // apex_mem.Read<bool>(LocalPlayerPtr + OFFSET_LIFE_STATE, Dead);
+            apex_mem.Read<Vector>(LocalPlayerPtr + OFFSET_ORIGIN, LocalPosition);
+            if (LocalPosition.x == 0.0f && LocalPosition.y == 0.0f && LocalPosition.z == 0.0f)
+            {
+                Ready = false;
+                continue;
+            }
+
+            uint64_t viewRender_ptr = 0;
+            uint64_t viewMatrix_ptr = 0;
+            Matrix ViewMatrix = {};
+            apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRender_ptr);
+            apex_mem.Read<uint64_t>(viewRender_ptr + OFFSET_MATRIX, viewMatrix_ptr);
+            apex_mem.Read<Matrix>(viewMatrix_ptr, ViewMatrix);
+            globals.Set("ViewMatrix", ViewMatrix);
+
+            int AttackState = 0, ZoomState = 0, JumpState = 0, BackWardState = 0, SkyDriveState = 0,
+                DuckState = 0, ForceForeWard = 0, ForeWardState = 0, SpaceFlag = 0;
+            float WallRunStart = 0, WallRunClear = 0, WorldTime = 0, TraversalTimeStart = 0,
+                  TraversalTimeProgress = 0;
+            apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, AttackState);               // 108开火
+            apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, ZoomState);                   // 109瞄准
+            apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, JumpState);                   // 跳跃状态
+            apex_mem.Read<int>(g_Base + OFFSET_IN_BACKWARD, BackWardState);           // 后退状态
+            apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD, ForeWardState);            // 按w时33，其他0
+            apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD + 0x8, ForceForeWard);      // 按下w是1 其他0
+            apex_mem.Read<int>(LocalPlayerPtr + OFFSET_FLAGS, SpaceFlag);             // 玩家空间状态？
+            apex_mem.Read<float>(LocalPlayerPtr + OFFSET_WALLRUNSTART, WallRunStart); // 开始爬墙的时间
+            apex_mem.Read<float>(LocalPlayerPtr + OFFSET_WALLRUNCLEAR, WallRunClear); // 上一次爬墙的时间
+            apex_mem.Read<int>(LocalPlayerPtr + OFFSET_SKYDRIVESTATE, SkyDriveState); // 跳伞状态
+            apex_mem.Read<int>(LocalPlayerPtr + OFFSET_IN_DUCKSTATE, DuckState);      // 向下蹲1 完全蹲下2 起身过程3 其他0
+            apex_mem.Read<float>(LocalPlayerPtr + OFFSET_TIME_BASE, WorldTime);
+            apex_mem.Read<float>(LocalPlayerPtr + OFFSET_TRAVERSAL_STARTTIME, TraversalTimeStart);
+            apex_mem.Read<float>(LocalPlayerPtr + OFFSET_TRAVERSAL_PROGRESS, TraversalTimeProgress);
+
+            globals.Set("AttackState", AttackState);
+            globals.Set("ZoomState", ZoomState);
+            globals.Set("JumpState", JumpState);
+            globals.Set("BackWardState", BackWardState);
+            globals.Set("SkyDriveState", SkyDriveState);
+            globals.Set("DuckState", DuckState);
+            globals.Set("ForceForeWard", ForceForeWard);
+            globals.Set("ForeWardState", ForeWardState);
+            globals.Set("SpaceFlag", SpaceFlag);
+            globals.Set("WallRunStart", WallRunStart);
+            globals.Set("WallRunClear", WallRunClear);
+            globals.Set("WorldTime", WorldTime);
+            globals.Set("TraversalTimeProgress", TraversalTimeProgress);
+            globals.Set("TraversalTimeStart", TraversalTimeStart);
+
+            int HeldID;
+            apex_mem.Read<int>(LocalPlayerPtr + OFFSET_OFF_WEAPON, HeldID);
+            globals.Set("HeldID", HeldID);
+
+            Ready = true;
+        }
+        Ready = false;
+    }
+    global_t = false;
+}
+
 void ClientActions()
 {
     cactions_t = true;
     while (cactions_t)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-        while (g_Base != 0)
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        while (Ready)
         {
             const auto g_settings = global_settings();
 
-            // read player ptr
-            uint64_t local_player_ptr = 0;
-            uint64_t viewRender_ptr = 0;
-            apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, local_player_ptr);
-            if (local_player_ptr == 0)
-                continue;
-            apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRender_ptr);
-            apex_mem.Read<uint64_t>(viewRender_ptr + OFFSET_MATRIX, ViewMatrix);
+            uint64_t local_player_ptr = std::get<uint64_t>(globals.Get("LocalPlayerPtr"));
             // read game states
             apex_mem.Read<typeof(button_state)>(g_Base + OFFSET_INPUT_SYSTEM + 0xb0, button_state);
-            int attack_state = 0, zoom_state = 0, jump_state = 0, backWardState = 0, curFrameNumber = 0, skyDriveState = 0,
-                duck_state = 0, force_foreward = 0, foreward_state = 0, flags = 0;
-            float wallrunStart = 0, wallrunClear = 0;
+            int attack_state = std::get<int>(globals.Get("AttackState"));
+            int zoom_state = std::get<int>(globals.Get("ZoomState"));
+            int jump_state = std::get<int>(globals.Get("JumpState"));
+            int backWardState = std::get<int>(globals.Get("BackWardState"));
+            int curFrameNumber = std::get<int>(globals.Get("FrameNumber"));
+            int skyDriveState = std::get<int>(globals.Get("SkyDriveState"));
+            int duck_state = std::get<int>(globals.Get("DuckState"));
+            int force_foreward = std::get<int>(globals.Get("ForceForeWard"));
+            int foreward_state = std::get<int>(globals.Get("ForeWardState"));
+            int flags = std::get<int>(globals.Get("SpaceFlag"));
+            float wallrunStart = std::get<float>(globals.Get("WallRunStart"));
+            float wallrunClear = std::get<float>(globals.Get("WallRunClear"));
+            float world_time = std::get<float>(globals.Get("WorldTime"));
+            float traversal_start_time = std::get<float>(globals.Get("TraversalTimeStart"));
+            float traversal_progress = std::get<float>(globals.Get("TraversalTimeProgress"));
             bool longclimb = false;
-            apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, attack_state);              // 108开火
-            apex_mem.Read<int>(g_Base + OFFSET_IN_ZOOM, zoom_state);                  // 109瞄准
-            apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP, jump_state);                  // 跳跃状态
-            apex_mem.Read<int>(g_Base + OFFSET_IN_BACKWARD, backWardState);           // 后退状态
-            apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, curFrameNumber); // GlobalVars + 0x0008
-            apex_mem.Read<int>(local_player_ptr + OFFSET_FLAGS, flags);               // 玩家空间状态？
-            apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNSTART, wallrunStart);
-            apex_mem.Read<float>(local_player_ptr + OFFSET_WALLRUNCLEAR, wallrunClear);
-            apex_mem.Read<int>(local_player_ptr + OFFSET_SKYDRIVESTATE, skyDriveState); // 跳伞状态
-            apex_mem.Read<int>(local_player_ptr + OFFSET_IN_DUCKSTATE, duck_state);     // 玩家下蹲状态
-            apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD, foreward_state);             // 前进状态
-            apex_mem.Read<int>(g_Base + OFFSET_IN_FORWARD + 0x8, force_foreward);       // 前进按键
-
             // apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK, tduck_state); // 切换下蹲
             // apex_mem.Read<int>(g_Base + OFFSET_IN_TOGGLE_DUCK + 0x8, force_toggle_duck); //切换蹲起按键
             // apex_mem.Read<int>(g_Base + OFFSET_IN_JUMP + 0x8, force_jump);
             // apex_mem.Read<int>(g_Base + OFFSET_IN_DUCK + 0x8, force_duck); //下蹲按键
-            float world_time, traversal_start_time, traversal_progress;
-            if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TIME_BASE, world_time))
-            {
-                // memory_io_panic("read time_base");
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                break;
-            }
-            if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TRAVERSAL_STARTTIME,
-                                      traversal_start_time))
-            {
-                // memory_io_panic("read traversal_starttime");
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                break;
-            }
-            if (!apex_mem.Read<float>(local_player_ptr + OFFSET_TRAVERSAL_PROGRESS,
-                                      traversal_progress))
-            {
-                memory_io_panic("read traversal_progress");
-            }
-
             if (g_settings.auto_tapstrafe)
             {
                 bool ts_start = true;
@@ -465,8 +573,7 @@ void ClientActions()
                     {
                         apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
                     }
-                    if (traversal_progress > trav_start && hang_on_wall < hang_max &&
-                        !start_sg)
+                    if (traversal_progress > trav_start && hang_on_wall < hang_max && !start_sg)
                     {
                         auto now_ms = std::chrono::steady_clock::now();
                         if (std::chrono::duration_cast<std::chrono::milliseconds>(now_ms - last_sg_finish).count() > total_interval && jump_state > 0)
@@ -501,9 +608,7 @@ void ClientActions()
                     apex_mem.Write<int>(g_Base + OFFSET_IN_DUCK + 0x8, 6);
                     std::this_thread::sleep_for(std::chrono::milliseconds(release_wait));
                     apex_mem.Write<int>(g_Base + OFFSET_IN_JUMP + 0x8, 4);
-                    // Write<int>(g_Base + OFFSET_IN_DUCK + 0x8, 4);
                     last_sg_finish = std::chrono::steady_clock::now();
-                    // g_logger += "sg\n";
                     start_sg = false;
                 }
             }
@@ -543,34 +648,34 @@ void ClientActions()
                     checkpoint_time = ms;
                 }
             }
-
+            int local_held_id = std::get<int>(globals.Get("HeldID"));
             if (local_held_id == -251)
             { // no_nade_aim 为true时，按下瞄准为使用高抛
                 if ((g_settings.no_nade_aim && zoom_state == 0) ||
                     (!g_settings.no_nade_aim && zoom_state > 0))
                 {
-                    aimbot.gun_safety = true;
+                    aimbot.SetGunSafety(true);
                 }
                 else
                 {
-                    aimbot.gun_safety = false;
+                    aimbot.SetGunSafety(false);
                 }
             }
             if (g_settings.keyboard)
             {
                 if (isPressed(g_settings.aimbot_hot_key_2))
                 {
-                    aimbot.aiming = true;
-                    aimbot.smooth = g_settings.smooth_sub;
+                    aimbot.SetAimingState(true);
+                    aimbot.SetSmooth(g_settings.smooth_sub);
                 }
                 else if (isPressed(g_settings.aimbot_hot_key_1))
                 {
-                    aimbot.aiming = true;
-                    aimbot.smooth = g_settings.smooth;
+                    aimbot.SetAimingState(true);
+                    aimbot.SetSmooth(g_settings.smooth);
                 }
                 else
                 {
-                    aimbot.aiming = false;
+                    aimbot.SetAimingState(false);
                 }
             }
             if (g_settings.gamepad)
@@ -578,14 +683,15 @@ void ClientActions()
                 // attackState == 120 || zoomState == 119
                 if (attack_state > 0 || zoom_state > 0)
                 {
-                    aimbot.aiming = true;
+                    aimbot.SetAimingState(true);
                 }
                 else
                 {
-                    aimbot.aiming = false;
+                    aimbot.SetAimingState(false);
                 }
             }
             bool triggerbot_clickgun;
+            uint32_t local_weapon_id = globals.GetOrDefault<uint32_t>("WeaponID",idmelee);
             switch (local_weapon_id)
             {
             case idweapon_eva8:
@@ -628,11 +734,11 @@ void ClientActions()
             }
             if (zoom_state > 0)
             { // 根据是否开镜选择不同的自瞄范围
-                aimbot.max_fov = g_settings.ads_fov;
+                aimbot.SetMaxFov(g_settings.ads_fov);
             }
             else
             {
-                aimbot.max_fov = g_settings.non_ads_fov;
+                aimbot.SetMaxFov(g_settings.non_ads_fov);
             }
             if (isPressed(g_settings.quickglow_hot_key))
             {
@@ -665,7 +771,7 @@ void ClientActions()
 }
 
 // 位于ProcessPlayer
-void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
+void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number,bool vis)
 {
     const auto g_settings = global_settings();
     int setting_index = 0;
@@ -674,16 +780,16 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
     if (!(g_settings.firing_range) && (Target.isKnocked() || !Target.isAlive()))
     { // 不在训练场并且倒地或者没活着
         setting_index = 70;
-        highlight_parameter = {g_settings.glow_r_knocked,
-                               g_settings.glow_g_knocked,
-                               g_settings.glow_b_knocked};
+        highlight_parameter = { g_settings.glow_r_knocked,
+                                g_settings.glow_g_knocked,
+                                g_settings.glow_b_knocked};
     }
-    else if (Target.lastVisTime() > lastvis_aim[index] ||
-             (Target.lastVisTime() < 0.f && lastvis_aim[index] > 0.f))
+    else if (vis)
     {
         setting_index = 69;
-        highlight_parameter = {g_settings.glow_r_viz, g_settings.glow_g_viz,
-                               g_settings.glow_b_viz};
+        highlight_parameter = { g_settings.glow_r_viz, 
+                                g_settings.glow_g_viz,
+                                g_settings.glow_b_viz};
     }
     else
     {
@@ -725,8 +831,9 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
         else
         {
             setting_index = 68;
-            highlight_parameter = {g_settings.glow_r_not, g_settings.glow_g_not,
-                                   g_settings.glow_b_not};
+            highlight_parameter = { g_settings.glow_r_not,
+                                    g_settings.glow_g_not,
+                                    g_settings.glow_b_not};
         }
     }
     // love player glow
@@ -759,14 +866,13 @@ void SetPlayerGlow(Entity &LPlayer, Entity &Target, int index, int frame_number)
 }
 
 // 位于DoAction
-void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number, std::set<uintptr_t> &tmp_specs)
+void ProcessPlayer(Entity &LPlayer, Entity &target, uint64_t target_ptr, int frame_number, std::set<uint64_t> &tmp_specs)
 {
 
     const auto g_settings = global_settings();
 
     int entity_team = target.getTeamId();
     int local_team = LPlayer.getTeamId();
-
     if (!target.isAlive())
     {
         if (target.isSpec(LPlayer.ptr))
@@ -775,14 +881,16 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
         }
         return;
     }
+    bool vis = target.isVisable(LastVisibleTime,LastTimeAimedAt);
     if (!LPlayer.isAlive())
     {
-        SetPlayerGlow(LPlayer, target, index, frame_number);
-        lastvis_aim[index] = target.lastVisTime();
+        SetPlayerGlow(LPlayer, target, target_ptr, frame_number,vis);
+        LastVisibleTime[target_ptr] = target.lastVisTime();
+        LastTimeAimedAt[target_ptr] = target.lastCrossHairTime();
         return;
     }
-
-    if (g_settings.tdm_toggle)
+    bool tmm = std::get<bool>(globals.Get("TMM"));
+    if (tmm)
     {
         if ((entity_team % 2) == (local_team % 2))
         {
@@ -793,8 +901,7 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     // Firing range stuff
     if (!g_settings.firing_range)
     {
-        if (entity_team < 0 || entity_team > 50 ||
-            (entity_team == LocalTeamID && !g_settings.onevone))
+        if (entity_team < 0 || entity_team > 50 || (entity_team == local_team && !g_settings.onevone))
         {
             return;
         }
@@ -805,18 +912,17 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
     float dist = LocalPlayerPosition.DistTo(EntityPosition);
 
     // aim distance check
+    int local_held_id = std::get<int>(globals.Get("HeldID"));
     if ((local_held_id == -251 && dist > g_settings.skynade_dist) ||
-        dist > g_settings.aim_dist)
-    {
-        SetPlayerGlow(LPlayer, target, index, frame_number);
-        lastvis_aim[index] = target.lastVisTime();
-        return; // need setglow though it's out of aimdist
-    }
-
+        dist > g_settings.aim_dist){
+            SetPlayerGlow(LPlayer, target, target_ptr, frame_number,vis);
+            LastVisibleTime[target_ptr] = target.lastVisTime();
+            LastTimeAimedAt[target_ptr] = target.lastCrossHairTime();
+            return; // need setglow though it's out of aimdist
+        }
     // Targeting
     const float vis_weights = 12.5f;
     float fov = CalculateFov(LPlayer, target);
-    bool vis = target.lastVisTime() > lastvis_aim[index];
     float score =
         (fov * fov) * 100 + (dist * 0.025) * 10 + (vis ? 0 : vis_weights);
     /*
@@ -826,37 +932,36 @@ void ProcessPlayer(Entity &LPlayer, Entity &target, int index, int frame_number,
       3  90m  900
       4  160m 1600
     */
-    if (score < aimbot.target_score_max)
+    if (score < aimbot.GetTargetScoreMax())
     {
-        aimbot.target_score_max = score;
-        aimbot.tmp_aimentity = target.ptr;
+        aimbot.SetTargetScoreMax(score);
+        aimbot.SetTmpAimentity(target.ptr);
     }
 
     if (g_settings.aim == 2)
     {
         // vis check for shooting current aim entity
-        if (local_held_id != -251 && aimbot.aimentity == target.ptr)
+        if (local_held_id != -251 && aimbot.GetAimentity() == target.ptr)
         {
             if (!vis)
             {
-                // turn on safety
-                aimbot.gun_safety = true;
+                aimbot.SetGunSafety(true);
             }
             else
             {
-                aimbot.gun_safety = false;
+                aimbot.SetGunSafety(false);
             }
-            if (FlickReady && !aimbot.gun_safety)
+            if (FlickReady && !aimbot.GetGunSafety())
             {
-                Matrix view_matrix_data = {};
-                apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
+                Matrix view_matrix_data = std::get<Matrix>(globals.Get("ViewMatrix"));
                 float *m_vMatrix = view_matrix_data.matrix;
                 DoFlick(LPlayer, target, m_vMatrix);
             }
         }
     }
-    SetPlayerGlow(LPlayer, target, index, frame_number);
-    lastvis_aim[index] = target.lastVisTime();
+    SetPlayerGlow(LPlayer, target, target_ptr, frame_number,vis);
+    LastVisibleTime[target_ptr] = target.lastVisTime();
+    LastTimeAimedAt[target_ptr] = target.lastCrossHairTime();
 }
 
 // Main stuff, dont edit.
@@ -865,63 +970,17 @@ void DoActions()
     actions_t = true;
     while (actions_t)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
-        while (g_Base != 0)
-        {                                                               // 读到游戏基址后开始循环
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        while (Ready)
+        {
             std::this_thread::sleep_for(std::chrono::milliseconds(30)); // don't change xD
 
-            uint64_t LocalPlayer = 0;
-            apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
-            if (LocalPlayer == 0)
+            uint64_t localPlayerPtr = std::get<uint64_t>(globals.Get("LocalPlayerPtr"));
+            if (localPlayerPtr == 0)
                 continue;
             const auto g_settings = global_settings();
-            char level_name[128] = {0};
-            uint64_t LevelName_ptr = g_Base + OFFSET_LEVELNAME;
-            apex_mem.ReadArray<char>(LevelName_ptr, level_name, 128);
-            // printf("%s\n", level_name);
-            if (strcmp(level_name, "mp_lobby") == 0)
-            {
-                map = 0;
-            }
-            else if (strcmp(level_name, "mp_rr_canyonlands_staging_mu1") == 0)
-            {
-                map = 1;
-            }
-            else if (strcmp(level_name, "mp_rr_tropic_island_mu2") == 0)
-            {
-                map = 2;
-            }
-            else if (strcmp(level_name, "mp_rr_desertlands_hu") == 0)
-            {
-                map = 3;
-            }
-            else if (strcmp(level_name, "mp_rr_olympus_mu2") == 0)
-            {
-                map = 4;
-            }
-            else if (strcmp(level_name, "mp_rr_district") == 0)
-            {
-                map = 5;
-            }
-            else if (strcmp(level_name, "mp_rr_divided_moon_mu1") == 0)
-            {
-                map = 6;
-            }
-            else if (strcmp(level_name, "mp_rr_canyonlands_hu") == 0)
-            {
-                map = 7;
-            }
-            else if (strcmp(level_name, "mp_rr_tropic_island_mu1") == 0)
-            {
-                map = 8;
-            }
-            else
-            {
-                map = -1;
-            }
-            if (map < 1)
-                continue;
+
+            int8_t map = std::get<int8_t>(globals.Get("Map"));
             static std::chrono::time_point<std::chrono::steady_clock> checkpoint_time;
             auto now_ms = std::chrono::steady_clock::now();
             if (now_ms >= checkpoint_time + std::chrono::milliseconds(10000))
@@ -947,30 +1006,28 @@ void DoActions()
                 itementcount = 10000;
             }
 
-            Entity LPlayer = getEntity(LocalPlayer); // 根据地址生成玩家实体对象entity
+            Entity LPlayer = getEntity(localPlayerPtr); // 根据地址生成玩家实体对象entity
 
-            LocalTeamID = LPlayer.getTeamId();       // 获取自己所在队伍的id
+            int LocalTeamID = LPlayer.getTeamId();
             if (LocalTeamID < 0 || LocalTeamID > 50) // 不在游戏中不继续执行
             {
                 continue;
             }
-            uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
 
+            uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
             uint64_t baseEntity = 0;
             apex_mem.Read<uint64_t>(entityListPtr, baseEntity); // Check base entity is not Null
             if (baseEntity == 0)                                // CWORLD 实体，应该是每一局开局创建的
             {
                 continue;
             }
-            int frame_number = 0;
-            apex_mem.Read<int>(g_Base + OFFSET_GLOBAL_VARS + 0x0008, frame_number); // 读取游戏的实际帧数
-            std::set<uintptr_t> tmp_specs = {};
-            aimbot.target_score_max = (50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10; // 初始化分数
-            aimbot.tmp_aimentity = 0;
+            int frame_number = std::get<int>(globals.Get("FrameNumber"));
+            std::set<uint64_t> tmp_specs = {};
+            aimbot.SetTargetScoreMax((50 * 50) * 100 + (g_settings.aim_dist * 0.025) * 10); // 初始化分数
+            aimbot.SetTmpAimentity(0);
             centity_to_index.clear();
             if (map == 1)
             {
-                int c = 0;
                 for (int i = 0; i < 15000; i++)
                 {
                     uint64_t entityAddr = 0;
@@ -978,15 +1035,14 @@ void DoActions()
                     if (entityAddr == 0)
                         continue;
                     centity_to_index.insert_or_assign(entityAddr, i);
-                    if (LocalPlayer == entityAddr)
+                    if (localPlayerPtr == entityAddr)
                     {
                         continue;
                     }
                     Entity Target = getEntity(entityAddr);
                     if (Target.isDummy() || (Target.isPlayer() && g_settings.onevone))
                     {
-                        ProcessPlayer(LPlayer, Target, c, frame_number, tmp_specs);
-                        c++;
+                        ProcessPlayer(LPlayer, Target, entityAddr, frame_number, tmp_specs);
                     }
                 }
             }
@@ -1000,14 +1056,14 @@ void DoActions()
                         continue;
                     centity_to_index.insert_or_assign(entityAddr, i);
 
-                    if (LocalPlayer == entityAddr)
+                    if (localPlayerPtr == entityAddr)
                         continue;
                     Entity Target = getEntity(entityAddr);
                     if (!Target.isPlayer())
                     {
                         continue;
                     }
-                    ProcessPlayer(LPlayer, Target, i, frame_number, tmp_specs);
+                    ProcessPlayer(LPlayer, Target, entityAddr, frame_number, tmp_specs);
                 }
             }
 
@@ -1032,18 +1088,18 @@ void DoActions()
                 allied_spectators = tmp_ally_spec;
             }
             // set current aim entity
-            if (aimbot.lock)
+            if (aimbot.GetLock())
             { // locked target
-                aimbot.aimentity = aimbot.locked_aimentity;
+                aimbot.SetAimentity(aimbot.GetLockedAimentity());
             }
             else
             { // or new target
-                aimbot.aimentity = aimbot.tmp_aimentity;
+                aimbot.SetAimentity(aimbot.GetTmpAimentity());
             }
             // disable aimbot safety if vis check is turned off
             if (g_settings.aim == 1)
             {
-                aimbot.gun_safety = false;
+                aimbot.SetGunSafety(false);
             }
 
             // weapon model glow
@@ -1095,9 +1151,6 @@ void DoActions()
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-std::vector<player> players(ToRead);
-Matrix view_matrix_data = {};
-
 // ESP loop.. this helps right?
 static void EspLoop()
 {
@@ -1105,7 +1158,7 @@ static void EspLoop()
     while (esp_t)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        while (g_Base != 0 && overlay_t)
+        while (Ready && overlay_t)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(2));
             const auto g_settings = global_settings();
@@ -1119,7 +1172,7 @@ static void EspLoop()
                 if (LocalPlayer == 0)
                 {
                     next2 = true;
-                    while (next2 && g_Base != 0 && overlay_t && g_settings.esp)
+                    while (g_Base != 0 && overlay_t && g_settings.esp)
                     {
                         std::this_thread::sleep_for(std::chrono::milliseconds(10));
                     }
@@ -1130,7 +1183,7 @@ static void EspLoop()
                 if (LocalTeamID < 0 || LocalTeamID > 50)
                 {
                     next2 = true;
-                    while (next2 && g_Base != 0 && overlay_t && g_settings.esp)
+                    while (g_Base != 0 && overlay_t && g_settings.esp)
                     {
                         std::this_thread::sleep_for(std::chrono::milliseconds(10));
                     }
@@ -1138,8 +1191,7 @@ static void EspLoop()
                 }
                 Vector LocalPlayerPosition = LPlayer.getPosition();
                 esp_local_pos = LocalPlayerPosition;
-                apex_mem.Read<Matrix>(ViewMatrix, view_matrix_data);
-
+                Matrix view_matrix_data = std::get<Matrix>(globals.Get("ViewMatrix"));
                 uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
 
                 players.clear();
@@ -1270,9 +1322,8 @@ static void EspLoop()
                         }
                     }
                 }
-
                 next2 = true;
-                while (next2 && g_Base != 0 && overlay_t && g_settings.esp)
+                while (g_Base != 0 && overlay_t && g_settings.esp)
                 {
                     std::this_thread::sleep_for(std::chrono::milliseconds(1));
                 }
@@ -1283,51 +1334,50 @@ static void EspLoop()
 }
 
 // Aimbot Loop stuff
-inline static void lock_target(uintptr_t target_ptr)
+inline static void lock_target(uint64_t target_ptr)
 { // 锁定目标函数，aimbot是包含自瞄信息的结构体
-    aimbot.lock = true;
-    aimbot.locked_aimentity = target_ptr;
+    aimbot.SetLock(true);
+    aimbot.SetLockedAimentity(target_ptr);
 }
 inline static void cancel_targeting()
 { // 取消锁定
-    aimbot.lock = false;
-    aimbot.locked_aimentity = 0;
+    aimbot.SetLock(false);
+    aimbot.SetLockedAimentity(0);
 }
 static void AimbotLoop()
 {
     aim_t = true;
     while (aim_t)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
-        while (g_Base != 0)
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        while (Ready)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            const auto g_settings = global_settings();
+
             // Read LocalPlayer
-            uint64_t LocalPlayer = 0;
-            apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
-            if (LocalPlayer == 0)
-            {
-                continue;
-            }
-            Entity LPlayer = getEntity(LocalPlayer);
+            uint64_t localPlayer_ptr = std::get<uint64_t>(globals.Get("LocalPlayerPtr"));
+            Entity LPlayer = getEntity(localPlayer_ptr);
             if (LPlayer.isKnocked() || !LPlayer.isAlive())
             {
                 cancel_targeting();
                 continue;
             }
-            // Read HeldID
-            const auto g_settings = global_settings();
-            int HeldID;
-            apex_mem.Read<int>(LocalPlayer + OFFSET_OFF_WEAPON, HeldID);
-            local_held_id = HeldID; // 读取本地玩家手持物品id赋值给local_held_id
+            int local_held_id = std::get<int>(globals.Get("HeldID"));
+
+            // Read WeaponID
+            WeaponXEntity currentWeapon = WeaponXEntity();
+            currentWeapon.update(localPlayer_ptr);
+            uint32_t weaponID = currentWeapon.get_weap_id();
+            globals.Set("WeaponID", weaponID);
+            // printf("%d\n", weaponID);
             if (g_settings.aim_no_recoil)
             {
-                int in_attack;
-                apex_mem.Read<int>(g_Base + OFFSET_IN_ATTACK, in_attack);
+                int in_attack = std::get<int>(globals.Get("AttackState"));
                 if (in_attack > 0)
                 {
                     QAngle viewAngles = LPlayer.GetViewAngles();
-                    QAngle punchAngles = LPlayer.GetRecoil();
+                    QAngle punchAngles = LPlayer.GetSwayAngles();
                     viewAngles.x -= punchAngles.x * (g_settings.recoil_pitch / 100.f);
                     viewAngles.y -= punchAngles.y * (g_settings.recoil_yaw / 100.f);
                     Math::NormalizeAngles(viewAngles);
@@ -1337,38 +1387,32 @@ static void AimbotLoop()
                 std::this_thread::sleep_for(std::chrono::milliseconds(20));
             }
             if (!QuickAim) continue;
-            // Read WeaponID
-            WeaponXEntity currentWeapon = WeaponXEntity();
-            currentWeapon.update(LocalPlayer);
-            uint32_t weaponID = currentWeapon.get_weap_id();
-            local_weapon_id = weaponID;
-            // printf("%d\n", weaponID);
-
             if (g_settings.aim > 0)
             { // 0为不自喵，1为不检查可见性，2为检查目标可见性
-                if (aimbot.aimentity == 0)
+                uint64_t target_ptr = aimbot.GetAimentity();
+                if (target_ptr == 0)
                 { // 如果无目标取消锁定
                     cancel_targeting();
                     continue;
                 }
-
-                Entity target = getEntity(aimbot.aimentity);
+                Entity target = getEntity(target_ptr);
                 // show target indicator before aiming
                 aim_target = target.getPosition(); // 获取目标的位置
 
-                if (!aimbot.aiming && HeldID != -251)
+                if (!aimbot.GetAimingState() && local_held_id != -251)
                 { // aimbot的元素值由DoAction和ClientAction函数修改
                     cancel_targeting();
                     continue;
                 }
-                lock_target(aimbot.aimentity);
-                if (aimbot.gun_safety)
+                // printf("%d\n", aimbot.gun_safety);
+                lock_target(target_ptr);
+                if (aimbot.GetGunSafety())
                 { // gun_safety用于可见性检查
                     continue;
                 }
-                if (HeldID == -251)
+                if (local_held_id == -251)
                 { // auto throw
-                    QAngle Angles_g = CalculateBestBoneAim(LPlayer, target, currentWeapon, 999.9f, aimbot.smooth);
+                    QAngle Angles_g = CalculateBestBoneAim(LPlayer, target, currentWeapon, 999.9f, aimbot.GetSmooth());
                     if (Angles_g.x == 0 && Angles_g.y == 0)
                     {
                         cancel_targeting();
@@ -1378,7 +1422,7 @@ static void AimbotLoop()
                 }
                 else
                 {
-                    QAngle Angles = CalculateBestBoneAim(LPlayer, target, currentWeapon, aimbot.max_fov, aimbot.smooth);
+                    QAngle Angles = CalculateBestBoneAim(LPlayer, target, currentWeapon, aimbot.GetMaxFov(), aimbot.GetSmooth());
                     if (Angles.x == 0 && Angles.y == 0)
                     {
                         cancel_targeting();
@@ -1420,14 +1464,14 @@ static void item_glow_t()
     item_t = true;
     while (item_t)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
-        while (g_Base != 0)
+        std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        while (Ready)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(60));
             const auto g_settings = global_settings();
             if (!g_settings.item_glow)
             {
-                break;
+                continue;
             }
             // Item::setItemGlow();
             uint64_t entityListPtr = g_Base + OFFSET_ENTITYLIST;
@@ -1551,8 +1595,8 @@ static void item_glow_t()
                 }
                 else if (g_settings.loot.accelerant && ItemID == static_cast<uint64_t>(ItemList::accelerant))
                 { // 绝招加速剂
-                    std::array<float, 3> highlightParameter = {0, 0, 1};
-                    int settingIndex = 31;
+                    std::array<float, 3> highlightParameter = {0.2941, 0, 0.5098};
+                    int settingIndex = 32;
                     item.enableGlow(settingIndex, 32, highlightParameter);
                 }
                 else if (g_settings.loot.phoenix && ItemID == static_cast<uint64_t>(ItemList::phoenix))
@@ -2149,7 +2193,7 @@ static void item_glow_t()
                     int settingIndex = 31;
                     item.enableGlow(settingIndex, 64, highlightParameter);
                 }
-                else if (g_settings.loot.mobile_respawn && ItemID == 299)
+                else if (g_settings.loot.mobile_respawn && ItemID == 296)
                 { // 重生信标
                     std::array<float, 3> highlightParameter = {0, 0, 1};
                     int settingIndex = 31;
@@ -2191,11 +2235,12 @@ int main(int argc, char *argv[])
 
     const char *ap_proc = "r5apex.exe";
     const char *ap_proc_dx12 = "r5apex_dx12.exe";
+
+    std::thread global_thr;
     std::thread aimbot_thr;
     std::thread esp_thr;
     std::thread actions_thr;
     std::thread cactions_thr;
-    // std::thread TriggerBotRun_thr;
     std::thread terminal_thr;
     std::thread overlay_thr;
     std::thread itemglow_thr;
@@ -2209,8 +2254,9 @@ int main(int argc, char *argv[])
     {
         if (apex_mem.get_proc_status() != process_status::FOUND_READY)
         {
-            if (aim_t)
+            if (global_t)
             {
+                global_t = false;
                 aim_t = false;
                 esp_t = false;
                 actions_t = false;
@@ -2218,17 +2264,9 @@ int main(int argc, char *argv[])
                 terminal_t = false;
                 overlay_t = false;
                 item_t = false;
-                g_Base = 0;
+                // g_Base = 0;
+                globals.Clear();
                 quit_tui_menu();
-
-                aimbot_thr.~thread();
-                esp_thr.~thread();
-                actions_thr.~thread();
-                cactions_thr.~thread();
-                // TriggerBotRun_thr.~thread();
-                terminal_thr.~thread();
-                overlay_thr.~thread();
-                itemglow_thr.~thread();
             }
 
             std::this_thread::sleep_for(std::chrono::seconds(2));
@@ -2243,18 +2281,18 @@ int main(int argc, char *argv[])
                 printf("\nApex process found\n");
                 printf("Base: %lx\n", g_Base);
 
+                global_thr = std::thread(UpdateGlobalVar);
                 aimbot_thr = std::thread(AimbotLoop);
                 esp_thr = std::thread(EspLoop);
                 actions_thr = std::thread(DoActions);
                 cactions_thr = std::thread(ClientActions);
-                // TriggerBotRun_thr = std::thread(TriggerBotRun);
                 itemglow_thr = std::thread(item_glow_t);
 
+                global_thr.detach();
                 aimbot_thr.detach();
                 esp_thr.detach();
                 actions_thr.detach();
                 cactions_thr.detach();
-                // TriggerBotRun_thr.detach();
                 itemglow_thr.detach();
             }
         }
@@ -2277,7 +2315,6 @@ int main(int argc, char *argv[])
                     terminal_thr = std::thread(terminal);
                     terminal_thr.detach();
                 }
-                // wish_list.clear();
             }
             if (g_settings.no_overlay)
             {
@@ -2295,7 +2332,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
     return 0;

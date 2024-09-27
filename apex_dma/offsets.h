@@ -10,6 +10,7 @@
 #define OFFSET_LEVELNAME 0x18356c4 //[Miscellaneous].LevelName updated 2024/09/26
 #define OFF_OBSERVER_LIST 0x01f60fa0 + 0x20C8 //[ConVars].gamepad_aim_assist_melee +0x20C8 updated 2024/09/26
 #define OFF_GAMEMODE 0x0246c460 + 0x50 //[ConVars].mp_gamemode updated 2024/09/26
+#define OFF_SQUAD_ID 0x0344	//[RecvTable.DT_BaseEntity].m_squadID updated 2024/08/28
 
 #define OFFSET_VISIBLE_TIME  0x19a0 //[Miscellaneous].CPlayer!lastVisibleTime updated 2024/09/26
 #define OFFSET_CROSSHAIR_LAST 0x19a8 //[Miscellaneous].CWeaponX!lastCrosshairTargetTime updated 2024/09/26

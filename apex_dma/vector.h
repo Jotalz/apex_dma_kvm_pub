@@ -40,9 +40,9 @@ enum {
 
 struct matrix3x4_t {
   matrix3x4_t() {}
-  matrix3x4_t(float m00, float m01, float m02, float m03, float m10, float m11,
-              float m12, float m13, float m20, float m21, float m22,
-              float m23) {
+  matrix3x4_t(float m00, float m01, float m02, float m03, 
+              float m10, float m11, float m12, float m13,
+              float m20, float m21, float m22, float m23) {
     m_flMatVal[0][0] = m00;
     m_flMatVal[0][1] = m01;
     m_flMatVal[0][2] = m02;
@@ -164,6 +164,12 @@ inline void Vector::Init(float ix, float iy, float iz) {
   x = ix;
   y = iy;
   z = iz;
+}
+inline bool Vector::IsValid() const
+{
+  if (x==0 && y==0 && z==0)
+    return false;
+  return true;
 }
 //===============================================
 inline Vector::Vector(float X, float Y, float Z) {

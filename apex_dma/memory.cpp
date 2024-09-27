@@ -306,3 +306,7 @@ uint64_t Memory::ScanPointer(uint64_t ptr_address, const uint32_t offsets[],
 
   return lvl;
 }
+
+bool IsInValid(uint64_t address) {
+	return address < 0x00010000 || address > 0x7FFFFFFEFFFF;
+}

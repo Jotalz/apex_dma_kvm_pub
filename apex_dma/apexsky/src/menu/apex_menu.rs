@@ -446,20 +446,13 @@ fn build_main_menu(
     menu = add_toggle_item!(
         menu,
         &i18n_bundle,
-        format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemTdmToggle)),
-        settings.tdm_toggle,
-        tdm_toggle
-    );
-    menu = add_toggle_item!(
-        menu,
-        &i18n_bundle,
-        format!("      2 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
+        format!("      1 - {}", i18n_msg!(i18n_bundle, MenuItemToggleOnevone)),
         settings.onevone,
         onevone
     );
     menu = menu.add_item(
         item_text(format!(
-            "      3 - {}",
+            "      2 - {}",
             i18n_msg!(i18n_bundle, MenuItemHotkeySettings)
         )),
         |handle: &mut TerminalMenu| {
@@ -469,7 +462,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "      4 - {}",
+                "      3 - {}",
                 i18n_msg!(i18n_bundle, MenuItemSaveSettings)
             )),
             |_| {
@@ -486,7 +479,7 @@ fn build_main_menu(
         )
         .add_item(
             item_text(format!(
-                "      5 - {}",
+                "      4 - {}",
                 i18n_msg!(i18n_bundle, MenuItemLoadSettings)
             )),
             |_| {
@@ -994,8 +987,7 @@ fn build_main_menu(
                 }
             },
         ); */
-    menu
-        .add_item(
+    menu.add_item(
             ListItem::new(Line::from(
                 i18n_msg!(i18n_bundle, TitleOtherSetting).to_string().light_yellow()
             )),

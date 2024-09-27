@@ -1,9 +1,15 @@
+#pragma once
 #include "Math.h"
 #include "memory.hpp"
 #include "offsets.h"
 #include "vector.h"
+#include "FNVHash.h"
 #include <cstdint>
 #include <shared_mutex>
+#include <variant>
+#include <unordered_map>
+#include <string>
+#include <iostream>
 
 #define NUM_ENT_ENTRIES (1 << 12)
 #define ENT_ENTRY_MASK (NUM_ENT_ENTRIES - 1)
@@ -20,6 +26,7 @@ public:
   bool isKnocked();
   bool isAlive();
   float lastVisTime();
+  float lastCrossHairTime();
   bool isSpec(uint64_t localptr);
   int getTeamId();
   int getHealth();
@@ -27,6 +34,7 @@ public:
   int getArmortype();
   int getMaxshield();
   bool isZooming();
+  bool isVisable(std::unordered_map<uint64_t, float> &vistime,std::unordered_map<uint64_t, float> &aimtime);
   Vector getViewOffset();
   Vector getAbsVelocity();
   QAngle GetSwayAngles();
@@ -36,7 +44,6 @@ public:
   float GetYaw();
   void enableGlow(int setting_index, uint8_t insidetype, uint8_t outline_size,
                   std::array<float, 3> highlight_parameter, float glow_dist);
-  float lastCrossHairTime();
   void SetViewAngles(QAngle &angles);
   Vector getBonePositionByHitbox(int id);
   void get_name(uint64_t g_Base, uint64_t index, char *name);
@@ -126,8 +133,8 @@ struct Matrix
   float matrix[16];
 };
 
-Entity getEntity(uintptr_t ptr);
-Item getItem(uintptr_t ptr);
+Entity getEntity(uint64_t ptr);
+Item getItem(uint64_t ptr);
 
 bool WorldToScreen(Vector from, float *m_vMatrix, int targetWidth,
                    int targetHeight, Vector &to);
@@ -185,64 +192,141 @@ typedef struct
   float distance;
 } TreasureClue;
 
-struct GlobalVar
-{
-  uint64_t g_Base;
-  uint64_t ViewMatrix = 0;
-  int local_held_id = 2147483647;
-  uint32_t local_weapon_id = 2147483647;
 
-  mutable std::shared_mutex GlobalVarMutex;
+struct GlobalVar {
+    using VarType = std::variant<int8_t, uint32_t, uint64_t, int, float, bool, Matrix>;
+    std::unordered_map<std::string, bool> mixtape = { {"control", true}, {"freedm", true}, {"arenas", true},{"survival", false} };
+    std::unordered_map<std::string, VarType, FnvHash> variables;
+    mutable std::shared_mutex GlobalVarMutex;
 
-  enum class Field
-  {
-    g_Base,
-    ViewMatrix,
-    local_held_id,
-    local_weapon_id
-  };
-
-  template <typename T>
-  void SetGlobalVar(Field field, T value)
-  {
-    std::unique_lock<std::shared_mutex> lock(GlobalVarMutex);
-
-    switch (field)
-    {
-    case Field::g_Base:
-      g_Base = static_cast<uint64_t>(value);
-      break;
-    case Field::ViewMatrix:
-      ViewMatrix = static_cast<uint64_t>(value);
-      break;
-    case Field::local_held_id:
-      local_held_id = static_cast<int>(value);
-      break;
-    case Field::local_weapon_id:
-      local_weapon_id = static_cast<uint32_t>(value);
-      break;
-    default:
-      throw std::invalid_argument("Invalid field specified.");
+    void Set(const std::string &key, VarType value) {
+        std::unique_lock<std::shared_mutex> lock(GlobalVarMutex);
+        variables[key] = value;
     }
-  }
 
-  template <typename T>
-  T GetGlobalVar(Field field) const
-  {
-    std::shared_lock<std::shared_mutex> lock(GlobalVarMutex);
-
-    switch (field)
-    {
-    case Field::g_Base:
-      return static_cast<T>(g_Base);
-    case Field::ViewMatrix:
-      return static_cast<T>(ViewMatrix);
-    case Field::local_held_id:
-      return static_cast<T>(local_held_id);
-    case Field::local_weapon_id:
-      return static_cast<T>(local_weapon_id);
-    default:
-      throw std::invalid_argument("Invalid field specified.");
+    VarType Get(const std::string &key) const {
+        std::shared_lock<std::shared_mutex> lock(GlobalVarMutex);
+        return variables.at(key);
     }
-  }
+
+    template<typename T>
+    T GetOrDefault(const std::string& key, T default_value) const {
+        std::shared_lock<std::shared_mutex> lock(GlobalVarMutex);
+        auto it = variables.find(key);
+        if (it != variables.end()) {
+            if (const T* value = std::get_if<T>(&it->second)) {
+                return *value;
+            }
+        }
+        return default_value;
+    }
+
+    void Clear(){
+      std::unique_lock<std::shared_mutex> lock(GlobalVarMutex);
+      variables.clear();
+    }
+};
+
+struct AimAssist {
+    private:
+        bool aiming = false;
+        bool gun_safety = true;
+        bool locked = false;
+        float max_fov = 10;
+        float smooth = 120;
+        float target_score_max = 10000000.0;
+        uint64_t aim_entity = 0;
+        uint64_t tmp_aim_entity = 0;
+        uint64_t locked_aim_entity = 0;
+        mutable std::shared_mutex AimAssistMutex;
+    public:
+        void SetAimingState(bool aim_state) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            aiming = aim_state;
+        }
+
+        bool GetAimingState() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return aiming;
+        }
+
+        void SetGunSafety(bool safety) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            gun_safety = safety;
+        }
+
+        bool GetGunSafety() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return gun_safety;
+        }
+
+        void SetLock(bool islock) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            locked = islock;
+        }
+
+        bool GetLock() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return locked;
+        }
+
+        void SetMaxFov(float max_fov) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            this->max_fov = max_fov;
+        }
+
+        float GetMaxFov() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return max_fov;
+        }
+
+        void SetSmooth(float smooth) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            this->smooth = smooth;
+        }
+
+        float GetSmooth() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return smooth;
+        }
+
+        void SetTargetScoreMax(float target_score_max) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            this->target_score_max = target_score_max;
+        }
+
+        float GetTargetScoreMax() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return target_score_max;
+        }
+
+        void SetAimentity(uint64_t aimentity) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            aim_entity = aimentity;
+        }
+
+        uint64_t GetAimentity() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return aim_entity;
+        }
+
+        void SetTmpAimentity(uint64_t tmp_aimentity) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            tmp_aim_entity = tmp_aimentity;
+        }
+
+        uint64_t GetTmpAimentity() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return tmp_aim_entity;
+        }
+
+        void SetLockedAimentity(uint64_t locked_aimentity) {
+            std::unique_lock<std::shared_mutex> lock(AimAssistMutex);
+            locked_aim_entity = locked_aimentity;
+        }
+
+        uint64_t GetLockedAimentity() const {
+            std::shared_lock<std::shared_mutex> lock(AimAssistMutex);
+            return locked_aim_entity;
+        }
 };

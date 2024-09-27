@@ -26,13 +26,12 @@ using namespace std;
 
 extern bool overlay_t;
 extern float veltest;
-extern int local_held_id;
-extern uint32_t local_weapon_id;
+extern GlobalVar globals;
 extern float bulletspeed;
 extern float bulletgrav;
 
 // Aimbot
-extern aimbot_state_t aimbot;                             // read aimbot state
+extern AimAssist aimbot;                            // read aimbot state
 extern std::vector<Entity> spectators, allied_spectators; // read
 extern std::vector<string> esp_spec_names;
 // Left and Right Aim key toggle
@@ -66,20 +65,27 @@ extern bool isPressed(uint32_t button_code);
 
 static void StaticMessageStart(Overlay &ov) { ov.CreateOverlay(); }
 
-void Overlay::RenderMenu() {
+void Overlay::RenderMenu()
+{
   static bool aim_enable = false;
   static bool vis_check = false;
 
   auto g_settings = global_settings();
 
-  if (g_settings.aim > 0) {
+  if (g_settings.aim > 0)
+  {
     aim_enable = true;
-    if (g_settings.aim > 1) {
+    if (g_settings.aim > 1)
+    {
       vis_check = true;
-    } else {
+    }
+    else
+    {
       vis_check = false;
     }
-  } else {
+  }
+  else
+  {
     aim_enable = false;
     vis_check = false;
   }
@@ -92,7 +98,8 @@ void Overlay::RenderMenu() {
   //{
   // if (ImGui::BeginTabItem(XorStr("##")))
   //{
-  if (ImGui::CollapsingHeader("Main Toggle Settings")) {
+  if (ImGui::CollapsingHeader("Main Toggle Settings"))
+  {
     menu1 = 1;
     ImGui::Checkbox(XorStr("ESP On/Off"), &g_settings.esp);
     // ImGui::SameLine();
@@ -110,25 +117,31 @@ void Overlay::RenderMenu() {
     ImGui::SameLine();
     ImGui::Checkbox(XorStr("1v1"), &g_settings.onevone);
 
-    if (aim_enable) {
+    if (aim_enable)
+    {
       ImGui::Checkbox(XorStr("Visibility Check"), &vis_check);
       ImGui::SameLine();
       ImGui::Checkbox(XorStr("No Recoil"), &g_settings.aim_no_recoil);
       ImGui::SameLine();
       ImGui::Checkbox(XorStr("No Nade Aim"), &g_settings.no_nade_aim);
-      if (vis_check) {
+      if (vis_check)
+      {
         g_settings.aim = 2;
-      } else {
+      }
+      else
+      {
         g_settings.aim = 1;
       }
-    } else {
+    }
+    else
+    {
       g_settings.aim = 0;
     }
 
     ImGui::Checkbox(XorStr("Firing Range"), &g_settings.firing_range);
     ImGui::SameLine();
-    ImGui::Checkbox(XorStr("TDM Toggle"), &g_settings.tdm_toggle);
-    
+    // ImGui::Checkbox(XorStr("TDM Toggle"), &g_settings.tdm_toggle);
+
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
     ImGui::Text(XorStr("Aiming Distance:"));
     ImGui::SameLine();
@@ -143,13 +156,18 @@ void Overlay::RenderMenu() {
     ImGui::SameLine();
     ImGui::RadioButton("Left/Right Mouse", &e, 3);
     // Setting one and unsetting the other
-    if (e == 1) {
+    if (e == 1)
+    {
       toggleaim = true;
       toggleaim2 = false;
-    } else if (e == 2) {
+    }
+    else if (e == 2)
+    {
       toggleaim = false;
       toggleaim2 = true;
-    } else if (e == 3) {
+    }
+    else if (e == 3)
+    {
       toggleaim = true;
       toggleaim2 = true;
     }
@@ -177,18 +195,26 @@ void Overlay::RenderMenu() {
     ImGui::Dummy(ImVec2(0.0f, 2.0f));
     ImGui::Text(XorStr("Current:"));
     ImGui::SameLine();
-    ImGui::TextColored(GREEN, "%.f", aimbot.max_fov);
-    ImGui::SliderFloat(XorStr("##max_fov"), &aimbot.max_fov, 5.0f, 50.0f, "##");
+    float max_fov = aimbot.GetMaxFov();
+    ImGui::TextColored(GREEN, "%.f", max_fov);
+    if(ImGui::SliderFloat(XorStr("##max_fov"), &max_fov, 5.0f, 50.0f, "##")){
+        aimbot.SetMaxFov(max_fov);
+    }
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
     ImGui::Dummy(ImVec2(0.0f, 2.0f));
     ImGui::Text(XorStr("Smooth Aim Value:"));
     ImGui::SameLine();
-    if (g_settings.smooth < 100.0f) {
+    if (g_settings.smooth < 100.0f)
+    {
       ImGui::TextColored(RED, "%.f", g_settings.smooth);
-    } else if (g_settings.smooth > 120.0f) {
+    }
+    else if (g_settings.smooth > 120.0f)
+    {
       ImGui::TextColored(GREEN, "%.f", g_settings.smooth);
-    } else {
+    }
+    else
+    {
       ImGui::TextColored(WHITE, "%.f", g_settings.smooth);
     }
     ImGui::SliderFloat(XorStr("##smooth"), &g_settings.smooth, 50.0f, 250.0f,
@@ -284,23 +310,27 @@ void Overlay::RenderMenu() {
     ImGui::Text(
         XorStr("Saving and Loading. Need to Save Once to make the file."));
     // Saving
-    if (ImGui::Button("Save Config")) {
+    if (ImGui::Button("Save Config"))
+    {
       save_settings();
     }
     ImGui::SameLine();
     // Loading
-    if (ImGui::Button("Load Config")) {
+    if (ImGui::Button("Load Config"))
+    {
       load_settings();
     }
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
-    if (menu1 == 1) {
+    if (menu1 == 1)
+    {
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Weapone Filter Settings"),
                                        0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Item Filter Settings"), 0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Radar Settings"), 0);
     }
   }
-  if (ImGui::CollapsingHeader("Radar Settings")) {
+  if (ImGui::CollapsingHeader("Radar Settings"))
+  {
     menu2 = 1;
     // Dot Size for both mini and main map
     ImGui::Text(XorStr("MiniMap Radar Dot Size"));
@@ -323,14 +353,16 @@ void Overlay::RenderMenu() {
     }
     */
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
-    if (menu2 == 1) {
+    if (menu2 == 1)
+    {
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Weapone Filter Settings"),
                                        0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Item Filter Settings"), 0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Main Toggle Settings"), 0);
     }
   }
-  if (ImGui::CollapsingHeader("Item Filter Settings")) {
+  if (ImGui::CollapsingHeader("Item Filter Settings"))
+  {
     menu3 = 1;
     ImGui::Text(XorStr("Ammo"));
     ImGui::Dummy(ImVec2(0.0f, 1.0f));
@@ -458,14 +490,16 @@ void Overlay::RenderMenu() {
       g_settings.loot_filled = lootfilled_value;
     }
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
-    if (menu3 == 1) {
+    if (menu3 == 1)
+    {
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Weapone Filter Settings"),
                                        0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Radar Settings"), 0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Main Toggle Settings"), 0);
     }
   }
-  if (ImGui::CollapsingHeader("Weapone Filter Settings")) {
+  if (ImGui::CollapsingHeader("Weapone Filter Settings"))
+  {
     menu4 = 1;
     // Light Weapons
     ImGui::TextColored(ORANGE, "Light Weapons");
@@ -539,7 +573,8 @@ void Overlay::RenderMenu() {
                     &g_settings.loot.weapon_kraber);
     ImGui::Checkbox(XorStr("Bocek Bow"), &g_settings.loot.weapon_bow);
     ImGui::Dummy(ImVec2(0.0f, 10.0f));
-    if (menu4 == 1) {
+    if (menu4 == 1)
+    {
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Item Filter Settings"), 0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Radar Settings"), 0);
       ImGui::GetStateStorage()->SetInt(ImGui::GetID("Main Toggle Settings"), 0);
@@ -552,6 +587,8 @@ void Overlay::RenderMenu() {
   // ImGui::EndTabBar();
   //}
   ImGui::Dummy(ImVec2(0.0f, 10.0f));
+  int local_held_id = std::get<int>(globals.Get("HeldID"));
+  uint32_t local_weapon_id = std::get<uint32_t>(globals.Get("WeaponID"));
   ImGui::Text(XorStr("held=%d, weapon=%d"), local_held_id, local_weapon_id);
   ImGui::Dummy(ImVec2(0.0f, 5.0f));
   ImGui::Text(XorStr("Overlay FPS: %.3f ms/frame (%.1f FPS)"),
@@ -571,16 +608,20 @@ void Overlay::RenderMenu() {
   update_settings(g_settings);
 }
 
-void Overlay::RenderInfo() {
+void Overlay::RenderInfo()
+{
   ImGui::SetNextWindowPos(ImVec2(0, 0));
   ImGui::SetNextWindowSize(ImVec2(280, 30));
   ImGui::Begin(XorStr("##info"), (bool *)true,
                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                    ImGuiWindowFlags_NoScrollbar);
   DrawLine(ImVec2(1, 2), ImVec2(280, 2), RED, 2);
-  if (spectators.size() == 0) {
+  if (spectators.size() == 0)
+  {
     ImGui::TextColored(GREEN, "%zu", spectators.size());
-  } else {
+  }
+  else
+  {
     ImGui::TextColored(RED, "%zu", spectators.size());
   }
   ImGui::SameLine();
@@ -590,22 +631,31 @@ void Overlay::RenderInfo() {
   ImGui::SameLine();
   ImGui::Text("--");
   ImGui::SameLine();
-  ImGui::TextColored(WHITE, "%.f", aimbot.max_fov);
+  ImGui::TextColored(WHITE, "%.f", aimbot.GetMaxFov());
   ImGui::SameLine();
   ImGui::Text("--");
   ImGui::SameLine();
   // Aim is on = 2, On but No Vis Check = 1, Off = 0
   const auto g_settings = global_settings();
-  if (aimbot.lock) {
-    ImGui::TextColored(aimbot.gun_safety ? GREEN : ORANGE, "[TARGET LOCK!]");
-  } else if (local_held_id == -251) {
+  int local_held_id = std::get<int>(globals.Get("HeldID"));
+  if (aimbot.GetLock())
+  {
+    ImGui::TextColored(aimbot.GetGunSafety() ? GREEN : ORANGE, "[TARGET LOCK!]");
+  }
+  else if (local_held_id == -251)
+  {
     ImGui::TextColored(BLUE, "Skynade On");
-  } else if (g_settings.aim == 2) {
+  }
+  else if (g_settings.aim == 2)
+  {
     ImGui::TextColored(GREEN, "Aim On");
-
-  } else if (g_settings.aim == 0) {
+  }
+  else if (g_settings.aim == 0)
+  {
     ImGui::TextColored(RED, "Aim Off");
-  } else {
+  }
+  else
+  {
     ImGui::TextColored(RED, "Aim On %d", g_settings.aim);
   }
   ImGui::SameLine();
@@ -613,11 +663,13 @@ void Overlay::RenderInfo() {
   ImGui::End();
 }
 
-static void glfw_error_callback(int error, const char *description) {
+static void glfw_error_callback(int error, const char *description)
+{
   fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
 
-int Overlay::CreateOverlay() {
+int Overlay::CreateOverlay()
+{
   const auto g_settings = global_settings();
   glfwSetErrorCallback(glfw_error_callback);
   if (!glfwInit())
@@ -657,7 +709,8 @@ int Overlay::CreateOverlay() {
   static const char *GamescopeOverlayProperty = "GAMESCOPE_EXTERNAL_OVERLAY";
   Display *x11_display = glfwGetX11Display();
   Window x11_window = glfwGetX11Window(window);
-  if (x11_window && x11_display) {
+  if (x11_window && x11_display)
+  {
     // Set atom for gamescope to render as an overlay.
     Atom overlay_atom =
         XInternAtom(x11_display, GamescopeOverlayProperty, False);
@@ -698,8 +751,10 @@ int Overlay::CreateOverlay() {
   running = true;
 
   // Main loop
-  while (!glfwWindowShouldClose(window)) {
-    if (!running || !overlay_t) {
+  while (!glfwWindowShouldClose(window))
+  {
+    if (!running || !overlay_t)
+    {
       break;
     }
     // Poll and handle events (inputs, window resize, etc.)
@@ -737,21 +792,26 @@ int Overlay::CreateOverlay() {
       ImGui::Text("Overlay average %.3f ms/frame (%.1f FPS)",
                   1000.0f / io.Framerate, io.Framerate);
 
-      if (g_settings.calc_game_fps) {
+      if (g_settings.calc_game_fps)
+      {
         ImGui::Text("Game average %.3f ms/frame (%.1f FPS)",
                     1000.0f / g_settings.game_fps, g_settings.game_fps);
       }
 
       ImGui::Dummy(ImVec2(0.0f, 5.0f));
-      if (esp_spec_names.size() > 0) {
+      if (esp_spec_names.size() > 0)
+      {
         const char *names[esp_spec_names.size()];
-        for (int i = 0; i < esp_spec_names.size(); i++) {
+        for (int i = 0; i < esp_spec_names.size(); i++)
+        {
           names[i] = esp_spec_names[i].c_str();
         }
         int current_item = 0;
         ImGui::ListBox("Spectators", &current_item, names,
                        esp_spec_names.size());
-      } else {
+      }
+      else
+      {
         ImGui::Text("No Spectators");
       }
 
@@ -759,7 +819,8 @@ int Overlay::CreateOverlay() {
     }
 
     // 3. Show another simple window.
-    if (show_another_window) {
+    if (show_another_window)
+    {
       ImGui::Begin(
           "Another Window",
           &show_another_window); // Pass a pointer to our bool variable (the
@@ -781,10 +842,13 @@ int Overlay::CreateOverlay() {
     // }
     {
       bool key_insert_pressed = IsKeyDown(ImGuiKey_Insert) || isPressed(72);
-      if (key_insert_pressed && !k_ins) {
+      if (key_insert_pressed && !k_ins)
+      {
         show_menu = !show_menu;
         k_ins = true;
-      } else if (!key_insert_pressed && k_ins) {
+      }
+      else if (!key_insert_pressed && k_ins)
+      {
         k_ins = false;
       }
     }
@@ -792,18 +856,24 @@ int Overlay::CreateOverlay() {
     // Main Map Radar, Needs Manual Setting of cords
     {
       bool key_m_pressed = IsKeyDown(ImGuiKey_M) || isPressed(23);
-      if (key_m_pressed && mainradartoggle == 0) {
+      if (key_m_pressed && mainradartoggle == 0)
+      {
         mainradartoggle = 1;
         auto g_settings = global_settings();
-        if (!g_settings.main_radar_map) {
+        if (!g_settings.main_radar_map)
+        {
           g_settings.main_radar_map = true;
           g_settings.mini_map_radar = false;
-        } else {
+        }
+        else
+        {
           g_settings.main_radar_map = false;
           g_settings.mini_map_radar = true;
         }
         update_settings(g_settings);
-      } else if (!key_m_pressed && mainradartoggle == 1) {
+      }
+      else if (!key_m_pressed && mainradartoggle == 1)
+      {
         mainradartoggle = 0;
       }
     }
@@ -845,12 +915,14 @@ int Overlay::CreateOverlay() {
   return 0;
 }
 
-std::thread Overlay::Start() {
+std::thread Overlay::Start()
+{
   std::thread overlay_thr = std::thread(StaticMessageStart, ref(*this));
   return overlay_thr;
 }
 
-void Overlay::Clear() {
+void Overlay::Clear()
+{
   running = false;
   printf("running=%d\n", running);
 }
@@ -859,12 +931,14 @@ int Overlay::getWidth() { return width; }
 
 int Overlay::getHeight() { return height; }
 
-void Overlay::DrawLine(ImVec2 a, ImVec2 b, ImColor color, float width) {
+void Overlay::DrawLine(ImVec2 a, ImVec2 b, ImColor color, float width)
+{
   ImGui::GetWindowDrawList()->AddLine(a, b, color, width);
 }
 
 void Overlay::DrawBox(ImColor color, float x, float y, float w, float h,
-                      float line_w) {
+                      float line_w)
+{
   DrawLine(ImVec2(x, y), ImVec2(x + w, y), color, line_w);
   DrawLine(ImVec2(x, y), ImVec2(x, y + h), color, line_w);
   DrawLine(ImVec2(x + w, y), ImVec2(x + w, y + h), color, line_w);
@@ -873,24 +947,28 @@ void Overlay::DrawBox(ImColor color, float x, float y, float w, float h,
 
 void Overlay::Text(ImVec2 pos, ImColor color, const char *text_begin,
                    const char *text_end, float wrap_width,
-                   const ImVec4 *cpu_fine_clip_rect) {
+                   const ImVec4 *cpu_fine_clip_rect)
+{
   ImGui::GetWindowDrawList()->AddText(ImGui::GetFont(), ImGui::GetFontSize(),
                                       pos, color, text_begin, text_end,
                                       wrap_width, cpu_fine_clip_rect);
 }
 
-void Overlay::String(ImVec2 pos, ImColor color, const char *text) {
+void Overlay::String(ImVec2 pos, ImColor color, const char *text)
+{
   Text(pos, color, text, text + strlen(text), 200, 0);
 }
 
 void Overlay::RectFilled(float x0, float y0, float x1, float y1, ImColor color,
-                         float rounding, int rounding_corners_flags) {
+                         float rounding, int rounding_corners_flags)
+{
   ImGui::GetWindowDrawList()->AddRectFilled(
       ImVec2(x0, y0), ImVec2(x1, y1), color, rounding, rounding_corners_flags);
 }
 
 void Overlay::ProgressBar(float x, float y, float w, float h, int value,
-                          int v_max) {
+                          int v_max)
+{
   ImColor barColor = ImColor(min(510 * (v_max - value) / 100, 255),
                              min(510 * value / 100, 255), 25, 255);
 
@@ -901,7 +979,8 @@ void Overlay::ProgressBar(float x, float y, float w, float h, int value,
 // Seer Hp and Shield bars (never re fixed the armor type so its set to max
 // shield)
 
-void DrawQuadFilled(ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImColor color) {
+void DrawQuadFilled(ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImColor color)
+{
   ImGui::GetWindowDrawList()->AddQuadFilled(p1, p2, p3, p4, color);
 }
 // void DrawHexagon(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const
@@ -912,14 +991,16 @@ void DrawQuadFilled(ImVec2 p1, ImVec2 p2, ImVec2 p3, ImVec2 p4, ImColor color) {
 // }
 void DrawHexagonFilled(const ImVec2 &p1, const ImVec2 &p2, const ImVec2 &p3,
                        const ImVec2 &p4, const ImVec2 &p5, const ImVec2 &p6,
-                       ImU32 col) {
+                       ImU32 col)
+{
   // ImGui::GetWindowDrawList()->AddHexagonFilled(p1, p2, p3, p4, p5, p6, col);
   const ImVec2 points[]{p1, p2, p3, p4, p5, p6};
   ImGui::GetWindowDrawList()->AddConvexPolyFilled(points, 6, col);
 }
 
 void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
-                                 int armorType, int health) {
+                                 int armorType, int health)
+{
   // printf("seer(%f,%f), %d/%d, %d, %d\n", x, y, shield, max_shield, armorType,
   // health);
 
@@ -956,23 +1037,34 @@ void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
   // ImColor shieldCrackedDark(67, 67, 67);
 
   ImColor shieldCol;
-  ImColor shieldColDark;  // not used, but the real seer q has shadow inside
-  if (max_shield == 50) { // white
+  ImColor shieldColDark; // not used, but the real seer q has shadow inside
+  if (max_shield == 50)
+  { // white
     shieldCol = ImColor(247, 247, 247);
     shieldColDark = ImColor(164, 164, 164);
-  } else if (max_shield == 75) { // blue
+  }
+  else if (max_shield == 75)
+  { // blue
     shieldCol = ImColor(39, 178, 255);
     shieldColDark = ImColor(27, 120, 210);
-  } else if (max_shield == 100) { // purple
+  }
+  else if (max_shield == 100)
+  { // purple
     shieldCol = ImColor(206, 59, 255);
     shieldColDark = ImColor(136, 36, 220);
-  } else if (max_shield == 100) { // gold
+  }
+  else if (max_shield == 100)
+  { // gold
     shieldCol = ImColor(255, 255, 79);
     shieldColDark = ImColor(218, 175, 49);
-  } else if (max_shield == 125) { // red
+  }
+  else if (max_shield == 125)
+  { // red
     shieldCol = ImColor(219, 2, 2);
     shieldColDark = ImColor(219, 2, 2);
-  } else {
+  }
+  else
+  {
     shieldCol = ImColor(247, 247, 247);
     shieldColDark = ImColor(164, 164, 164);
   }
@@ -982,29 +1074,41 @@ void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
   int shield3 = 0;
   int shield4 = 0;
   int shield5 = 0;
-  if (shield_tmp > 25) {
+  if (shield_tmp > 25)
+  {
     shield1 = 25;
     shield_tmp -= 25;
-    if (shield_tmp > 25) {
+    if (shield_tmp > 25)
+    {
       shield2 = 25;
       shield_tmp -= 25;
-      if (shield_tmp > 25) {
+      if (shield_tmp > 25)
+      {
         shield3 = 25;
         shield_tmp -= 25;
-        if (shield_tmp > 25) {
+        if (shield_tmp > 25)
+        {
           shield4 = 25;
           shield_tmp -= 25;
           shield5 = shield_tmp;
-        } else {
+        }
+        else
+        {
           shield4 = shield_tmp;
         }
-      } else {
+      }
+      else
+      {
         shield3 = shield_tmp;
       }
-    } else {
+    }
+    else
+    {
       shield2 = shield_tmp;
     }
-  } else {
+  }
+  else
+  {
     shield1 = shield_tmp;
   }
   ImVec2 s1(h2.x - 1, h2.y - 2);
@@ -1041,53 +1145,71 @@ void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
   ImVec2 sssss4(sssss1.x + shield5 / shield_step * shield_25, s1.y);
   ImVec2 sssss3m(sssss2.x + shield_25, s2.y);
   ImVec2 sssss4m(sssss1.x + shield_25, s1.y);
-  if (max_shield == 50) {
-    if (shield <= 25) {
-      if (shield < 25) {
+  if (max_shield == 50)
+  {
+    if (shield <= 25)
+    {
+      if (shield < 25)
+      {
         DrawQuadFilled(s1, s2, s3m, s4m, shieldCracked);
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-
-    } else if (shield <= 50) {
+    }
+    else if (shield <= 50)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-      if (shield != 50) {
+      if (shield != 50)
+      {
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
     }
-  } else if (max_shield == 75) {
-    if (shield <= 25) {
-      if (shield < 25) {
+  }
+  else if (max_shield == 75)
+  {
+    if (shield <= 25)
+    {
+      if (shield < 25)
+      {
         DrawQuadFilled(s1, s2, s3m, s4m, shieldCracked);
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-
-    } else if (shield <= 50) {
+    }
+    else if (shield <= 50)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-      if (shield < 50) {
+      if (shield < 50)
+      {
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
-    } else if (shield <= 75) {
+    }
+    else if (shield <= 75)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
       DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
-      if (shield < 75) {
+      if (shield < 75)
+      {
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(sss1, sss2, sss3, sss4, shieldCol);
     }
-  } else if (max_shield == 100) {
-    if (shield <= 25) {
-      if (shield < 25) {
+  }
+  else if (max_shield == 100)
+  {
+    if (shield <= 25)
+    {
+      if (shield < 25)
+      {
         DrawQuadFilled(s1, s2, s3m, s4m, shieldCracked);
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
@@ -1095,38 +1217,50 @@ void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
       }
       if (shield != 0)
         DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-
-    } else if (shield <= 50) {
+    }
+    else if (shield <= 50)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-      if (shield < 50) {
+      if (shield < 50)
+      {
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
         DrawQuadFilled(ssss1, ssss2, ssss3m, ssss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
-    } else if (shield <= 75) {
+    }
+    else if (shield <= 75)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
       DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
-      if (shield < 75) {
+      if (shield < 75)
+      {
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
         DrawQuadFilled(ssss1, ssss2, ssss3m, ssss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(sss1, sss2, sss3, sss4, shieldCol);
-    } else if (shield <= 100) {
+    }
+    else if (shield <= 100)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
       DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
       DrawQuadFilled(sss1, sss2, sss3, sss4, shieldCol);
-      if (shield < 100) {
+      if (shield < 100)
+      {
         DrawQuadFilled(ssss1, ssss2, ssss3m, ssss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(ssss1, ssss2, ssss3, ssss4, shieldCol);
     }
-  } else if (max_shield == 125) {
-    if (shield <= 25) {
-      if (shield < 25) {
+  }
+  else if (max_shield == 125)
+  {
+    if (shield <= 25)
+    {
+      if (shield < 25)
+      {
         DrawQuadFilled(s1, s2, s3m, s4m, shieldCracked);
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
@@ -1135,10 +1269,12 @@ void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
       }
       if (shield != 0)
         DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-
-    } else if (shield <= 50) {
+    }
+    else if (shield <= 50)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
-      if (shield < 50) {
+      if (shield < 50)
+      {
         DrawQuadFilled(ss1, ss2, ss3m, ss4m, shieldCracked);
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
         DrawQuadFilled(ssss1, ssss2, ssss3m, ssss4m, shieldCracked);
@@ -1146,32 +1282,41 @@ void Overlay::DrawSeerLikeHealth(float x, float y, int shield, int max_shield,
       }
       if (shield != 0)
         DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
-    } else if (shield <= 75) {
+    }
+    else if (shield <= 75)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
       DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
-      if (shield < 75) {
+      if (shield < 75)
+      {
         DrawQuadFilled(sss1, sss2, sss3m, sss4m, shieldCracked);
         DrawQuadFilled(ssss1, ssss2, ssss3m, ssss4m, shieldCracked);
         DrawQuadFilled(sssss1, sssss2, sssss3m, sssss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(sss1, sss2, sss3, sss4, shieldCol);
-    } else if (shield <= 100) {
+    }
+    else if (shield <= 100)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
       DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
       DrawQuadFilled(sss1, sss2, sss3, sss4, shieldCol);
-      if (shield < 100) {
+      if (shield < 100)
+      {
         DrawQuadFilled(ssss1, ssss2, ssss3m, ssss4m, shieldCracked);
         DrawQuadFilled(sssss1, sssss2, sssss3m, sssss4m, shieldCracked);
       }
       if (shield != 0)
         DrawQuadFilled(ssss1, ssss2, ssss3, ssss4, shieldCol);
-    } else if (shield <= 125) {
+    }
+    else if (shield <= 125)
+    {
       DrawQuadFilled(s1, s2, s3, s4, shieldCol);
       DrawQuadFilled(ss1, ss2, ss3, ss4, shieldCol);
       DrawQuadFilled(sss1, sss2, sss3, sss4, shieldCol);
       DrawQuadFilled(ssss1, ssss2, ssss3, ssss4, shieldCol);
-      if (shield < 125) {
+      if (shield < 125)
+      {
         DrawQuadFilled(sssss1, sssss2, sssss3m, sssss4m, shieldCracked);
       }
       if (shield != 0)

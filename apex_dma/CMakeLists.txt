@@ -12,7 +12,7 @@ include(CPack)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_CXX_FLAGS "-g -Wall -Wformat -march=native")
+set(CMAKE_CXX_FLAGS "-g -Wall -Wformat -Wunused -O2 -march=native")
 set(CMAKE_BUILD_TYPE "Release")
 
 # libs

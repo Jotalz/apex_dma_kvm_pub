@@ -20,12 +20,13 @@ typedef WORD *PWORD;
 uint32_t check = 0xABCD;
 
 // Left and Right Aim key toggle
+extern GlobalVar globals;
 extern bool active; // sync
 bool ready = false;
 extern uint64_t g_Base; // write sync
 // tdm check
-extern int EntTeam; // sync
-extern int LocTeam; // sync
+// extern int EntTeam; // sync
+// extern int LocTeam; // sync
 
 extern std::vector<TreasureClue> treasure_clues;
 float veltest = 1.00;     // sync
@@ -34,22 +35,16 @@ extern float bulletgrav;  // sync
 
 // Full Map Radar
 extern bool mainradartoggle; // Toggle for Main Map radar
-bool kingscanyon = false;    // Set for map, ONLY ONE THO
-bool stormpoint = true;      // Set for map, ONLY ONE THO
-
-// Map number
-extern int map;
 
 extern bool valid; // write sync
 extern bool next2; // read write sync
 
 Vector aim_target = Vector(0, 0, 0);
-extern aimbot_state_t aimbot; // read
+extern AimAssist aimbot; // read
 
 extern bool overlay_t;
 
 extern std::vector<player> players;
-extern Matrix view_matrix_data;
 extern Vector esp_local_pos;
 std::vector<std::string> esp_spec_names;
 
@@ -227,7 +222,7 @@ void DrawRadarPointMiniMap(D3DXVECTOR3 EneamyPos, D3DXVECTOR3 LocalPos,
                                    siz.y, LocalPlayerY, 0.3f, &ck);
   if (eneamyDist >= 0.f && eneamyDist < RadarSettings::distance_Radar)
   {
-      TeamMiniMap(single.x, single.y,
+    TeamMiniMap(single.x, single.y,
                   global_settings().mini_map_radar_dot_size1, team_id,
                   targetyaw);
   }
@@ -453,6 +448,9 @@ world WorldsEdge(ImVec2(20501.476562, 33754.492188), ImVec2(1159, 127),
                  ImVec2(622, 755)); // mp_rr_desertlands_hu - could be more
                                     // accurate  updated 7/16/2023
 
+world WorldEnd(ImVec2(20400.7, 664.792), ImVec2(1190, 497),
+	ImVec2(5135.7, 23819.8), ImVec2(1018, 235));
+
 world Olympus(ImVec2(0, 0), ImVec2(0, 0), ImVec2(0, 0),
               ImVec2(0, 0)); // to be measured
 
@@ -466,11 +464,9 @@ world StormPoint(ImVec2(34453.894531, 34695.917969), ImVec2(1264, 172),
                  ImVec2(636,
                         677)); // mp_rr_tropic_island_mu1_storm updated - is
                                // within a few pixels of accuracy 7/16/2023
-world WorldEnd(ImVec2(20400.7, 664.792), ImVec2(1190, 497),
-	ImVec2(5135.7, 23819.8), ImVec2(1018, 235));
-
 world District(ImVec2(20400.7, 664.792), ImVec2(1190, 497),
 	ImVec2(5135.7, 23819.8), ImVec2(1018, 235)); // mp_rr_district
+
 // DONE get map auto
 void worldToScreenMap(D3DXVECTOR3 origin, int team_id)
 {
@@ -478,51 +474,50 @@ void worldToScreenMap(D3DXVECTOR3 origin, int team_id)
   float ratioY;
   ImVec2 w1;
   ImVec2 s1;
-  // Is it me being lazy? or that i dont know how? prob both. True or False for
-  // the map detection, set in the overlay menu.
-  if (map == 2)
+  int8_t Map = std::get<int8_t>(globals.Get("Map"));
+  if (Map == 2)
   { // Storm Point
     ratioX = StormPoint.ratioX;
     ratioY = StormPoint.ratioY;
     w1 = StormPoint.w1;
     s1 = StormPoint.s1;
   }
-  else if (map == 7)
+  else if (Map == 7)
   { // KingsCanyon
     ratioX = KingsCanyon.ratioX;
     ratioY = KingsCanyon.ratioY;
     w1 = KingsCanyon.w1;
     s1 = KingsCanyon.s1;
   }
-  else if (map == 5)
+  else if (Map == 5)
   { // District
     ratioX = District.ratioX;
     ratioY = District.ratioY;
     w1 = District.w1;
     s1 = District.s1;
   }
-  else if (map == 8)
+  else if (Map == 8)
   { // WorldsEdge
     ratioX = WorldsEdge.ratioX;
     ratioY = WorldsEdge.ratioY;
     w1 = WorldsEdge.w1;
     s1 = WorldsEdge.s1;
   }
-  else if (map == 4)
+  else if (Map == 4)
   { // Olympus
     ratioX = Olympus.ratioX;
     ratioY = Olympus.ratioY;
     w1 = Olympus.w1;
     s1 = Olympus.s1;
   }
-  else if (map == 6)
+  else if (Map == 6)
   { // BrokenMoon
     ratioX = BrokenMoon.ratioX;
     ratioY = BrokenMoon.ratioY;
     w1 = BrokenMoon.w1;
     s1 = BrokenMoon.s1;
   }
-  else if (map == 3)
+  else if (Map == 3)
   { // WorldEnd
     ratioX = WorldEnd.ratioX;
     ratioY = WorldEnd.ratioY;
@@ -568,14 +563,14 @@ void Overlay::RenderEsp()
                      ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
                      ImGuiWindowFlags_NoBackground |
                      ImGuiWindowFlags_NoBringToFrontOnFocus);
-
+    Matrix view_matrix_data =std::get<Matrix>(globals.Get("ViewMatrix"));
     if (g_settings.show_aim_target && aim_target != Vector(0, 0, 0))
     {
       Vector bs = Vector();
       WorldToScreen(aim_target, view_matrix_data.matrix, getWidth(),
                     getHeight(), bs);
       const float indicator_radius = 10.0f;
-      ImColor indicator_color = aimbot.lock
+      ImColor indicator_color = aimbot.GetLock()
                                     ? ImColor(1.0f, 0.647f, 0.0f, 0.618f)
                                     : ImColor(1.0f, 1.0f, 1.0f, 0.618f);
       ImVec2 p1 = ImVec2(bs.x + indicator_radius, bs.y - indicator_radius);
@@ -584,7 +579,7 @@ void Overlay::RenderEsp()
       ImVec2 p4 = ImVec2(bs.x + indicator_radius, bs.y + indicator_radius);
       ImDrawList &draw_list = *ImGui::GetWindowDrawList();
       draw_list.AddRect(p2, p4, indicator_color, indicator_radius, 0, 1.6726f);
-      if (aimbot.lock)
+      if (aimbot.GetLock())
       {
         indicator_color = RED;
         draw_list.AddLine(p1, p3, indicator_color, 2.718f);

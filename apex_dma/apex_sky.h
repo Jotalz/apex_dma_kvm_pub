@@ -9,9 +9,9 @@ typedef struct aimbot_state_t {
   float max_fov = 10;
   float smooth = 120;
   float target_score_max;
-  uintptr_t aimentity = 0;
-  uintptr_t tmp_aimentity = 0;
-  uintptr_t locked_aimentity = 0;
+  uint64_t aimentity = 0;
+  uint64_t tmp_aimentity = 0;
+  uint64_t locked_aimentity = 0;
 } aimbot_state_t;
 
 typedef struct {
@@ -178,7 +178,6 @@ typedef struct {
   bool super_grpple;
   bool auto_tapstrafe;
   bool onevone;
-  bool tdm_toggle;
   bool item_glow;
   bool player_glow;
   bool player_glow_armor_color;

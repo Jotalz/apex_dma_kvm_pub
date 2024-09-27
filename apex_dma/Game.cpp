@@ -13,6 +13,7 @@
 
 extern Memory apex_mem;
 extern uint64_t g_Base;
+extern GlobalVar globals;
 float bulletspeed = 0.08;
 float bulletgrav = 0.05;
 
@@ -21,10 +22,8 @@ std::array<unsigned char, 4> Item::ItemRarityIds = {15, 42, 47, 54};
 // setting up vars, dont edit
 extern float veltest;
 extern Vector aim_target;
-extern int local_held_id;
-extern uint32_t local_weapon_id;
 
-Entity getEntity(uintptr_t ptr)
+Entity getEntity(uint64_t ptr)
 {
     Entity entity = Entity();
     entity.ptr = ptr;
@@ -103,6 +102,14 @@ float Entity::GetYaw()
     if (yaw > 360)
         yaw -= 360;
     return yaw;
+}
+
+bool Entity::isVisable(std::unordered_map<uint64_t, float> &vistime,std::unordered_map<uint64_t, float> &aimtime){
+        if (vistime[ptr] < lastVisTime()) 
+            return true;
+        if (aimtime[ptr] < lastCrossHairTime())
+            return true;
+        return false;
 }
 
 void Entity::get_name(uint64_t g_Base, uint64_t index, char *name)
@@ -265,7 +272,7 @@ bool Entity::check_love_player(uint64_t entity_index)
 }
 
 // Items
-Item getItem(uintptr_t ptr)
+Item getItem(uint64_t ptr)
 {
     Item entity = Item();
     entity.ptr = ptr;
@@ -461,7 +468,7 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon,
         TargetBonePositionMax = TargetBonePositionMin =
             target.getBonePositionByHitbox(g_settings.bone);
     }
-
+    int local_held_id = std::get<int>(globals.Get("HeldID"));
     if (local_held_id != -251)
     {
         QAngle CalculatedAnglesMin =
@@ -601,8 +608,8 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     float bulletSpeed = weapon.get_projectile_speed();
     float bulletGrav = weapon.get_projectile_gravity();
     Vector LocalCamera = from.GetCamPos();
-    QAngle ViewAngles = from.GetViewAngles();
-    QAngle SwayAngles = from.GetSwayAngles();
+    // QAngle ViewAngles = from.GetViewAngles();
+    // QAngle SwayAngles = from.GetSwayAngles();
     Vector targetVel = target.getAbsVelocity();
     float deltaTime = 1.0 / g_settings.game_fps;
 
