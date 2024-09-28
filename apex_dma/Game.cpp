@@ -361,7 +361,7 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
         Ctx.StartPos = LocalCameraPosition;
         Ctx.TargetPos = TargetBonePosition;
         Ctx.BulletSpeed = BulletSpeed * (1 - bulletspeed);
-        Ctx.BulletGravity = BulletGrav * (1 - bulletgrav);
+        Ctx.BulletGravity = BulletGrav * (1 + bulletgrav);
 
         // Add the target's velocity to the prediction context, with an offset
         // in the y direction

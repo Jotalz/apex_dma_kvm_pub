@@ -3537,8 +3537,8 @@ fn build_predict_menu(
                 handle.nav_menu(MenuLevel::MainMenu);
                 None
             },
-        )
-        .into()
+        );
+        menu.into()
 }
 
 fn render_selected_list<'a>(
