@@ -17,6 +17,46 @@ pub struct EspVisuals {
 
 #[repr(C)]
 #[derive(Clone, Deserialize, Serialize, Debug)]
+pub struct Predict{
+    pub weapon_kraber: f32,
+    pub weapon_bow: f32,
+    // Shotguns
+    pub weapon_mastiff: f32,
+    pub weapon_eva8: f32,
+    pub weapon_peacekeeper: f32,
+    pub weapon_mozambique: f32,
+    // Energy weapons
+    pub weapon_lstar: f32,
+    pub weapon_nemesis: f32,
+    pub weapon_havoc: f32,
+    pub weapon_devotion: f32,
+    pub weapon_triple_take: f32,
+    pub weapon_volt: f32,
+    // Heavy Weapons
+    pub weapon_flatline: f32,
+    pub weapon_hemlock: f32,
+    pub weapon_3030_repeater: f32,
+    pub weapon_rampage: f32,
+    pub weapon_car_smg: f32,
+    pub weapon_prowler: f32,
+    // Light weapons
+    pub weapon_p2020: f32,
+    pub weapon_re45: f32,
+    pub weapon_g7_scout: f32,
+    pub weapon_alternator: f32,
+    pub weapon_r99: f32,
+    pub weapon_spitfire: f32,
+    pub weapon_r301: f32,
+    // Snipers.. wingman is the odd one...and the bow..
+    pub weapon_wingman: f32,
+    pub weapon_longbow: f32,
+    pub weapon_charge_rifle: f32,
+    pub weapon_sentinel: f32,
+}
+
+
+#[repr(C)]
+#[derive(Clone, Deserialize, Serialize, Debug)]
 pub struct Loot {
     // rev skull
     pub skull: bool,
@@ -238,6 +278,48 @@ pub struct Settings {
     pub loot_filled: u8,
     pub loot_outline: u8,
     pub loot: Loot,
+    pub predict: Predict,
+}
+
+impl Default for Predict {
+    fn default() -> Self {
+        Self {
+            weapon_kraber: 0.08,
+            weapon_bow: 0.08,
+            // Shotguns
+            weapon_mastiff: 0.08,
+            weapon_eva8: 0.08,
+            weapon_peacekeeper: 0.08,
+            weapon_mozambique: 0.08,
+            // Energy weapons
+            weapon_lstar: 0.08,
+            weapon_nemesis: 0.08,
+            weapon_havoc: 0.08,
+            weapon_devotion: 0.08,
+            weapon_triple_take: 0.08,
+            weapon_volt: 0.08,
+            // Heavy Weapons
+            weapon_flatline: 0.08,
+            weapon_hemlock: 0.08,
+            weapon_3030_repeater: 0.08,
+            weapon_rampage: 0.08,
+            weapon_car_smg: 0.08,
+            weapon_prowler: 0.08,
+            // Light weapons
+            weapon_p2020: 0.08,
+            weapon_re45: 0.08,
+            weapon_g7_scout: 0.08,
+            weapon_alternator: 0.08,
+            weapon_r99: 0.08,
+            weapon_spitfire: 0.08,
+            weapon_r301: 0.08,
+            // Snipers.. wingman is the odd one...and the bow..
+            weapon_wingman: 0.08,
+            weapon_longbow: 0.08,
+            weapon_charge_rifle: 0.08,
+            weapon_sentinel: 0.08,
+        }
+    }
 }
 
 impl Default for EspVisuals {
@@ -487,6 +569,7 @@ impl Default for Settings {
             loot_outline: 32,
 
             loot: Loot::default(),
+            predict: Predict::default(),
         }
     }
 }

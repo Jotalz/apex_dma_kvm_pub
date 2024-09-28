@@ -16,6 +16,7 @@ menu-item-player-glow = Player Glow
 menu-item-player-glow-dist = Player Glow Distance
 menu-item-smooth-value = Smooth Value
 menu-item-smooth-sub-value = Smooth Value Sub
+menu-item-weapon-predict = Prediction Fine-Tuning
 input-prompt-smooth-value = New value for 'smooth' (50 to 500):
 input-prompt-smooth-sub-value = Secondary key smoothing value (50 to 500):
 info-invalid-smooth-value = Invalid value.
@@ -210,6 +211,7 @@ weapon-longbow = Longbow DMR
 weapon-charge-rifle = Charge Rifle
 weapon-sentinel = Sentinel
 weapon-bow = Bocek Compound Bow
+weapon-kraber = Kraber
 loot-sniper-ammo = Sniper Ammo
 sniper-weapon-mags-section = Sniper Weapon Mags:
 loot-sniper-weapon-mag = Extended Sniper Mag
@@ -260,6 +262,11 @@ keycode110-mouse3-middle = 110 Middle mouse button (mouse3)
 keycode111-mouse4-side = 111 Side mouse button (mouse4)
 keycode112-mouse5-side = 112 Side mouse button (mouse5)
 menu-item-back-to-hotkey-menu = Back to Hotkey Menu
+weapons-predict-menu-title = Weapons Predict Menu
+input-prompt-weapons-predict = 
+    Weapon prediction Speed Fine-Tuning (-0.1~0.2):
+    The larger the value, the more advance the aiming will be.
+info-invalid-predict = The predicted value must be between -0.1 and 0.2
 menu-value-prefix = {" [Current: "}
 menu-value-suffix = {"]"}
 loot-level1-name = Common

@@ -82,6 +82,7 @@ pub enum MessageId {
     MenuItemToggleOnevone,
     MenuItemToggleNoRecoil,
     MenuItemSetFpsPredict,
+    MenuItemWeaponPredict,
     MenuValueCalcFps,
     InputPromptFpsPredict,
     MenuItemPlayerArmorGlowColor,
@@ -182,6 +183,7 @@ pub enum MessageId {
     SniperWeaponsSection,
     WeaponWingman,
     WeaponLongbow,
+    WeaponKraber,
     WeaponChargeRifle,
     WeaponSentinel,
     WeaponBow,
@@ -249,6 +251,9 @@ pub enum MessageId {
     MenuItemSuperGrpple,
     MenuItemAutoTapstrafe,
     MenuItemPlayerGlowDist,
+    WeaponsPredictMenuTitle,
+    InputPromptWeaponsPredict,
+    InfoInvalidPredict,
 }
 
 pub fn get_fluent_bundle() -> FluentBundle<FluentResource> {

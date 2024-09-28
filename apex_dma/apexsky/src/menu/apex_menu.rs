@@ -65,6 +65,7 @@ enum MenuLevel {
     ScopesMenu,
     KeyCodesMenu,
     HotkeyMenu,
+    PredictMenu,
 }
 
 impl<'a> TerminalMenu<'a> {
@@ -194,6 +195,7 @@ impl<'a> TerminalMenu<'a> {
             MenuLevel::ScopesMenu => build_scopes_menu(i18n_bundle, data),
             MenuLevel::KeyCodesMenu => build_key_codes_menu(i18n_bundle, data),
             MenuLevel::HotkeyMenu => build_hotkey_menu(i18n_bundle, data),
+            MenuLevel::PredictMenu => build_predict_menu(i18n_bundle, data),
         };
         new_menu_state.nav_index = nav_index;
         self.menu_state = Some(new_menu_state);
@@ -493,6 +495,13 @@ fn build_main_menu(
                 lock_config!() = config_state;
                 Some(result)
             },
+        )
+        .add_item(
+            item_text(format!("      5 - {}", i18n_msg!(i18n_bundle, MenuItemWeaponPredict))),
+            |handle: &mut TerminalMenu| {
+                handle.nav_menu(MenuLevel::PredictMenu);
+                None
+            },
         );
     menu = menu
         .add_item(
@@ -786,7 +795,7 @@ fn build_main_menu(
             |_| {
                 let settings = &mut lock_config!().settings;
                 settings.aim_no_recoil = !settings.aim_no_recoil;
-                settings.aim = if settings.aim_no_recoil { 0 } else { 2 };
+                // settings.aim = if settings.aim_no_recoil { 0 } else { 2 };
                 None
             },
         )
@@ -3117,6 +3126,413 @@ fn build_key_codes_menu(
         .add_dummy_item()
         .add_item(
             item_text(i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)),
+            |handle: &mut TerminalMenu| {
+                handle.nav_menu(MenuLevel::MainMenu);
+                None
+            },
+        )
+        .into()
+}
+
+fn build_predict_menu(
+    i18n_bundle: FluentBundle<FluentResource>,
+    settings: config::Settings,
+) -> MenuState<'static> {
+    let mut menu = MenuBuilder::new().title(i18n_msg!(i18n_bundle, WeaponsPredictMenuTitle));
+    menu = menu
+        .add_dummy_item()
+        .add_text_item(i18n_msg!(i18n_bundle, LightWeaponsSection))
+        .add_dummy_item()
+        .add_input_item(
+            item_text(format!(" 1 - {}",i18n_msg!(i18n_bundle, WeaponP2020))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_p2020 = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 2 - {}",i18n_msg!(i18n_bundle, WeaponRe45))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_re45 = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 3 - {}",i18n_msg!(i18n_bundle, WeaponAlternator))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_alternator = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 4 - {}",i18n_msg!(i18n_bundle, WeaponG7Scout))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_g7_scout = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 5 - {}",i18n_msg!(i18n_bundle, WeaponR99))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_r99 = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 6 - {}",i18n_msg!(i18n_bundle, WeaponR301))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_r301 = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 7 - {}",i18n_msg!(i18n_bundle, WeaponM600))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_spitfire = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_dummy_item()
+        .add_text_item(i18n_msg!(i18n_bundle, HeavyWeaponsSection))
+        .add_dummy_item()
+        .add_input_item(
+            item_text(format!(" 8 - {}",i18n_msg!(i18n_bundle, WeaponFlatline))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_flatline = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!(" 9 - {}",i18n_msg!(i18n_bundle, WeaponHemlock))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_hemlock = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("10 - {}",i18n_msg!(i18n_bundle, WeaponRampage))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_rampage = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("11 - {}",i18n_msg!(i18n_bundle, Weapon3030Repeater))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_3030_repeater = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("12 - {}",i18n_msg!(i18n_bundle, WeaponCarSmg))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_car_smg = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("13 - {}",i18n_msg!(i18n_bundle, WeaponProwler))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_prowler = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_dummy_item()
+        .add_text_item(i18n_msg!(i18n_bundle, EnergyWeaponsSection))
+        .add_dummy_item()
+        .add_input_item(
+            item_text(format!("14 - {}",i18n_msg!(i18n_bundle, WeaponDeovtion))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_devotion = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("15 - {}",i18n_msg!(i18n_bundle, WeaponLStar))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_lstar = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("16 - {}",i18n_msg!(i18n_bundle, WeaponNemesis))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_nemesis = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("17 - {}",i18n_msg!(i18n_bundle, WeaponHavoc))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_havoc = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("18 - {}",i18n_msg!(i18n_bundle, WeaponVolt))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_volt = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("19 - {}",i18n_msg!(i18n_bundle, WeaponTripleTake))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_triple_take = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_dummy_item()
+        .add_text_item(i18n_msg!(i18n_bundle, SniperWeaponsSection))
+        .add_dummy_item()
+        .add_input_item(
+            item_text(format!("20 - {}",i18n_msg!(i18n_bundle, WeaponWingman))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_wingman = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("21 - {}",i18n_msg!(i18n_bundle, WeaponLongbow))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_longbow = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("22 - {}",i18n_msg!(i18n_bundle, WeaponChargeRifle))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_charge_rifle = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("23 - {}",i18n_msg!(i18n_bundle, WeaponSentinel))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_sentinel = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("24 - {}",i18n_msg!(i18n_bundle, WeaponKraber))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_kraber = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_input_item(
+            item_text(format!("25 - {}",i18n_msg!(i18n_bundle, WeaponBow))),
+            &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
+            |val| {
+                if let Some(new_val) = val.parse::<f32>().ok() {
+                    if new_val >= -0.1 && new_val <= 0.2 {
+                        let settings = &mut lock_config!().settings;
+                        settings.predict.weapon_bow = new_val.into();
+                        return None;
+                    }
+                }
+                let i18n_bundle = get_fluent_bundle();
+                Some(i18n_msg!(i18n_bundle, InfoInvalidPredict).to_string())
+            },
+        )
+        .add_dummy_item()
+        .add_item(
+            item_text(format!(
+                "26 - {}",
+                i18n_msg!(i18n_bundle, MenuItemBackToMainMenu)
+            )),
             |handle: &mut TerminalMenu| {
                 handle.nav_menu(MenuLevel::MainMenu);
                 None

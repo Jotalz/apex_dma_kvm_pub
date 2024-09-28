@@ -2,17 +2,42 @@
 
 #include <cstdint>
 
-typedef struct aimbot_state_t {
-  bool aiming = false;
-  bool gun_safety = true;
-  bool lock = false;
-  float max_fov = 10;
-  float smooth = 120;
-  float target_score_max;
-  uint64_t aimentity = 0;
-  uint64_t tmp_aimentity = 0;
-  uint64_t locked_aimentity = 0;
-} aimbot_state_t;
+typedef struct {
+    float weapon_kraber;
+    float weapon_bow;
+    // Shotguns
+    float weapon_mastiff;
+    float weapon_eva8;
+    float weapon_peacekeeper;
+    float weapon_mozambique;
+    // Energy weapons
+    float weapon_lstar;
+    float weapon_nemesis;
+    float weapon_havoc;
+    float weapon_devotion;
+    float weapon_triple_take;
+    float weapon_volt;
+    // Heavy Weapons
+    float weapon_flatline;
+    float weapon_hemlock;
+    float weapon_3030_repeater;
+    float weapon_rampage;
+    float weapon_car_smg;
+    float weapon_prowler;
+    // Light weapons
+    float weapon_p2020;
+    float weapon_re45;
+    float weapon_g7_scout;
+    float weapon_alternator;
+    float weapon_r99;
+    float weapon_spitfire;
+    float weapon_r301;
+    // Snipers.. wingman is the odd one...and the bow..
+    float weapon_wingman;
+    float weapon_longbow;
+    float weapon_charge_rifle;
+    float weapon_sentinel;
+} predict;
 
 typedef struct {
   bool box;
@@ -235,6 +260,7 @@ typedef struct {
   uint8_t loot_filled;
   uint8_t loot_outline;
   loots loot;
+  predict weapon_predict;
 } settings_t;
 
 typedef struct {

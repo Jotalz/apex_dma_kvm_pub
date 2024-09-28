@@ -347,21 +347,21 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
     QAngle CalculatedAngles = QAngle(0, 0, 0);
     if (BulletSpeed > 1.f)
     {
+        bulletspeed = get_predict(weapid);
         if (weapid == 2)
         {
-            bulletspeed = 10.08;
+            bulletspeed = 10.08; // reserve
             bulletgrav = 10.05;
         }
         else
         {
-            bulletspeed = 0.08;
             bulletgrav = 0.05;
         }
         PredictCtx Ctx;
         Ctx.StartPos = LocalCameraPosition;
         Ctx.TargetPos = TargetBonePosition;
-        Ctx.BulletSpeed = BulletSpeed - (BulletSpeed * bulletspeed);
-        Ctx.BulletGravity = BulletGrav + (BulletGrav * bulletgrav);
+        Ctx.BulletSpeed = BulletSpeed * (1 - bulletspeed);
+        Ctx.BulletGravity = BulletGrav * (1 - bulletgrav);
 
         // Add the target's velocity to the prediction context, with an offset
         // in the y direction
@@ -714,3 +714,17 @@ const char *WeaponXEntity::get_name_str() { return name_str; }
 int WeaponXEntity::get_mod_bitfield() { return mod_bitfield; }
 
 uint32_t WeaponXEntity::get_weap_id() { return weap_id; }
+
+float get_predict(int weaponid)
+{
+    weapon_id weapon_enum = static_cast<weapon_id>(weaponid);
+    const auto g_settings = global_settings(); 
+    float predict_value = 0;
+    auto it = weapon_predict_map.find(weapon_enum);
+    if (it != weapon_predict_map.end()) {
+        predict_value = g_settings.weapon_predict.*(it->second);
+    } else {
+        predict_value;
+    }
+    return predict_value;
+}

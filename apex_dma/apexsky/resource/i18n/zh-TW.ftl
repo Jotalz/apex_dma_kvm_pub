@@ -16,6 +16,7 @@ menu-item-player-glow = 玩家發光
 menu-item-player-glow-dist = 玩家熱能距離
 menu-item-smooth-value = 平滑
 menu-item-smooth-value = 副键平滑
+menu-item-weapon-predict = 武器預測微調
 input-prompt-smooth-value = 瞄準平滑值 (50~500):
 input-prompt-smooth-sub-value = 副键平滑值 (50~500):
 info-invalid-smooth-value = 無效值。
@@ -210,6 +211,7 @@ weapon-longbow = 長弓 DMR
 weapon-charge-rifle = 電能步槍
 weapon-sentinel = 哨兵
 weapon-bow = 博切克複合弓
+weapon-kraber = 克萊伯
 loot-sniper-ammo = 狙击彈藥
 sniper-weapon-mags-section = 狙擊彈匣:
 loot-sniper-weapon-mag = 狙擊擴充彈匣
@@ -260,6 +262,11 @@ keycode110-mouse3-middle = 110 滑鼠中键 (mouse3)
 keycode111-mouse4-side = 111 滑鼠侧键 (mouse4)
 keycode112-mouse5-side = 112 滑鼠侧键 (mouse5)
 menu-item-back-to-hotkey-menu = 返回熱鍵選單
+weapons-predict-menu = 武器預測選單
+input-prompt-weapons-predict = 
+    武器預測速度微調 (-0.1~0.2):
+    數值越大，自瞄時提前量越多
+info-invalid-predict = 預測值必須在-0.1~0.2之間
 menu-value-prefix = {" [Current: "}
 menu-value-suffix = {"]"}
 loot-level1-name = 一級
