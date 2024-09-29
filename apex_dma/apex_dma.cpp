@@ -1373,7 +1373,7 @@ static void AimbotLoop()
             // printf("%d\n", weaponID);
             if (g_settings.aim_no_recoil)
             {
-                static QAngle preViewAngles = QAngle(0, 0, 0);
+                static QAngle preRecoilAngles = QAngle(0, 0, 0);
                 int in_attack = std::get<int>(globals.Get("AttackState"));
                 if (in_attack > 0)
                 {
@@ -1382,12 +1382,15 @@ static void AimbotLoop()
                     {
                         QAngle deltaAngle(0, 0, 0);
                         QAngle viewAngles = LPlayer.GetViewAngles();
-                        deltaAngle.x = (preViewAngles.x - punchAngles.x) * (g_settings.recoil_pitch / 100.f);
-                        deltaAngle.y = (preViewAngles.y - punchAngles.y) * (g_settings.recoil_yaw / 100.f);
+                        deltaAngle.x = (preRecoilAngles.x - punchAngles.x) * (g_settings.recoil_pitch / 100.f);
+                        deltaAngle.y = (preRecoilAngles.y - punchAngles.y) * (g_settings.recoil_yaw / 100.f);
                         viewAngles += deltaAngle;
                         LPlayer.SetViewAngles(viewAngles);
                         std::this_thread::sleep_for(std::chrono::milliseconds(20));
                     }
+                    preRecoilAngles = punchAngles;
+                }else{
+                    preRecoilAngles = QAngle(0, 0, 0);
                 }
             }
             if (!QuickAim)

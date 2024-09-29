@@ -1,4 +1,5 @@
-#include "Game.h"
+#pragma once
+#include "vector.h"
 #include <cmath>
 
 struct PredictCtx {

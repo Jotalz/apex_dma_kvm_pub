@@ -193,38 +193,6 @@ typedef struct
   float distance;
 } TreasureClue;
 
-std::unordered_map<weapon_id, float predict::*> weapon_predict_map = {
-    {idweapon_kraber, &predict::weapon_kraber},
-    {idweapon_bow, &predict::weapon_bow},
-    {idweapon_mastiff, &predict::weapon_mastiff},
-    {idweapon_eva8, &predict::weapon_eva8},
-    {idweapon_eva8, &predict::weapon_peacekeeper},
-    {idweapon_mozambique, &predict::weapon_mozambique},
-    {idweapon_lstar, &predict::weapon_lstar},
-    {idweapon_nemesis, &predict::weapon_nemesis},
-    {idweapon_havoc, &predict::weapon_havoc},
-    {idweapon_devotion, &predict::weapon_devotion},
-    {idweapon_triple_take, &predict::weapon_triple_take},
-    {idweapon_volt, &predict::weapon_volt},
-    {idweapon_flatline, &predict::weapon_flatline},
-    {idweapon_hemlock, &predict::weapon_hemlock},
-    {idweapon_3030_repeater, &predict::weapon_3030_repeater},
-    {idweapon_rampage, &predict::weapon_rampage},
-    {idweapon_car_smg, &predict::weapon_car_smg},
-    {idweapon_prowler, &predict::weapon_prowler},
-    {idweapon_p2020, &predict::weapon_p2020},
-    {idweapon_re45, &predict::weapon_re45},
-    {idweapon_g7_scout, &predict::weapon_g7_scout},
-    {idweapon_alternator, &predict::weapon_alternator},
-    {idweapon_r99, &predict::weapon_r99},
-    {idweapon_spitfire, &predict::weapon_spitfire},
-    {idweapon_r301, &predict::weapon_r301},
-    {idweapon_wingman, &predict::weapon_wingman},
-    {idweapon_longbow, &predict::weapon_longbow},
-    {idweapon_charge_rifle, &predict::weapon_charge_rifle},
-    {idweapon_sentinel, &predict::weapon_sentinel},
-};
-
 float get_predict(int weaponid);
 
 struct GlobalVar {
