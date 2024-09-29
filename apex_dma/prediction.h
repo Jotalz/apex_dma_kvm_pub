@@ -29,10 +29,9 @@ inline bool OptimalPitch(const PredictCtx &Ctx, const Vector2D &Dir2D,
   return false;
 }
 
-inline bool SolveTrajectory(PredictCtx &Ctx, const Vector &ExtrPos,
-                            float *TravelTime) {
-  Vector Dir = ExtrPos - Ctx.StartPos;
-  Vector2D Dir2D = {sqrtf(Dir.x * Dir.x + Dir.y * Dir.y), Dir.z};
+inline bool SolveTrajectory(PredictCtx &Ctx, const Vector &ExtrPos, float *TravelTime) {
+  const Vector Dir = ExtrPos - Ctx.StartPos;
+  const Vector2D Dir2D = {sqrtf(Dir.x * Dir.x + Dir.y * Dir.y), Dir.z};
 
   float CurPitch;
   if (!OptimalPitch(Ctx, Dir2D, &CurPitch)) {
@@ -46,10 +45,10 @@ inline bool SolveTrajectory(PredictCtx &Ctx, const Vector &ExtrPos,
 }
 
 inline bool BulletPredict(PredictCtx &Ctx) {
-  float MAX_TIME = 1.f, TIME_STEP = (1.f / 256.f);
-  for (float CurrentTime = 0.f; CurrentTime <= MAX_TIME;
-       CurrentTime += TIME_STEP) {
-    float TravelTime;
+  static const float MAX_TIME = 1.f;
+  static const float TIME_STEP = (1.f / 256.f);
+  float TravelTime = 0;
+  for (float CurrentTime = 0.f; CurrentTime <= MAX_TIME; CurrentTime += TIME_STEP) {
     Vector ExtrPos = ExtrapolatePos(Ctx, CurrentTime);
     if (!SolveTrajectory(Ctx, ExtrPos, &TravelTime)) {
       return false;

@@ -347,6 +347,7 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
     if (BulletSpeed > 1.f)
     {
         bulletspeed = get_predict(weapid);
+        // printf("speed:%f\n",bulletspeed);
         if (weapid == 2)
         {
             bulletspeed = 10.08; // reserve
@@ -361,7 +362,8 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
         Ctx.TargetPos = TargetBonePosition;
         Ctx.BulletSpeed = BulletSpeed * (1 - bulletspeed);
         Ctx.BulletGravity = BulletGrav * (1 + bulletgrav);
-
+        Ctx.TargetVel = targetVel;
+        /*
         // Add the target's velocity to the prediction context, with an offset
         // in the y direction
         float distanceToTarget = (TargetBonePosition - LocalCameraPosition).Length();
@@ -369,7 +371,7 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
         Vector targetPosAhead = TargetBonePosition + (targetVel * timeToTarget);
         Ctx.TargetVel = Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime), targetVel.z);
         Ctx.TargetPos = targetPosAhead;
-
+        */
         aim_target = Ctx.TargetPos;
 
         if (BulletPredict(Ctx))
@@ -719,7 +721,7 @@ std::unordered_map<weapon_id, float predict::*> weapon_predict_map = {
     {idweapon_bow, &predict::weapon_bow},
     {idweapon_mastiff, &predict::weapon_mastiff},
     {idweapon_eva8, &predict::weapon_eva8},
-    {idweapon_eva8, &predict::weapon_peacekeeper},
+    {idweapon_peacekeeper, &predict::weapon_peacekeeper},
     {idweapon_mozambique, &predict::weapon_mozambique},
     {idweapon_lstar, &predict::weapon_lstar},
     {idweapon_nemesis, &predict::weapon_nemesis},

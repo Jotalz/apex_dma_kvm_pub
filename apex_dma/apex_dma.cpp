@@ -52,8 +52,8 @@ bool item_t = false;
 
 // for esp
 extern Vector aim_target;
-extern float bulletspeed;
-extern float bulletgrav;
+//extern float bulletspeed;
+//extern float bulletgrav;
 bool next2 = false;
 bool valid = false;
 Vector esp_local_pos;
@@ -122,7 +122,7 @@ bool IsInTriggerZone(WeaponXEntity &weapon, Vector localCameraPos, Entity &targe
         break;
     case idweapon_p2020:
     case idweapon_mozambique:
-        delay = 200;
+        delay = 220;
         boneIndex = 2;
         break;
     case idweapon_mastiff:
@@ -1445,6 +1445,7 @@ static void AimbotLoop()
                         float screenH = g_settings.screen_height;
                         if (IsInTriggerZone(currentWeapon, loaclCamPos, target, isInhair, screenW, screenH))
                         {
+                            apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
                             apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 5);
                             std::this_thread::sleep_for(std::chrono::milliseconds(20));
                             apex_mem.Write<int>(g_Base + OFFSET_IN_ATTACK + 0x8, 4);
