@@ -81,7 +81,7 @@ menu-item-toggle-nade-aim = 高抛雷
 menu-value-no-nade-aim = 开镜瞄准
 menu-value-nade-aim-on = 开镜取消
 menu-item-toggle-onevone = 1v1
-menu-item-toggle-no-recoil = 无后座
+menu-item-toggle-no-recoil = 仅后座调节
 menu-item-change-recoil-pitch = 垂直后坐力
 menu-item-change-recoil-yaw = 水平后坐力
 input-prompt-recoil-pitch = 
@@ -135,6 +135,7 @@ hotkey-item-aimbot2 = 自瞄热键2
 hotkey-item-trigger-bot = 自动扳机热键(绑定热键2)
 hotkey-item-flick-bot = 瞬击热键
 hotkey-item-quick-glow = 临时开关热能热键
+hotkey-item-quick-aim = 临时开关自瞄热键
 hotkey-item-algs-radar = ALGS雷达热键
 menu-item-key-codes = 键码表
 item-filter-menu-title = 物品选择菜单
@@ -264,9 +265,10 @@ keycode112-mouse5-side = 112 鼠标侧键 (mouse5)
 menu-item-back-to-hotkey-menu = 返回热键菜单
 weapons-predict-menu-title = 武器预测菜单
 input-prompt-weapons-predict = 
-    武器预测速度微调 (-0.1~0.2):
+    武器预测速度微调 (-0.5~0.5):
     数值越大，自瞄时提前量越多
-info-invalid-predict = 预测值必须在-0.1~0.2之间
+    默认值是0.08
+info-invalid-predict = 预测值必须在-0.5~0.5之间
 menu-value-prefix = {" [当前: "}
 menu-value-suffix = {"]"}
 loot-level1-name = 等级1

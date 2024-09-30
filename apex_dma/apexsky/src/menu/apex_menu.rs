@@ -3148,7 +3148,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_p2020 = new_val.into();
                         return None;
@@ -3163,7 +3163,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_re45 = new_val.into();
                         return None;
@@ -3178,7 +3178,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_alternator = new_val.into();
                         return None;
@@ -3193,7 +3193,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_g7_scout = new_val.into();
                         return None;
@@ -3208,7 +3208,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_r99 = new_val.into();
                         return None;
@@ -3223,7 +3223,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_r301 = new_val.into();
                         return None;
@@ -3238,7 +3238,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_spitfire = new_val.into();
                         return None;
@@ -3256,7 +3256,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_flatline = new_val.into();
                         return None;
@@ -3271,7 +3271,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_hemlock = new_val.into();
                         return None;
@@ -3286,7 +3286,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_rampage = new_val.into();
                         return None;
@@ -3301,7 +3301,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_3030_repeater = new_val.into();
                         return None;
@@ -3316,7 +3316,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_car_smg = new_val.into();
                         return None;
@@ -3331,7 +3331,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_prowler = new_val.into();
                         return None;
@@ -3349,7 +3349,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_devotion = new_val.into();
                         return None;
@@ -3364,7 +3364,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_lstar = new_val.into();
                         return None;
@@ -3379,7 +3379,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_nemesis = new_val.into();
                         return None;
@@ -3394,7 +3394,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_havoc = new_val.into();
                         return None;
@@ -3409,7 +3409,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_volt = new_val.into();
                         return None;
@@ -3424,7 +3424,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_triple_take = new_val.into();
                         return None;
@@ -3442,7 +3442,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_wingman = new_val.into();
                         return None;
@@ -3457,7 +3457,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_longbow = new_val.into();
                         return None;
@@ -3472,7 +3472,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_charge_rifle = new_val.into();
                         return None;
@@ -3487,7 +3487,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_sentinel = new_val.into();
                         return None;
@@ -3502,7 +3502,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_kraber = new_val.into();
                         return None;
@@ -3517,7 +3517,7 @@ fn build_predict_menu(
             &i18n_msg!(i18n_bundle, InputPromptWeaponsPredict),
             |val| {
                 if let Some(new_val) = val.parse::<f32>().ok() {
-                    if new_val >= -0.1 && new_val <= 0.2 {
+                    if new_val >= -0.5 && new_val <= 0.5 {
                         let settings = &mut lock_config!().settings;
                         settings.predict.weapon_bow = new_val.into();
                         return None;

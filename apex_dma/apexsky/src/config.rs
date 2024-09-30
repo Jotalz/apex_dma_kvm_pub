@@ -299,7 +299,7 @@ impl Default for Predict {
             weapon_triple_take: 0.08,
             weapon_volt: 0.08,
             // Heavy Weapons
-            weapon_flatline: 0.08,
+            weapon_flatline: 0.05,
             weapon_hemlock: 0.08,
             weapon_3030_repeater: 0.08,
             weapon_rampage: 0.08,

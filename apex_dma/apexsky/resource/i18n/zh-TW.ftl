@@ -81,7 +81,7 @@ menu-item-toggle-nade-aim = 天空手榴彈
 menu-value-no-nade-aim = 開鏡瞄準
 menu-value-nade-aim-on = 開鏡取消
 menu-item-toggle-onevone = 1v1
-menu-item-toggle-no-recoil = 無後座力
+menu-item-toggle-no-recoil = 僅後座調節
 menu-item-change-recoil-pitch = 垂直後座力
 menu-item-change-recoil-yaw = 水平後座力
 input-prompt-recoil-pitch = 
@@ -135,6 +135,7 @@ hotkey-item-aimbot2 = Aimbot熱鍵2
 hotkey-item-trigger-bot = 自動扳機熱鍵(綁定熱鍵2)
 hotkey-item-flick-bot = 瞬擊熱鍵
 hotkey-item-quick-glow = 臨時開關熱能熱鍵
+hotkey-item-quick-aim = 臨時開關自瞄熱鍵
 hotkey-item-algs-radar = ALGS雷达热键
 menu-item-key-codes = 按鍵代碼
 item-filter-menu-title = 物品選單
@@ -264,9 +265,10 @@ keycode112-mouse5-side = 112 滑鼠侧键 (mouse5)
 menu-item-back-to-hotkey-menu = 返回熱鍵選單
 weapons-predict-menu = 武器預測選單
 input-prompt-weapons-predict = 
-    武器預測速度微調 (-0.1~0.2):
+    武器預測速度微調 (-0.5~0.5):
     數值越大，自瞄時提前量越多
-info-invalid-predict = 預測值必須在-0.1~0.2之間
+    默認值是0.08
+info-invalid-predict = 預測值必須在-0.5~0.5之間
 menu-value-prefix = {" [Current: "}
 menu-value-suffix = {"]"}
 loot-level1-name = 一級

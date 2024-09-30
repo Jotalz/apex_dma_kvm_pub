@@ -347,7 +347,7 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
     if (BulletSpeed > 1.f)
     {
         bulletspeed = get_predict(weapid);
-        // printf("speed:%f\n",bulletspeed);
+        //printf("speed:%f\n",bulletspeed);
         if (weapid == 2)
         {
             bulletspeed = 10.08; // reserve
@@ -359,19 +359,17 @@ auto fun_calc_angles = [](Vector LocalCameraPosition, Vector TargetBonePosition,
         }
         PredictCtx Ctx;
         Ctx.StartPos = LocalCameraPosition;
-        Ctx.TargetPos = TargetBonePosition;
         Ctx.BulletSpeed = BulletSpeed * (1 - bulletspeed);
         Ctx.BulletGravity = BulletGrav * (1 + bulletgrav);
-        Ctx.TargetVel = targetVel;
-        /*
+        
         // Add the target's velocity to the prediction context, with an offset
         // in the y direction
         float distanceToTarget = (TargetBonePosition - LocalCameraPosition).Length();
         float timeToTarget = distanceToTarget / BulletSpeed;
         Vector targetPosAhead = TargetBonePosition + (targetVel * timeToTarget);
-        Ctx.TargetVel = Vector(targetVel.x, targetVel.y + (targetVel.Length() * deltaTime), targetVel.z);
+        Ctx.TargetVel = Vector(targetVel.x, targetVel.y /*+ (targetVel.Length() * deltaTime)*/, targetVel.z);
         Ctx.TargetPos = targetPosAhead;
-        */
+        
         aim_target = Ctx.TargetPos;
 
         if (BulletPredict(Ctx))
@@ -483,6 +481,8 @@ QAngle CalculateBestBoneAim(Entity &from, Entity &target, WeaponXEntity &weapon,
         {
             return QAngle(0, 0, 0);
         }
+        CalculatedAnglesMin -= SwayAngles - ViewAngles;
+        CalculatedAnglesMax -= SwayAngles - ViewAngles;
         Math::NormalizeAngles(CalculatedAnglesMin);
         Math::NormalizeAngles(CalculatedAnglesMax);
         QAngle DeltaMin = CalculatedAnglesMin - ViewAngles;
@@ -609,15 +609,13 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     float bulletSpeed = weapon.get_projectile_speed();
     float bulletGrav = weapon.get_projectile_gravity();
     Vector LocalCamera = from.GetCamPos();
-    // QAngle ViewAngles = from.GetViewAngles();
-    // QAngle SwayAngles = from.GetSwayAngles();
     Vector targetVel = target.getAbsVelocity();
     float deltaTime = 1.0 / g_settings.game_fps;
 
     PredictCtx Ctx;
     Ctx.StartPos = LocalCamera;
     Ctx.TargetPos = bestAimBonePos;
-    Ctx.BulletSpeed = bulletSpeed * 0.92;
+    Ctx.BulletSpeed = bulletSpeed * 0.95;
     Ctx.BulletGravity = bulletGrav * 1.05;
     float distanceToTarget = (bestAimBonePos - LocalCamera).Length();
     float timeToTarget = distanceToTarget / bulletSpeed;

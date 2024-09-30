@@ -81,7 +81,7 @@ menu-item-toggle-nade-aim = Toggle NoNadeAim
 menu-value-no-nade-aim = Active on ADS
 menu-value-nade-aim-on = Disable on ADS
 menu-item-toggle-onevone = Toggle 1v1
-menu-item-toggle-no-recoil = Recoil reduction
+menu-item-toggle-no-recoil = Recoil Reduction Only
 menu-item-change-recoil-pitch = Vertical Recoil
 menu-item-change-recoil-yaw = Horizontal Recoil
 input-prompt-recoil-pitch = 
@@ -135,6 +135,7 @@ hotkey-item-aimbot2 = Aimbot Hot Key 2
 hotkey-item-trigger-bot = Trigger Bot Hot Key(Bind HotKey2)
 hotkey-item-flick-bot = Flick Bot Hot Key
 hotkey-item-quick-glow = Temporary Glow Switch hotkey
+hotkey-item-quick-aim = Temporary Aim Switch hotkey
 hotkey-item-algs-radar = ALGS Radar Hotkey
 menu-item-key-codes = Key Codes
 item-filter-menu-title = Item Filter Menu
@@ -264,9 +265,10 @@ keycode112-mouse5-side = 112 Side mouse button (mouse5)
 menu-item-back-to-hotkey-menu = Back to Hotkey Menu
 weapons-predict-menu-title = Weapons Predict Menu
 input-prompt-weapons-predict = 
-    Weapon prediction Speed Fine-Tuning (-0.1~0.2):
+    Weapon prediction Speed Fine-Tuning (-0.5~0.5):
     The larger the value, the more advance the aiming will be.
-info-invalid-predict = The predicted value must be between -0.1 and 0.2
+    Default is 0.08.
+info-invalid-predict = The predicted value must be between -0.5 and 0.5
 menu-value-prefix = {" [Current: "}
 menu-value-suffix = {"]"}
 loot-level1-name = Common
