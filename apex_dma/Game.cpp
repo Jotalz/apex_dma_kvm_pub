@@ -615,7 +615,7 @@ void DoFlick(Entity &from, Entity &target, float *m_vMatrix)
     PredictCtx Ctx;
     Ctx.StartPos = LocalCamera;
     Ctx.TargetPos = bestAimBonePos;
-    Ctx.BulletSpeed = bulletSpeed * 0.95;
+    Ctx.BulletSpeed = bulletSpeed * 0.98;
     Ctx.BulletGravity = bulletGrav * 1.05;
     float distanceToTarget = (bestAimBonePos - LocalCamera).Length();
     float timeToTarget = distanceToTarget / bulletSpeed;
