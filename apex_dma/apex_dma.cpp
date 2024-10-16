@@ -1371,7 +1371,8 @@ static void AimbotLoop()
             uint32_t weaponID = currentWeapon.get_weap_id();
             globals.Set("WeaponID", weaponID);
             // printf("%d\n", weaponID);
-            if (g_settings.aim_no_recoil)
+            uint64_t target_ptr = aimbot.GetAimentity();
+            if (g_settings.aim_no_recoil && !target_ptr)
             {
                 static QAngle preRecoilAngles = QAngle(0, 0, 0);
                 int in_attack = std::get<int>(globals.Get("AttackState"));
@@ -1397,7 +1398,6 @@ static void AimbotLoop()
                 continue;
             if (g_settings.aim > 0)
             { // 0为不自喵，1为不检查可见性，2为检查目标可见性
-                uint64_t target_ptr = aimbot.GetAimentity();
                 if (target_ptr == 0)
                 { // 如果无目标取消锁定
                     cancel_targeting();

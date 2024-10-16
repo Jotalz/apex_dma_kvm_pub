@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = 启用
 menu-value-disabled = 禁用
-main-menu-title = 主菜单 GameVersion-v3.0.81.36
+main-menu-title = 主菜单 GameVersion-v3.0.82.42
 title-main-setting = 主题设置 ------ 0
 title-loot-setting = 物资设置 ------ 4
 title-player-setting = 玩家热能设置 ------ 8

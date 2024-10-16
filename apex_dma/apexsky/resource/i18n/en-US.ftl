@@ -1,7 +1,7 @@
 hello-world = Hello, world!
 menu-value-enabled = Enabled
 menu-value-disabled = Disabled
-main-menu-title = Main Menu GameVersion-v3.0.81.36
+main-menu-title = Main Menu GameVersion-v3.0.82.42
 title-main-setting = Main Setting ------ 0
 title-loot-setting = Loot Setting ------ 4
 title-player-setting = Player Glow Setting ------ 8
