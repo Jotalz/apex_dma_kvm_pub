@@ -301,7 +301,7 @@ void UpdateGlobalVar()
             {
                 Map = 0;
             }
-            else if (strcmp(level_name, "mp_rr_canyonlands_staging_mu1") == 0)
+            else if (strstr(level_name, "mp_rr_canyonlands_staging_mu")) // mp_rr_canyonlands_staging_mu1 in current season
             {
                 Map = 1;
             }
@@ -309,23 +309,23 @@ void UpdateGlobalVar()
             {
                 Map = 2;
             }
-            else if (strcmp(level_name, "mp_rr_desertlands_hu") == 0)
+            else if (strstr(level_name, "mp_rr_desertlands_hu"))
             {
                 Map = 3;
             }
-            else if (strcmp(level_name, "mp_rr_olympus_mu2") == 0)
+            else if (strstr(level_name, "mp_rr_olympus_mu")) // mp_rr_olympus_mu2 in current season
             {
                 Map = 4;
             }
-            else if (strcmp(level_name, "mp_rr_district") == 0)
+            else if (strstr(level_name, "mp_rr_district")) // mp_rr_district_halloween
             {
                 Map = 5;
             }
-            else if (strcmp(level_name, "mp_rr_divided_moon_mu1") == 0)
+            else if (strstr(level_name, "mp_rr_divided_moon_mu")) // mp_rr_divided_moon_mu1 in current season
             {
                 Map = 6;
             }
-            else if (strcmp(level_name, "mp_rr_canyonlands_hu") == 0)
+            else if (strstr(level_name, "mp_rr_canyonlands_hu"))
             {
                 Map = 7;
             }
