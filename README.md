@@ -38,7 +38,7 @@ Bone IDs reference: https://www.unknowncheats.me/wiki/Apex_Legends_Bones_and_Hit
 
 Game version (Steam Only right now): v3.0.51.45
 
-
+Contact us: https://discord.gg/wsA5HFvWpP
 
 
  **Features**
